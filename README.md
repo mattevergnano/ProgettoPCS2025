@@ -1,3 +1,2 @@
 # ProgettoPCS2025
-
-Ciaoooooo
+Repository per il progetto
