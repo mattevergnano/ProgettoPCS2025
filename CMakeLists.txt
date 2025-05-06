@@ -1,18 +1,19 @@
-# cmake_minimum_required(VERSION 3.20) #versione CMake
-# project("NomeProgetto")
+cmake_minimum_required(VERSION 3.20) #versione CMake
+project("ProgettoPCS2025_Saviolo_Tonini_Vergnano")
  
-# set(CMAKE_CXX_STANDARD 20) #versione C++
-# set(CMAKE_CXX_STANDARD_REQUIRED ON) #versione C++ richiesta
+set(CMAKE_CXX_STANDARD 20) #versione C++
+set(CMAKE_CXX_STANDARD_REQUIRED ON) #versione C++ richiesta
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wshadow") #imposta i flag per il compilatore
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wshadow") #imposta i flag per il compilatore
 
-# #aggiungo eseguibili del progetto
-# add_executable(${PROJECT_NAME}
-#     main.cpp
+#aggiungo eseguibili del progetto
+add_executable(${PROJECT_NAME}
+    main.cpp
 #     "${CMAKE_CURRENT_SOURCE_DIR}/funzioni.cpp"
 #     "${CMAKE_CURRENT_SOURCE_DIR}/funzioni.hpp"
 #     ${SumValues_SOURCES}
-#     ${SumValues_HEADERS})
+#     ${SumValues_HEADERS}
+)
 
 # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data.txt
 #      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
