@@ -1,0 +1,2 @@
+ordinamento lati e vertici 
+generare vertici poliedro
