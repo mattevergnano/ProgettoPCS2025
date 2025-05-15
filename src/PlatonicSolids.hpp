@@ -21,16 +21,16 @@ namespace PlatonicLibrary{
         vector<unsigned int> Cells3DsId = {};
 
         //points
-        MatrixXd Cell0DsCoordinates;
+        MatrixXd Cells0DsCoordinates;
         //segments extrema
-        MatrixXi Cell1DsExtrema = {};
+        MatrixXi Cells1DsExtrema = {};
         //polygons
         //vertices
-        vector<vector<unsigned int>> Cell2DsVertices = {};
+        vector<vector<unsigned int>> Cells2DsVertices = {};
         //edges
-        vector<vector<unsigned int>> Cell2DsEdges = {};
+        vector<vector<unsigned int>> Cells2DsEdges = {};
         //edges number
-        vector<unsigned int> Cell2DsNumEdges = {};
+        vector<unsigned int> Cells2DsNumEdges = {};
 
         //parameters
         unsigned int p = 0;
