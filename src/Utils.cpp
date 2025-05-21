@@ -1,6 +1,7 @@
 #include<iostream>
 #include<Utils.hpp>
 #include"PlatonicSolids.hpp"
+#include "Eigen/Eigen"
 
 namespace PlatonicLibrary{
     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
@@ -32,10 +33,12 @@ namespace PlatonicLibrary{
             cerr << "Not Valid input" << endl;
             return 1;
         }
-        cout << "p: " << solido.p << "\nq: " << solido.q << "\nb: " << solido.b << "\nc: " << solido.c << endl;
-        return 0;
+		cout << "p: " << solido.p << "\nq: " << solido.q << "\nb: " << solido.b << "\nc: " << solido.c << endl;
+        	 		 
+	  return 0;
     };
-    int CreateSolid(PlatonicSolids solido){
+	
+int CreateSolid(PlatonicSolids solido){
         //classify type of polyedra
         if(solido.p == 3 && solido.q == 3){
             cout << "Tetraedro" << endl;
@@ -61,4 +64,5 @@ namespace PlatonicLibrary{
         }
         return 0;
     };
+   
 }
