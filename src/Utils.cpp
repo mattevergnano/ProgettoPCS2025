@@ -1,4 +1,6 @@
 #include<iostream>
+#include<math.h>
+#include<tgmath.h>
 #include<Utils.hpp>
 #include"PlatonicSolids.hpp"
 #include "Eigen/Eigen"
@@ -49,8 +51,11 @@ namespace PlatonicLibrary{
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
             for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
-            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,4);
-            solido.Cells0DsCoordinates << 0,0,1,0,-sqrt(3)/4,sqrt(3)/4,1/2,1,-sqrt(3)/4,-sqrt(3)/4,-1/2,2,0,0,-1,3;
+            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
+            solido.Cells0DsCoordinates << 0.0,0.0,1.0,
+                                        -sqrt(3)/4,sqrt(3)/4,1.0/2,
+                                        -sqrt(3)/4,-sqrt(3)/4,-(1.0/2),
+                                        0.0,0.0,-1.0;
         }else if(solido.p == 4 && solido.q == 3){
             cout << "Cubo" << endl;
         }else if(solido.p == 3 && solido.q == 4){
@@ -59,8 +64,13 @@ namespace PlatonicLibrary{
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
             for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
-            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,4);
-            solido.Cells0DsCoordinates << 1,0,0,0,-1,0,0,1,0,1,0,2,0,-1,0,3,0,0,1,4,0,0,-1,5;
+            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
+            solido.Cells0DsCoordinates << 1.0,0.0,0.0,
+                                         -1.0,0.0,0.0,
+                                          0.0,1.0,0.0,
+                                          0.0,-1.0,0.0,
+                                          0.0,0.0,1.0,
+                                          0.0,0.0,-1.0;
         }else if(solido.p == 5 && solido.q == 3){
             cout << "Dodecaedro" << endl;
         }else if(solido.p == 3 && solido.q == 5){
@@ -70,8 +80,19 @@ namespace PlatonicLibrary{
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
             for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
-            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,4);
-            solido.Cells0DsCoordinates << 0,1,phi,0,0,-1,phi,1,0,1,-phi,2,0,-1,-phi,3,1,phi,0,4,-1,phi,0,5,1,-phi,0,6,-1,-phi,0,7,phi,0,1,8,-phi,0,1,9,phi,0,-1,10,-phi,0,-1,11;
+            solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
+            solido.Cells0DsCoordinates << 0.0,1.0,phi,
+                                          0.0,-1.0,phi,
+                                          0.0,1.0,-phi,
+                                          0.0,-1.0,-phi,
+                                          1.0,phi,0.0,
+                                          -1.0,phi,0.0,
+                                          1.0,-phi,0.0,
+                                          -1.0,-phi,0.0,
+                                          phi,0.0,1.0,
+                                          -phi,0.0,1.0,
+                                          phi,0.0,-1.0,
+                                          -phi,0.0,-1.0;
         }
         return 0;
     };
