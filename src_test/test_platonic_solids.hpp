@@ -95,6 +95,94 @@ TEST(ImportValueTest, CasePQBC) {
     EXPECT_EQ(solido.c, 2);
 }	
 	
+TEST(ImportValueTest, CasePOrQLessThan3) {
+    
+	// input like p < 3
+    {
+        char str[] = " ";
+        char p[] = "1";   
+        char q[] = "7";
+        char b[] = "4";
+
+        char* argv[] = { str, p, q, b };
+        int argc = 4;
+
+        PlatonicSolids solido;
+        int result = ImportValue(argc, argv, solido);
+
+        EXPECT_EQ(result, 1); 
+    }
+
+    // input like q < 3
+    {
+        char str[] = "";
+        char p[] = "7";
+        char q[] = "1";   
+        char b[] = "5";
+
+        char* argv[] = { str, p, q, b };
+        int argc = 4;
+
+        PlatonicSolids solido;
+        int result = ImportValue(argc, argv, solido);
+
+        EXPECT_EQ(result, 1); 
+    }
+}
+
+TEST(CreateSolidTest, Tetrahedron) {
+    
+	PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 3;
+
+    CreateSolid(solido);
+
+    EXPECT_EQ(solido.NumCells0Ds, 4);
+    EXPECT_EQ(solido.NumCells1Ds, 6);
+    EXPECT_EQ(solido.NumCells2Ds, 4);
+    EXPECT_EQ(solido.Cells0DsId.size(), 4);
+    EXPECT_EQ(solido.Cells1DsVertices.size(), 6);
+    EXPECT_EQ(solido.Cells2DsVertices.size(), 4);
+    EXPECT_EQ(solido.Cells2DsEdges.size(), 4);
+    EXPECT_EQ(solido.Cells2DsNumEdges.size(), 4);
+}
+
+TEST(CreateSolidTest, Octahedron) {
+    PlatonicSolids solid;
+    solid.p = 3;
+    solid.q = 4;
+
+    CreateSolid(solid);
+
+    EXPECT_EQ(solid.NumCells0Ds, 6);
+    EXPECT_EQ(solid.NumCells1Ds, 12);
+    EXPECT_EQ(solid.NumCells2Ds, 8);
+    EXPECT_EQ(solid.Cells1DsVertices.size(), 12);
+    EXPECT_EQ(solid.Cells2DsVertices.size(), 8);
+    EXPECT_EQ(solid.Cells2DsEdges.size(), 8);
+    EXPECT_EQ(solid.Cells2DsNumEdges.size(), 8);
+}
+
+TEST(CreateSolidTest, GeneratesIcosahedron) {
+    PlatonicSolids solid;
+    solid.p = 3;
+    solid.q = 5;
+
+    CreateSolid(solid);
+
+    EXPECT_EQ(solid.NumCells0Ds, 12);
+    EXPECT_EQ(solid.NumCells1Ds, 30);
+    EXPECT_EQ(solid.NumCells2Ds, 20);
+    EXPECT_EQ(solid.Cells1DsVertices.size(), 30);
+    EXPECT_EQ(solid.Cells2DsVertices.size(), 20);
+    EXPECT_EQ(solid.Cells2DsEdges.size(), 20);
+    EXPECT_EQ(solid.Cells2DsNumEdges.size(), 20);
+}
+
+
+
+
 
 	
 	

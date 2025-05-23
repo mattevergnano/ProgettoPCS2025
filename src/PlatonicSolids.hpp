@@ -27,7 +27,7 @@ namespace PlatonicLibrary{
         //polygons
         //vertices
         vector<vector<unsigned int>> Cells2DsVertices = {};
-		vector<vector<unsigned int, unsigned int>> Cells1DsVertices={};
+		vector<vector<unsigned int>> Cells1DsVertices = {};
         //edges
         vector<vector<unsigned int>> Cells2DsEdges = {};
         //edges number

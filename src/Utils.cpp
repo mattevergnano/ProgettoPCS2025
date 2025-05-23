@@ -12,8 +12,8 @@ using namespace Eigen;
 
 namespace PlatonicLibrary{
     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
-
-        string str = ""; //remove Project name
+        
+		string str = ""; //remove Project name
         str = argv[0];
         solido.p = stoi(argv[1]); //save p
         solido.q = stoi(argv[2]); //save q
@@ -43,15 +43,16 @@ namespace PlatonicLibrary{
         cout << "p: " << solido.p << "\nq: " << solido.q << "\nb: " << solido.b << "\nc: " << solido.c << endl;
         return 0;
     };
-    int CreateSolid(PlatonicSolids solido){
+   
+	int CreateSolid(PlatonicSolids& solido){
         //classify type of polyedra
         if(solido.p == 3 && solido.q == 3){
             cout << "Tetraedro" << endl;
             solido.NumCells0Ds = 4;
-            solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
-			solido.Cell2DsId = vector<unsigned int>(solido.NumCells2Ds,0);
-            solido.NumCells1Ds=6;
+			solido.NumCells1Ds=6;
 			solido.NumCells2Ds = 4;
+            solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
+			solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);
 			for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
             solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
@@ -60,20 +61,20 @@ namespace PlatonicLibrary{
                                         -sqrt(3)/4,-sqrt(3)/4,-(1.0/2),
                                         0.0,0.0,-1.0;
 			solido.Cells1DsVertices={{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
-			for(unisigned int j=0; j<solido.NumCells2Ds; j++)
-				solido.Cell2DsId[j] = j;
+			for(unsigned int j=0; j<solido.NumCells2Ds; j++)
+				solido.Cells2DsId[j] = j;
 			solido.Cells2DsVertices = {{0, 1, 2}, {0, 1, 3}, {0, 2, 3}, {1, 2, 3}};
-            solido.Cells2DsEdges = {{0, 1, 3}, {0, 2, 4}, {1, 2, 5} {3, 4, 5} };
+            solido.Cells2DsEdges = {{0, 1, 3}, {0, 2, 4}, {1, 2, 5}, {3, 4, 5} };
             solido.Cells2DsNumEdges = {3, 3, 3, 3};
         }else if(solido.p == 4 && solido.q == 3){
             cout << "Cubo" << endl;
 			solido.NumCells0Ds=8;
 			solido.NumCells1Ds=12;	
             solido.NumCells2Ds = 6;	
-            solido.Cell2DsId = vector<unsigned int>(solido.NumCells2Ds,0);			
+            solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);			
 			solido.Cells1DsVertices={{0,1},{1,2},{2,3},{3,0},{4,5},{5,6},{6,7},{7,4},{0,4},{1,5},{2,6},{3,7}};
-			for(unisigned int j=0; j<solido.NumCells2Ds; j++)
-				solido.Cell2DsId[j] = j;
+			for(unsigned int j=0; j<solido.NumCells2Ds; j++)
+				solido.Cells2DsId[j] = j;
 			solido.Cells2DsVertices = {{0,1,2,3}, {4,5,6,7}, {0,4,5,1}, {1,5,6,2}, {2,6,7,3}, {3,7,4,0}};
             solido.Cells2DsEdges = {{0,1,2,3}, {4,5,6,7}, {8,4,9,0}, {9,5,10,1}, {10,6,11,2}, {11,7,8,3}};
 			solido.Cells2DsNumEdges = {4, 4, 4, 4, 4, 4};
@@ -142,7 +143,6 @@ namespace PlatonicLibrary{
 			                        {2,3}, {2,4}, {2,5}, {2,10}, {2,11},{3,6}, {3,7}, {3,10}, {3,11},
                                     {4,5}, {4,8}, {4,10},{5,9}, {5,11},{6,7}, {6,8}, {6,10},
                                     {7,9}, {7,11},{8,10}, {9,11}};
-            }
 			solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
             for(unsigned int j = 0; j < solido.NumCells2Ds; j++)
                  solido.Cells2DsId[j] = j;
@@ -151,7 +151,11 @@ namespace PlatonicLibrary{
 		    solido.Cells2DsEdges = {{0, 3, 7}, {3, 1, 19}, {1, 2, 18}, {2, 4, 21}, {4, 0, 8},{5, 6, 7}, {8, 22, 23}, {6, 23, 24}, {9, 10, 26}, {10, 11, 20},
                                     {11, 18, 19}, {12, 13, 22}, {13, 9, 28}, {14, 15, 26}, {15, 24, 25}, {13, 25, 27}, {19, 20, 28}, {21, 22, 29}, {6, 20, 24},{25, 27, 29}};
 			solido.Cells2DsNumEdges = {3, 3, 3, 3};	
-            solido.Cells2DsNumEdges = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};			
-        return 0;
+            solido.Cells2DsNumEdges = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};		
+		}	
+        
+    return 0;
     };
+	
+	
 }
