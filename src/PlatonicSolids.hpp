@@ -26,12 +26,12 @@ namespace PlatonicLibrary{
         MatrixXi Cells1DsExtrema = {};
         //polygons
         //vertices
-        vector<vector<unsigned int>> Cells2DsVertices = {};
+        MatrixXi Cells2DsVertices = {};
 		vector<vector<unsigned int>> Cells1DsVertices = {};
         //edges
-        vector<vector<unsigned int>> Cells2DsEdges = {};
+        MatrixXi Cells2DsEdges = {};
         //edges number
-        vector<unsigned int> Cells2DsNumEdges = {};
+        VectorXi Cells2DsNumEdges = {};
 
         //parameters
         unsigned int p = 0;

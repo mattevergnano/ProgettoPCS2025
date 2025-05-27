@@ -142,7 +142,7 @@ TEST(CreateSolidTest, Tetrahedron) {
     EXPECT_EQ(solido.NumCells1Ds, 6);
     EXPECT_EQ(solido.NumCells2Ds, 4);
     EXPECT_EQ(solido.Cells0DsId.size(), 4);
-    EXPECT_EQ(solido.Cells1DsVertices.size(), 6);
+    EXPECT_EQ(solido.Cells1DsExtrema.size(), 6);
     EXPECT_EQ(solido.Cells2DsVertices.size(), 4);
     EXPECT_EQ(solido.Cells2DsEdges.size(), 4);
     EXPECT_EQ(solido.Cells2DsNumEdges.size(), 4);
@@ -158,7 +158,7 @@ TEST(CreateSolidTest, Octahedron) {
     EXPECT_EQ(solid.NumCells0Ds, 6);
     EXPECT_EQ(solid.NumCells1Ds, 12);
     EXPECT_EQ(solid.NumCells2Ds, 8);
-    EXPECT_EQ(solid.Cells1DsVertices.size(), 12);
+    EXPECT_EQ(solid.Cells1DsExtrema.size(), 12);
     EXPECT_EQ(solid.Cells2DsVertices.size(), 8);
     EXPECT_EQ(solid.Cells2DsEdges.size(), 8);
     EXPECT_EQ(solid.Cells2DsNumEdges.size(), 8);
@@ -174,7 +174,7 @@ TEST(CreateSolidTest, GeneratesIcosahedron) {
     EXPECT_EQ(solid.NumCells0Ds, 12);
     EXPECT_EQ(solid.NumCells1Ds, 30);
     EXPECT_EQ(solid.NumCells2Ds, 20);
-    EXPECT_EQ(solid.Cells1DsVertices.size(), 30);
+    EXPECT_EQ(solid.Cells1DsExtrema.size(), 30);
     EXPECT_EQ(solid.Cells2DsVertices.size(), 20);
     EXPECT_EQ(solid.Cells2DsEdges.size(), 20);
     EXPECT_EQ(solid.Cells2DsNumEdges.size(), 20);
