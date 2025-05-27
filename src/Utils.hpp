@@ -5,6 +5,6 @@
 namespace PlatonicLibrary{
     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido);
     int CreateSolid(PlatonicSolids& solido);
-	void InsertionSort(PlatonicSolids& solid);
+	
 }
 
