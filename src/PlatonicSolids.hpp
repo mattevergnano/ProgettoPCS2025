@@ -24,10 +24,10 @@ namespace PlatonicLibrary{
         MatrixXd Cells0DsCoordinates;
         //segments extrema
         MatrixXi Cells1DsExtrema = {};
+		MatrixXi Cell1DVertices={};
         //polygons
         //vertices
         vector<vector<unsigned int>> Cells2DsVertices = {};
-		vector<vector<unsigned int>> Cells1DsVertices = {};
         //edges
         vector<vector<unsigned int>> Cells2DsEdges = {};
         //edges number

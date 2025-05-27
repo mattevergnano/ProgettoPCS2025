@@ -52,6 +52,7 @@ namespace PlatonicLibrary{
 			solido.NumCells1Ds=6;
 			solido.NumCells2Ds = 4;
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
+			solido.Cells1DsId = vector<unsigned int>(solido.NumCells1Ds,0);
 			solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);
 			for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
@@ -84,7 +85,8 @@ namespace PlatonicLibrary{
 			solido.NumCells1Ds=12;
 			solido.NumCells2Ds = 8;
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
-            for(unsigned int i=0;i<solido.NumCells0Ds;i++)
+            solido.Cells1DsId = vector<unsigned int>(solido.NumCells1Ds,0);
+			for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
             solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
             solido.Cells0DsCoordinates << 1.0,0.0,0.0,
@@ -124,6 +126,7 @@ namespace PlatonicLibrary{
 			solido.NumCells1Ds=30;
 			solido.NumCells2Ds = 20;
             solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
+			solido.Cells1DsId = vector<unsigned int>(solido.NumCells1Ds,0);
             for(unsigned int i=0;i<solido.NumCells0Ds;i++)
                 solido.Cells0DsId[i] = i;
             solido.Cells0DsCoordinates = MatrixXd::Zero(solido.NumCells0Ds,3);
