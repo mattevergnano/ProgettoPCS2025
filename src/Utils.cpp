@@ -5,6 +5,8 @@
 #include"PlatonicSolids.hpp"
 #include "Eigen/Eigen"
 #include<string>
+#include<iomanip>
+#include<fstream>
 #include<vector>
 
 using namespace std;
@@ -81,7 +83,8 @@ namespace PlatonicLibrary{
 			solido.NumCells1Ds=12;	
             solido.NumCells2Ds = 6;	
             solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);			
-			// solido.Cells1DsExtrema={{0,1},{1,2},{2,3},{3,0},{4,5},{5,6},{6,7},{7,4},{0,4},{1,5},{2,6},{3,7}};
+			solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+			//solido.Cells1DsExtrema <<
 			for(unsigned int j=0; j<solido.NumCells2Ds; j++)
 				solido.Cells2DsId[j] = j;
 			//solido.Cells2DsVertices = {{0,1,2,3}, {4,5,6,7}, {0,4,5,1}, {1,5,6,2}, {2,6,7,3}, {3,7,4,0}};
@@ -101,7 +104,9 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates << 1.0,-1.0,0.0,0.0,0.0,0.0,
                                           0.0,0.0,1.0,-1.0,0.0,0.0,
                                           0.0,0.0,0.0,0.0,1.0,-1.0;
-			// solido.Cells1DsExtrema ={{4,0},{4,1},{4,2},{4,3},{5,0},{5,1},{5,2},{5,3},{0,1},{1,2},{2,3},{3,0}}; 
+			solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+			solido.Cells1DsExtrema << 0,0,0,0,1,1,1,1,2,2,3,3,
+                                      2,3,4,5,2,3,4,5,4,5,4,5; 
             solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
             for (unsigned int j = 0; j < solido.NumCells2Ds; j++)
                   solido.Cells2DsId[j] = j;
@@ -146,6 +151,10 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates << 0.0,0.0,0.0,0.0,1.0,-1.0,1.0,-1.0,phi,-phi,phi,-phi,
                                           1.0,-1.0,1.0,-1.0,phi,phi,-phi,-phi,0.0,0.0,0.0,0.0,
                                           phi,phi,-phi,-phi,0.0,0.0,0.0,0.0,1.0,1.0,-1.0,-1.0;
+            solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+            solido.Cells1DsExtrema << 0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,5,5,6,6,6,7,7,8,9,
+                                      1,4,5,8,9,6,7,8,9,3,4,5,10,11,6,7,10,11,5,10,8,11,9,7,10,8,11,9,10,11;
+			//solido.Cells1DsExtrema =
 		    // solido.Cells1DsExtrema= {{0,1}, {0,4}, {0,5}, {0,8}, {0,9},{1,4}, {1,6}, {1,8}, {1,9},
 			//                         {2,3}, {2,4}, {2,5}, {2,10}, {2,11},{3,6}, {3,7}, {3,10}, {3,11},
             //                         {4,5}, {4,8}, {4,10},{5,9}, {5,11},{6,7}, {6,8}, {6,10},
@@ -169,6 +178,46 @@ namespace PlatonicLibrary{
     return 0;
     };
 	
+    void FileCell0Ds(const PlatonicSolids& solido) {
+		
+		ofstream outputFile("Cells0Ds.txt");
+		if (!outputFile.is_open()) {
+			cerr << "Error opening file: Cells0Ds.txt" << endl;
+		return;
+		}
 
+		outputFile << "ID    x              y              z" << endl;
+		for (unsigned int i = 0; i < solido.NumCells0Ds; ++i) {
+			outputFile << i << "    "
+				   << fixed << setprecision(8)
+				   << solido.Cells0DsCoordinates(0, i) << "    "
+				   << solido.Cells0DsCoordinates(1, i) << "    "
+				   << solido.Cells0DsCoordinates(2, i)
+				   << endl;
+		}
+
+		outputFile.close();
+		cout << "Cells0Ds.txt file created successfully with " << solido.NumCells0Ds << " vertices." << endl;
+    }
+	
+	void FileCell1Ds(const PlatonicSolids& solido) {
+		
+		ofstream outputFile("Cells1Ds.txt");
+		if (!outputFile.is_open()) {
+			cerr << "Error opening file: Cells1Ds.txt" << endl;
+        return;
+		}
+
+		outputFile << "ID      Initial Vertex      Final Vertex" << std::endl;
+		for (unsigned int i = 0; i < solido.NumCells1Ds; ++i) {
+			outputFile << i << "    "
+                   << solido.Cells1DsExtrema(0, i) << "                "
+                   << solido.Cells1DsExtrema(1, i) << "                "
+				   << endl;
+		}
+
+		outputFile.close();
+        cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
+    }
 
 }

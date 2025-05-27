@@ -12,6 +12,8 @@ int main(int argc,char  *argv[]){
     PlatonicSolids solido;
     ImportValue(argc,argv,solido);
     CreateSolid(solido);
+	FileCell0Ds(solido);
+	FileCell1Ds(solido);
     Gedim::UCDUtilities utilities;
     {
         vector<Gedim::UCDProperty<double>> cell0Ds_properties(1);
