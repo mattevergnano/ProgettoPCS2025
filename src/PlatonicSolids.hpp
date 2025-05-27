@@ -31,7 +31,7 @@ namespace PlatonicLibrary{
         MatrixXi Cells2DsVertices = {};
 		vector<vector<unsigned int>> Cells1DsVertices = {};
 
-        vector<vector<unsigned int>> Cells2DsVertices = {};
+        //vector<vector<unsigned int>> Cells2DsVertices = {{}};
 
         //edges
         MatrixXi Cells2DsEdges = {};
