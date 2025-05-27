@@ -164,7 +164,7 @@ TEST(CreateSolidTest, Octahedron) {
     EXPECT_EQ(solid.Cells2DsNumEdges.size(), 8);
 }
 
-TEST(CreateSolidTest, GeneratesIcosahedron) {
+TEST(CreateSolidTest, Icosahedron) {
     PlatonicSolids solid;
     solid.p = 3;
     solid.q = 5;
