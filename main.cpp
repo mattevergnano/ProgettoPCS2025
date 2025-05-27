@@ -44,7 +44,6 @@ int main(int argc,char  *argv[]){
                                  solido.Cells1DsExtrema,
                                  {});
     }
-    
 
     return 0;   
 }
