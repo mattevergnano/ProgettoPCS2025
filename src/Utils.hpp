@@ -10,5 +10,6 @@ namespace PlatonicLibrary{
     int CreateSolid(PlatonicSolids& solido);
 	void FileCell0Ds(const PlatonicSolids& solido);
 	void FileCell1Ds(const PlatonicSolids& solido);
+    int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1);
 }
 
