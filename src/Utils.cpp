@@ -210,17 +210,55 @@ namespace PlatonicLibrary{
         return;
 		}
 
-		outputFile << "ID      Initial Vertex      Final Vertex" << std::endl;
+    
+		outputFile << "ID\tInitial Vertex\tFinal Vertex" << endl;
+
+    
 		for (unsigned int i = 0; i < solido.NumCells1Ds; ++i) {
-			outputFile << i << "    "
-                   << solido.Cells1DsExtrema(0, i) << "                "
-                   << solido.Cells1DsExtrema(1, i) << "                "
-				   << endl;
+			outputFile << i << "\t"
+                   << solido.Cells1DsExtrema(0, i) << "\t\t"
+                   << solido.Cells1DsExtrema(1, i) << endl;
 		}
 
 		outputFile.close();
-        cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
+		cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
+	}
+	
+	void FileCell2Ds(const PlatonicSolids& solido) {
+		
+		ofstream outputFile("Cells2Ds.txt");
+		if (!outputFile.is_open()) {
+			cerr << "Error opening file: Cells2Ds.txt" << endl;
+        return;
+		}
+
+    
+		outputFile << "ID\tNumVertices\tNumEdges\tVerticesIDs\t\tEdgesIDs" << endl;
+
+		for (unsigned int i = 0; i < solido.NumCells2Ds; ++i) {
+			outputFile << i << "\t"                              
+                   << solido.Cells2DsVertices.rows() << "\t\t" 
+                   << solido.Cells2DsNumEdges(i) << "\t\t";    
+
+        
+			for (int j = 0; j < solido.Cells2DsVertices.rows(); ++j) {
+				outputFile << solido.Cells2DsVertices(j, i) << " ";
+			}
+
+			outputFile << "\t\t\t";  
+
+        
+			for (int j = 0; j < solido.Cells2DsNumEdges(i); ++j) {
+				outputFile << solido.Cells2DsEdges(j, i) << " ";
+			}
+
+			outputFile << endl;
+		}
+
+        outputFile.close();
+        cout << "Cells2Ds.txt file created successfully with " << solido.NumCells2Ds << " faces." << endl;
     }
+    
 
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1){
         cout << "costruiamo duale" << endl;
@@ -267,6 +305,43 @@ namespace PlatonicLibrary{
         }
         cout << solido.Cells0DsCoordinates << endl;
         cout << solido1.Cells2DsVertices << endl;
+		
+		MatrixXi links = MatrixXi::Zero(solido.NumCells0Ds, solido.NumCells0Ds);
+        unsigned int edgeIndex = 0;
+
+       for (unsigned int k = 0; k < solido1.NumCells1Ds; ++k) {
+		int adjacent[2];
+		int n = 0;
+
+	   for (unsigned int i = 0; i < solido1.NumCells2Ds; ++i) {
+		for (unsigned int j = 0; j < 3; ++j) {
+            if (solido1.Cells2DsEdges(j, i) == k) {
+                if (n < 2) {
+                    adjacent[n] = i;
+                    ++n;
+                }
+            }
+        }
+	  }
+
+	  if (n == 2) {
+        int Faces1 = adjacent[0];
+        int Faces2 = adjacent[1];
+
+        if (links(Faces1, Faces2) == 0 && Faces1 != Faces2) {
+            solido.Cells1DsExtrema(0, edgeIndex) = Faces1;
+            solido.Cells1DsExtrema(1, edgeIndex) = Faces2;
+
+            links(Faces1, Faces2) = 1;
+            links(Faces2, Faces1) = 1;
+
+            ++edgeIndex;
+         }
+       }
+     }
+
+     solido.NumCells1Ds = edgeIndex;
+	
         return 0;
     }
 }

@@ -14,6 +14,7 @@ int main(int argc,char  *argv[]){
     CreateSolid(solido);
 	FileCell0Ds(solido);
 	FileCell1Ds(solido);
+	FileCell2Ds(solido);
     Gedim::UCDUtilities utilities;
     {
         vector<Gedim::UCDProperty<double>> cell0Ds_properties(1);
