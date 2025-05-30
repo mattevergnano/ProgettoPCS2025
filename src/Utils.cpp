@@ -166,6 +166,16 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates << 0.0,0.0,0.0,0.0,1.0,-1.0,1.0,-1.0,phi,-phi,phi,-phi,
                                           1.0,-1.0,1.0,-1.0,phi,phi,-phi,-phi,0.0,0.0,0.0,0.0,
                                           phi,phi,-phi,-phi,0.0,0.0,0.0,0.0,1.0,1.0,-1.0,-1.0;
+            for(unsigned int i=0;i<solido.NumCells0Ds;i++){
+                double x = solido.Cells0DsCoordinates(0,i);
+                double y = solido.Cells0DsCoordinates(1,i);
+                double z = solido.Cells0DsCoordinates(2,i);
+                double norm = sqrt(x*x+y*y+z*z);
+                solido.Cells0DsCoordinates(0,i) /= norm;
+                solido.Cells0DsCoordinates(1,i) /= norm;
+                solido.Cells0DsCoordinates(2,i) /= norm;
+            };
+
             solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
             solido.Cells1DsExtrema << 0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,5,5,6,6,6,7,7,8,9,
                                       1,4,5,8,9,6,7,8,9,3,4,5,10,11,6,7,10,11,5,10,8,11,9,7,10,8,11,9,10,11;
@@ -175,9 +185,13 @@ namespace PlatonicLibrary{
                  solido.Cells2DsId[j] = j;
 
 			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-            solido.Cells2DsVertices <<  0,   0,   0,   0,   1,  1,   1,   2,   2,  2,   2,    3,   3,   3,   4,   4,   5, 5 , 6, 7,
-			                            1,   4,   5,   9,   6,  8,   7,   3,   4,  5,   11,   6,   7,   10,  8,  9,   6, 10, 7, 8,
-										8,   5,   9,   4,   9,  7,   6,   4,   5,  11,   3,   7,   10,  11,   9,  10,  10, 11, 8, 11;
+            // solido.Cells2DsVertices <<  0,   0,   0,   0,   1,  1,   1,   2,   2,  2,   2,    3,   3,   3,   4,   4,   5, 5 , 6, 7,
+			//                             1,   4,   5,   9,   6,  8,   7,   3,   4,  5,   11,   6,   7,   10,  8,  9,   6, 10, 7, 8,
+			// 							8,   5,   9,   4,   9,  7,   6,   4,   5,  11,   3,   7,   10,  11,   9,  10,  10, 11, 8, 11;
+            solido.Cells2DsVertices << 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 6, 7,
+                                       1, 4, 5, 9, 6, 8, 7, 3, 4, 5, 11, 6, 7, 10, 8, 9, 6, 10, 7, 8,
+                                       8, 5, 9, 4, 9, 7, 6, 4, 5, 11, 3, 7, 10, 11, 9, 10, 10, 11, 8, 11;
+            
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);						
 			solido.Cells2DsEdges << 0,  3,  1,  2,  4,  5,  8,  6,  9, 10, 11, 12, 13, 14, 15, 13, 19, 21,  6, 25,
                                     7,  1,  2,  4,  0,  6, 22, 23, 10, 11, 18, 13,  9, 26, 24, 25, 20, 22, 20, 27,
