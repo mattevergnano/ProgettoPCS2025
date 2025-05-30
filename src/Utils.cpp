@@ -114,9 +114,12 @@ namespace PlatonicLibrary{
             for (unsigned int j = 0; j < solido.NumCells2Ds; j++)
                   solido.Cells2DsId[j] = j;
 			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-            solido.Cells2DsVertices << 0, 0, 0, 1, 1, 2, 2, 3,
-                                       1, 2, 3, 2, 3, 3, 0, 0,
-                                       4, 4, 4, 4, 5, 5, 5, 5;  
+            // solido.Cells2DsVertices << 0, 0, 0, 1, 1, 2, 2, 3,
+            //                            1, 2, 3, 2, 3, 3, 0, 0,
+            //                            4, 4, 4, 4, 5, 5, 5, 5;  
+            solido.Cells2DsVertices << 0,0,0,0,1,1,1,1,
+                                       2,3,2,3,2,3,3,2,
+                                       4,4,5,5,4,4,5,5;
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);
             solido.Cells2DsEdges << 8,  9, 11,  9,  5, 10,  8, 11,
                                     1,  2,  3,  2,  7,  7,  5,  7,
@@ -125,6 +128,12 @@ namespace PlatonicLibrary{
             solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3;						
         }else if(solido.p == 5 && solido.q == 3){
             //DODECAEDRO, duale dell'icosaedro
+            PlatonicSolids solido1;
+            solido1.p=solido.q;
+            solido1.q=solido.p;
+            CreateSolid(solido1);
+            DualPolyhedron(solido,solido1);
+            return 0;
             // PlatonicSolids solido1;
             // solido1.p=solido.q;
             // solido1.q=solido.p;
@@ -166,9 +175,9 @@ namespace PlatonicLibrary{
                  solido.Cells2DsId[j] = j;
 
 			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-            solido.Cells2DsVertices <<  0,  0,   0,   0,   0,   1,  1,   1,   2,   2,  2,   2,   2,   3,   3,   3,   3,   3,   4,   5,
-			                            1,  8,   4,   5,   9,   6,  9,   7,   3,   4,  5,   11,  11,  6,   7,   6,   10,  11,  8,   9,
-										8,  4,   5,   9,   1,   8,  7,   6,   10,  5,  11,   3,  6,   10,  11,  7,   8,   9,  10,  11;
+            solido.Cells2DsVertices <<  0,   0,   0,   0,   1,  1,   1,   2,   2,  2,   2,    3,   3,   3,   4,   4,   5, 5 , 6, 7,
+			                            1,   4,   5,   9,   6,  8,   7,   3,   4,  5,   11,   6,   7,   10,  8,  9,   6, 10, 7, 8,
+										8,   5,   9,   4,   9,  7,   6,   4,   5,  11,   3,   7,   10,  11,   9,  10,  10, 11, 8, 11;
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);						
 			solido.Cells2DsEdges << 0,  3,  1,  2,  4,  5,  8,  6,  9, 10, 11, 12, 13, 14, 15, 13, 19, 21,  6, 25,
                                     7,  1,  2,  4,  0,  6, 22, 23, 10, 11, 18, 13,  9, 26, 24, 25, 20, 22, 20, 27,
@@ -299,9 +308,15 @@ namespace PlatonicLibrary{
             double y = solido.Cells0DsCoordinates(1,j);
             double z = solido.Cells0DsCoordinates(2,j);
             double norm = sqrt(x*x+y*y+z*z);
+            cout << Pid << " " << Qid << "" << Sid  << endl;
+            cout << Px << " " << Py << "" << Pz  << endl;
+            cout << Qx << " " << Qy << "" << Qz  << endl;
+            cout << Sx << " " << Sy << "" << Sz  << endl;
+            cout << x << " " << y << "" << z << " " << norm << endl;
             solido.Cells0DsCoordinates(0,j) /= norm;
             solido.Cells0DsCoordinates(1,j) /= norm;
             solido.Cells0DsCoordinates(2,j) /= norm;
+            cout << "definitive: " << solido.Cells0DsCoordinates(0,j) << solido.Cells0DsCoordinates(1,j) << solido.Cells0DsCoordinates(2,j) << endl;
         }
         cout << solido.Cells0DsCoordinates << endl;
         cout << solido1.Cells2DsVertices << endl;
