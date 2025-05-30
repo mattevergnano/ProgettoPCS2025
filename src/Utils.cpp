@@ -49,6 +49,12 @@ namespace PlatonicLibrary{
 	int CreateSolid(PlatonicSolids& solido){
         //classify type of polyedra
         if(solido.p == 3 && solido.q == 3){
+            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
+            // solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
+            // for(unsigned int i = 0; i<solido.NumCells2Ds; i++){
+            //     vector<unsigned int> vettore = vector<unsigned int>(solido.q,0);
+            //     for(unsigned int j = 0; j<solido.q)
+            // }
             //TETRAEDRO
             solido.NumCells0Ds = 4;
 			solido.NumCells1Ds=6;
@@ -374,3 +380,5 @@ namespace PlatonicLibrary{
         return 0;
     }
 }
+
+//creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune

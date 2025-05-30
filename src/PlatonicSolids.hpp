@@ -37,6 +37,8 @@ namespace PlatonicLibrary{
         MatrixXi Cells2DsEdges = {};
         //edges number
         VectorXi Cells2DsNumEdges = {};
+        
+        vector<vector<unsigned int>> Cells2DsNeighborhood;
 
         //parameters
         unsigned int p = 0;
