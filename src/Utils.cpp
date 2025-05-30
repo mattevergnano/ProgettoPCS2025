@@ -49,12 +49,6 @@ namespace PlatonicLibrary{
 	int CreateSolid(PlatonicSolids& solido){
         //classify type of polyedra
         if(solido.p == 3 && solido.q == 3){
-            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
-            // solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
-            // for(unsigned int i = 0; i<solido.NumCells2Ds; i++){
-            //     vector<unsigned int> vettore = vector<unsigned int>(solido.q,0);
-            //     for(unsigned int j = 0; j<solido.q)
-            // }
             //TETRAEDRO
             solido.NumCells0Ds = 4;
 			solido.NumCells1Ds=6;
@@ -83,6 +77,17 @@ namespace PlatonicLibrary{
                                     3, 4, 5, 5;  					   
             solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3;
+
+            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
+            solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
+            for(unsigned int i : solido.Cells2DsId){
+                vector<unsigned int> vettore = vector<unsigned int>(solido.q,0);
+                //ciclo sui lati della faccia
+                //guardo tutte le altre facce e salvo in vettore l'id della faccia se ha un lato in comune
+                for(unsigned int codFaccia : solido.Cells2DsEdges[:,i]){
+                    cout << codFaccia << endl;
+                }
+            }
         }else if(solido.p == 4 && solido.q == 3){
             //CUBO, duale dell'ottaedro
             //creo una nuova istanza di solido, solido1, in cui genero l'ottaedro, e poi passo solido e solido1 a Duale per creare il cubo
