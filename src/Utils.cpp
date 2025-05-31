@@ -81,12 +81,17 @@ namespace PlatonicLibrary{
             //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
-                vector<unsigned int> vettore = vector<unsigned int>(solido.q,0);
-                //ciclo sui lati della faccia
-                //guardo tutte le altre facce e salvo in vettore l'id della faccia se ha un lato in comune
-                for(unsigned int codFaccia : solido.Cells2DsEdges[:,i]){
-                    cout << codFaccia << endl;
+                vector<unsigned int> vettore;
+                for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
+                    for(unsigned int j : solido.Cells2DsId){
+                        for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
+                            if(i != j && latoi == latoj){
+                                vettore.push_back(j);
+                            }
+                        }
                 }
+                }
+                solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
         }else if(solido.p == 4 && solido.q == 3){
             //CUBO, duale dell'ottaedro
@@ -136,7 +141,21 @@ namespace PlatonicLibrary{
                                     1,  2,  3,  2,  7,  7,  5,  7,
                                     0,  0,  0,  1,  4,  6,  4,  4;
 			solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
-            solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3;						
+            solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3;
+            solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
+            for(unsigned int i : solido.Cells2DsId){
+                vector<unsigned int> vettore;
+                for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
+                    for(unsigned int j : solido.Cells2DsId){
+                        for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
+                            if(i != j && latoi == latoj){
+                                vettore.push_back(j);
+                            }
+                        }
+                }
+                }
+                solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
+            }
         }else if(solido.p == 5 && solido.q == 3){
             //DODECAEDRO, duale dell'icosaedro
             PlatonicSolids solido1;
@@ -208,7 +227,21 @@ namespace PlatonicLibrary{
                                     7,  1,  2,  4,  0,  6, 22, 23, 10, 11, 18, 13,  9, 26, 24, 25, 20, 22, 20, 27,
                                     8, 19, 18, 21,  8,  7, 23, 24, 26, 20, 19, 22, 28, 26, 25, 27, 28, 29, 24, 29;					
 		    solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
-            solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;	
+            solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
+            solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
+            for(unsigned int i : solido.Cells2DsId){
+                vector<unsigned int> vettore;
+                for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
+                    for(unsigned int j : solido.Cells2DsId){
+                        for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
+                            if(i != j && latoi == latoj){
+                                vettore.push_back(j);
+                            }
+                        }
+                }
+                }
+                solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
+            }	
 		}	
 
     return 0;
@@ -382,6 +415,7 @@ namespace PlatonicLibrary{
 
      solido.NumCells1Ds = edgeIndex;
 	
+    
         return 0;
     }
 }
