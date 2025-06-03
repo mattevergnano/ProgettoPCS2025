@@ -266,8 +266,9 @@ namespace PlatonicLibrary{
 	
     void FileCell0Ds(const PlatonicSolids& solido) {
 		
-		ofstream outputFile("Cells0Ds.txt");
-		if (!outputFile.is_open()) {
+		ofstream outputFile;
+		outputFile.open("Cells0Ds.txt");
+		if (!outputFile) {
 			cerr << "Error opening file: Cells0Ds.txt" << endl;
 		return;
 		}
@@ -288,14 +289,15 @@ namespace PlatonicLibrary{
 	
 	void FileCell1Ds(const PlatonicSolids& solido) {
 		
-		ofstream outputFile("Cells1Ds.txt");
-		if (!outputFile.is_open()) {
+		ofstream outputFile;
+		outputFile.open("Cells1Ds.txt");
+		if (!outputFile) {
 			cerr << "Error opening file: Cells1Ds.txt" << endl;
         return;
 		}
 
     
-		outputFile << "ID\tInitial Vertex\tFinal Vertex" << endl;
+		outputFile << "ID\tInitial Vertices\tFinal Vertices" << endl;
 
     
 		for (unsigned int i = 0; i < solido.NumCells1Ds; ++i) {
@@ -310,8 +312,9 @@ namespace PlatonicLibrary{
 	
 	void FileCell2Ds(const PlatonicSolids& solido) {
 		
-		ofstream outputFile("Cells2Ds.txt");
-		if (!outputFile.is_open()) {
+		ofstream outputFile;
+		outputFile.open("Cells2Ds.txt");
+		if (!outputFile) {
 			cerr << "Error opening file: Cells2Ds.txt" << endl;
         return;
 		}

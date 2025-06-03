@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-
+#include <fstream>
 #include <gtest/gtest.h>
 #include "Utils.hpp"
 
@@ -131,21 +131,63 @@ TEST(ImportValueTest, CasePOrQLessThan3) {
 }
 
 TEST(CreateSolidTest, Tetrahedron) {
-    
-	PlatonicSolids solido;
-    solido.p = 3;
-    solido.q = 3;
+    PlatonicSolids solid;
+    solid.p = 3;
+    solid.q = 3;
 
-    CreateSolid(solido);
+    CreateSolid(solid);
 
-    EXPECT_EQ(solido.NumCells0Ds, 4);
-    EXPECT_EQ(solido.NumCells1Ds, 6);
-    EXPECT_EQ(solido.NumCells2Ds, 4);
-    EXPECT_EQ(solido.Cells0DsId.size(), 4);
-    EXPECT_EQ(solido.Cells1DsExtrema.size(), 6);
-    EXPECT_EQ(solido.Cells2DsVertices.size(), 4);
-    EXPECT_EQ(solido.Cells2DsEdges.size(), 4);
-    EXPECT_EQ(solido.Cells2DsNumEdges.size(), 4);
+    EXPECT_EQ(solid.NumCells0Ds, 4);
+    EXPECT_EQ(solid.NumCells1Ds, 6);
+    EXPECT_EQ(solid.NumCells2Ds, 4);
+
+    EXPECT_EQ(solid.Cells0DsCoordinates.cols(), 4);
+    EXPECT_EQ(solid.Cells1DsExtrema.cols(), 6);
+    EXPECT_EQ(solid.Cells2DsVertices.cols(), 4);
+    EXPECT_EQ(solid.Cells2DsEdges.cols(), 4);
+    EXPECT_EQ(solid.Cells2DsNumEdges.size(), 4);
+    EXPECT_EQ(solid.Cells2DsNeighborhood.size(), 4);
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        EXPECT_EQ(solid.Cells2DsNumEdges(i), 3);
+    }
+
+    for (int i = 0; i < solid.NumCells1Ds; ++i) {
+        int v0 = solid.Cells1DsExtrema(0, i);
+        int v1 = solid.Cells1DsExtrema(1, i);
+        EXPECT_TRUE(v0 != v1);
+        EXPECT_TRUE(v0 >= 0);
+        EXPECT_TRUE(v1 >= 0);
+        EXPECT_TRUE(v0 < solid.NumCells0Ds);
+        EXPECT_TRUE(v1 < solid.NumCells0Ds);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        int a = solid.Cells2DsVertices(0, i);
+        int b = solid.Cells2DsVertices(1, i);
+        int c = solid.Cells2DsVertices(2, i);
+        EXPECT_TRUE(a != b);
+        EXPECT_TRUE(a != c);
+        EXPECT_TRUE(b != c);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        const vector<unsigned int>& neighbors = solid.Cells2DsNeighborhood[i];
+        EXPECT_EQ(neighbors.size(), 3);
+
+        for (int k = 0; k < 3; ++k) {
+            unsigned int neighborId = neighbors[k];
+            const vector<unsigned int>& reverseNeighbors = solid.Cells2DsNeighborhood[neighborId];
+            bool found = false;
+            for (int h = 0; h < reverseNeighbors.size(); ++h) {
+                if (reverseNeighbors[h] == i) {
+                    found = true;
+                    break;
+                }
+            }
+            EXPECT_TRUE(found);
+        }
+    }
 }
 
 TEST(CreateSolidTest, Octahedron) {
@@ -158,10 +200,54 @@ TEST(CreateSolidTest, Octahedron) {
     EXPECT_EQ(solid.NumCells0Ds, 6);
     EXPECT_EQ(solid.NumCells1Ds, 12);
     EXPECT_EQ(solid.NumCells2Ds, 8);
-    EXPECT_EQ(solid.Cells1DsExtrema.size(), 12);
-    EXPECT_EQ(solid.Cells2DsVertices.size(), 8);
-    EXPECT_EQ(solid.Cells2DsEdges.size(), 8);
+
+    EXPECT_EQ(solid.Cells0DsCoordinates.cols(), 6);
+    EXPECT_EQ(solid.Cells1DsExtrema.cols(), 12);
+    EXPECT_EQ(solid.Cells2DsVertices.cols(), 8);
+    EXPECT_EQ(solid.Cells2DsEdges.cols(), 8);
     EXPECT_EQ(solid.Cells2DsNumEdges.size(), 8);
+    EXPECT_EQ(solid.Cells2DsNeighborhood.size(), 8);
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        EXPECT_EQ(solid.Cells2DsNumEdges(i), 3);
+    }
+
+    for (int i = 0; i < solid.NumCells1Ds; ++i) {
+        int v0 = solid.Cells1DsExtrema(0, i);
+        int v1 = solid.Cells1DsExtrema(1, i);
+        EXPECT_TRUE(v0 != v1);
+        EXPECT_TRUE(v0 >= 0);
+        EXPECT_TRUE(v1 >= 0);
+        EXPECT_TRUE(v0 < solid.NumCells0Ds);
+        EXPECT_TRUE(v1 < solid.NumCells0Ds);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        int a = solid.Cells2DsVertices(0, i);
+        int b = solid.Cells2DsVertices(1, i);
+        int c = solid.Cells2DsVertices(2, i);
+        EXPECT_TRUE(a != b);
+        EXPECT_TRUE(a != c);
+        EXPECT_TRUE(b != c);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        const vector<unsigned int>& neighbors = solid.Cells2DsNeighborhood[i];
+        EXPECT_EQ(neighbors.size(), 3);
+
+        for (int k = 0; k < 3; ++k) {
+            unsigned int neighborId = neighbors[k];
+            const vector<unsigned int>& reverseNeighbors = solid.Cells2DsNeighborhood[neighborId];
+            bool found = false;
+            for (int h = 0; h < reverseNeighbors.size(); ++h) {
+                if (reverseNeighbors[h] == i) { 
+                    found = true;
+                    break;
+                }
+            }
+            EXPECT_TRUE(found);
+        }
+    }
 }
 
 TEST(CreateSolidTest, Icosahedron) {
@@ -174,14 +260,196 @@ TEST(CreateSolidTest, Icosahedron) {
     EXPECT_EQ(solid.NumCells0Ds, 12);
     EXPECT_EQ(solid.NumCells1Ds, 30);
     EXPECT_EQ(solid.NumCells2Ds, 20);
-    EXPECT_EQ(solid.Cells1DsExtrema.size(), 30);
-    EXPECT_EQ(solid.Cells2DsVertices.size(), 20);
-    EXPECT_EQ(solid.Cells2DsEdges.size(), 20);
+
+    EXPECT_EQ(solid.Cells0DsCoordinates.cols(), 12);
+    EXPECT_EQ(solid.Cells1DsExtrema.cols(), 30);
+    EXPECT_EQ(solid.Cells2DsVertices.cols(), 20);
+    EXPECT_EQ(solid.Cells2DsEdges.cols(), 20);
     EXPECT_EQ(solid.Cells2DsNumEdges.size(), 20);
+    EXPECT_EQ(solid.Cells2DsNeighborhood.size(), 20);
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        EXPECT_EQ(solid.Cells2DsNumEdges(i), 3);
+    }
+
+    for (int i = 0; i < solid.NumCells1Ds; ++i) {
+        int v0 = solid.Cells1DsExtrema(0, i);
+        int v1 = solid.Cells1DsExtrema(1, i);
+        EXPECT_TRUE(v0 != v1);
+        EXPECT_TRUE(v0 >= 0);
+        EXPECT_TRUE(v1 >= 0);
+        EXPECT_TRUE(v0 < solid.NumCells0Ds);
+        EXPECT_TRUE(v1 < solid.NumCells0Ds);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        int a = solid.Cells2DsVertices(0, i);
+        int b = solid.Cells2DsVertices(1, i);
+        int c = solid.Cells2DsVertices(2, i);
+        EXPECT_TRUE(a != b);
+        EXPECT_TRUE(a != c);
+        EXPECT_TRUE(b != c);
+    }
+
+    for (int i = 0; i < solid.NumCells2Ds; ++i) {
+        const vector<unsigned int>& neighbors = solid.Cells2DsNeighborhood[i];
+        EXPECT_EQ(neighbors.size(), 3);
+
+        for (int k = 0; k < 3; ++k) {
+            unsigned int neighborId = neighbors[k];
+            const vector<unsigned int>& reverseNeighbors = solid.Cells2DsNeighborhood[neighborId];
+            bool found = false;
+            for (int h = 0; h < reverseNeighbors.size(); ++h) {
+                if (reverseNeighbors[h] == i) {
+                    found = true;
+                    break;
+                }
+            }
+            EXPECT_TRUE(found);
+        }
+    }
+}
+
+void TestFileCell0DsOutput(const PlatonicSolids& solido) {
+    FileCell0Ds(solido);
+
+    ifstream file("Cells0Ds.txt");
+    ASSERT_TRUE(!!file) << "Failed to open Cells0Ds.txt";
+
+    string line;
+    int n = 0;
+
+    getline(file, line);
+    ++n;
+    EXPECT_EQ(line, "ID    x              y              z") << "Header line is incorrect.";
+
+    while (getline(file, line)) {
+        ++n;
+
+        istringstream ss(line);
+        int id;
+        double x, y, z;
+        EXPECT_TRUE((ss >> id >> x >> y >> z)) << "Malformed data line.";
+    }
+
+    EXPECT_EQ(n, solido.NumCells0Ds + 1) << "Incorrect number of lines in Cells0Ds.txt.";
+}
+
+void TestFileCell1DsOutput(const PlatonicSolids& solido) {
+    FileCell1Ds(solido);
+
+    ifstream file("Cells1Ds.txt");
+    ASSERT_TRUE(!!file) << "Failed to open Cells1Ds.txt";
+
+    string line;
+    int n = 0;
+
+    getline(file, line);
+    ++n;
+    EXPECT_EQ(line, "ID\tInitial Vertices\tFinal Vertices") << "Header line is incorrect.";
+
+    while (getline(file, line)) {
+        ++n;
+
+        istringstream ss(line);
+        int id, InitialVertices, FinalVertices;
+        EXPECT_TRUE((ss >> id >> InitialVertices >> FinalVertices)) << "Malformed data line.";
+    }
+
+    EXPECT_EQ(n, solido.NumCells1Ds + 1) << "Incorrect number of lines in Cells1Ds.txt.";
+}
+
+void TestFileCell2DsOutput(const PlatonicSolids& solido) {
+    
+	FileCell2Ds(solido);
+
+    ifstream file("Cells2Ds.txt");
+    ASSERT_TRUE(!!file) << "Failed to open Cells2Ds.txt";
+
+    string line;
+    int n = 0;
+
+    
+    getline(file, line);
+    ++n;
+    EXPECT_EQ(line, "ID\tNumVertices\tNumEdges\tVerticesIDs\t\tEdgesIDs") << "Header line is incorrect.";
+
+    while (getline(file, line)) {
+        ++n;
+
+        istringstream ss(line);
+        int id, numVertices, numEdges;
+
+        
+        EXPECT_TRUE(ss >> id >> numVertices >> numEdges) << "Malformed data line: " << line;
+
+
+        for (int i = 0; i < numVertices; ++i) {
+            int vertexId;
+            EXPECT_TRUE(ss >> vertexId) << "Missing or invalid vertex ID in line.";
+        }
+
+        for (int i = 0; i < numEdges; ++i) {
+            int edgeId;
+            EXPECT_TRUE(ss >> edgeId) << "Missing or invalid edge ID in line.";
+        }
+
+       
+    }
+
+    EXPECT_EQ(n, solido.NumCells2Ds + 1) << "Incorrect number of lines in Cells2Ds.txt.";
 }
 
 
+TEST(FileCellTest, Tetrahedron) {
+    PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 3;
+    CreateSolid(solido);
+    TestFileCell0DsOutput(solido);
+    TestFileCell1DsOutput(solido);
+    TestFileCell2DsOutput(solido);
+}
 
+TEST(FileCellTest, Cube) {
+    PlatonicSolids solido;
+    solido.p = 4;
+    solido.q = 3;
+    CreateSolid(solido);
+    TestFileCell0DsOutput(solido);
+    TestFileCell1DsOutput(solido);
+    TestFileCell2DsOutput(solido);
+}
+
+TEST(FileCellTest, Octahedron) {
+    PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 4;
+    CreateSolid(solido);
+    TestFileCell0DsOutput(solido);
+    TestFileCell1DsOutput(solido);
+    TestFileCell2DsOutput(solido);
+}
+
+TEST(FileCellTest, Dodecahedron) {
+    PlatonicSolids solido;
+    solido.p = 5;
+    solido.q = 3;
+    CreateSolid(solido);
+    TestFileCell0DsOutput(solido);
+    TestFileCell1DsOutput(solido);
+    TestFileCell2DsOutput(solido);
+}
+
+TEST(FileCellTest, Icosahedron) {
+    PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 5;
+    CreateSolid(solido);
+    TestFileCell0DsOutput(solido);
+    TestFileCell1DsOutput(solido);
+    TestFileCell2DsOutput(solido);
+}
 
 
 	
