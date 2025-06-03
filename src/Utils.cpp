@@ -14,7 +14,6 @@ using namespace Eigen;
 
 namespace PlatonicLibrary{
     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
-        
 		string str = ""; //remove Project name
         str = argv[0];
         solido.p = stoi(argv[1]); //save p
@@ -42,12 +41,11 @@ namespace PlatonicLibrary{
             cerr << "Not Valid input" << endl;
             return 1;
         }
-        cout << "p: " << solido.p << "\nq: " << solido.q << "\nb: " << solido.b << "\nc: " << solido.c << endl;
         return 0;
     };
    
 	int CreateSolid(PlatonicSolids& solido){
-        //classify type of polyedra
+        //classify type of polyhedra
         if(solido.p == 3 && solido.q == 3){
             //TETRAEDRO
             solido.NumCells0Ds = 4;
@@ -100,13 +98,6 @@ namespace PlatonicLibrary{
             solido1.p=solido.q;
             solido1.q=solido.p;
             CreateSolid(solido1);
-            // solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);			
-			// solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
-			// for(unsigned int j=0; j<solido.NumCells2Ds; j++)
-			// 	solido.Cells2DsId[j] = j;
-			//solido.Cells2DsVertices = {{0,1,2,3}, {4,5,6,7}, {0,4,5,1}, {1,5,6,2}, {2,6,7,3}, {3,7,4,0}};
-            //solido.Cells2DsEdges = {{0,1,2,3}, {4,5,6,7}, {8,4,9,0}, {9,5,10,1}, {10,6,11,2}, {11,7,8,3}};
-			//solido.Cells2DsNumEdges = {4, 4, 4, 4, 4, 4};
 			DualPolyhedron(solido,solido1);
             return 0;
         }else if(solido.p == 3 && solido.q == 4){
@@ -126,28 +117,17 @@ namespace PlatonicLibrary{
 			solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
 			solido.Cells1DsExtrema << 0,0,0,0,1,1,1,1,2,2,3,3,
                                       2,3,4,5,2,3,4,5,4,5,4,5; 
-            // solido.Cells1DsExtrema << 0,0,0,0,1,1,1,2,2,3,3,4,
-            //                           1,2,3,4,2,4,5,3,5,4,5,5;
             solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
             for (unsigned int j = 0; j < solido.NumCells2Ds; j++)
                   solido.Cells2DsId[j] = j;
 			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-            // solido.Cells2DsVertices << 0, 0, 0, 1, 1, 2, 2, 3,
-            //                            1, 2, 3, 2, 3, 3, 0, 0,
-            //                            4, 4, 4, 4, 5, 5, 5, 5;  
             solido.Cells2DsVertices << 0,0,0,0,1,1,1,1,
                                        2,3,2,3,2,3,3,2,
                                        4,4,5,5,4,4,5,5;
-            // solido.Cells2DsVertices << 0,0,0,0,5,5,5,5,
-            //                             1,2,3,4,1,2,3,4,
-            //                             2,3,4,1,2,3,4,1;
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);
             solido.Cells2DsEdges << 8,  1, 9,  11,  4, 10,  7, 9,
                                     2,  2,  3,  3,  8,  5,  5,  7,
                                     0,  10,  0,  1,  6,  6,  11,  4;
-            // solido.Cells2DsEdges << 0,1,2,3,6,8,10,11,
-            //                         4,7,9,5,4,7,9,5,
-            //                         1,2,3,0,8,10,11,6;
 			solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3;
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
@@ -174,25 +154,7 @@ namespace PlatonicLibrary{
             solido1.q=solido.p;
             CreateSolid(solido1);
             DualPolyhedron(solido,solido1);
-            return 0;
-            // PlatonicSolids solido1;
-            // solido1.p=solido.q;
-            // solido1.q=solido.p;
-            // CreateSolid(solido1);
-            // DualPolyhedron(solido,solido1);
-			// solido.NumCells0Ds=20;
-			// solido.NumCells1Ds=30;
-			// solido.NumCells2Ds = 12;
-			// solido.Cells1DsExtrema << 0, 0, 0,1, 1,1, 2, 2, 2, 3,3, 3,  4,4, 4, 9,14,5,  6, 6, 6,7, 7, 7, 8, 9,10,11,16, 18,18,19,
-			//                            8,10,16,9,11,18,10,12,17,11,13,19,8,14,16,9,14,20,12,15,17,13,15,20,14,14,12,13,17,19,20,20;
-			// solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
-            // for (unsigned int j = 0; j < solido.NumCells2Ds; j++)
-            //       solido.Cells2DsId[j] = j;						
-			//solido.Cells2DsVertices = {{0,8,4,14,5}, {0,10,2,12,8}, {1,9,5,14,4}, {1,11,3,13,9}, {2,10,0,16,17}, {2,17,6,12,10}, 
-			//                           {3,11,1,18,19}, {3,19,7,13,11}, {4,8,12,6,15}, {5,9,13,7,20}, {6,17,16,0,8}, {7,20,18,1,9}};
-           // solido.Cells2DsEdges = {{0,12,13,24,16}, {1,6,7,26,0}, {3,15,16,25,12}, {4,9,10,27,3}, {1,6,28,29,2}, {7,18,19,20,28}, {4,5,30,31,29}, 
-			//                        {10,11,23,22,27}, {12,24,13,19,21}, {15,25,10,22,32}, {18,28,2,0,12}, {23,31,5,3,15}};
-           // solido.Cells2DsNumEdges = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};			
+            return 0;			
         }else if(solido.p == 3 && solido.q == 5){
             //ICOSAEDRO
             double phi = (1+sqrt(5))/2;
@@ -226,21 +188,12 @@ namespace PlatonicLibrary{
                  solido.Cells2DsId[j] = j;
 
 			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-            // solido.Cells2DsVertices <<  0,   0,   0,   0,   1,  1,   1,   2,   2,  2,   2,    3,   3,   3,   4,   4,   5, 5 , 6, 7,
-			//                             1,   4,   5,   9,   6,  8,   7,   3,   4,  5,   11,   6,   7,   10,  8,  9,   6, 10, 7, 8,
-			// 							8,   5,   9,   4,   9,  7,   6,   4,   5,  11,   3,   7,   10,  11,   9,  10,  10, 11, 8, 11;
-            // solido.Cells2DsVertices << 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 6, 7,
-            //                            1, 4, 5, 9, 6, 8, 7, 3, 4, 5, 11, 6, 7, 10, 8, 9, 6, 10, 7, 8,
-            //                            8, 5, 9, 4, 9, 7, 6, 4, 5, 11, 3, 7, 10, 11, 9, 10, 10, 11, 8, 11;
             solido.Cells2DsVertices << 0,0,0,0,0,1,1,1, 8, 8, 9, 9,7, 7, 6,4, 4, 2, 2, 2,
                                        1,1,4,4,5,9,6,6, 6, 4, 5, 7,6,11,10,5, 2, 5, 3, 3,
                                        8,9,8,5,9,7,7,8,10,10,11,11,3, 3, 3,2,10,11,11,10;
             
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);						
-			// solido.Cells2DsEdges << 0,  3,  1,  2,  4,  5,  8,  6,  9, 10, 11, 12, 13, 14, 15, 13, 19, 21,  6, 25,
-            //                         7,  1,  2,  4,  0,  6, 22, 23, 10, 11, 18, 13,  9, 26, 24, 25, 20, 22, 20, 27,
-            //                         8, 19, 18, 21,  8,  7, 23, 24, 26, 20, 19, 22, 28, 26, 25, 27, 28, 29, 24, 29;	
-             solido.Cells2DsEdges <<  0, 0, 1, 1, 2, 8, 5, 5,25,20,22,27,23,26,24,18,10,11, 9, 9,
+			solido.Cells2DsEdges <<  0, 0, 1, 1, 2, 8, 5, 5,25,20,22,27,23,26,24,18,10,11, 9, 9,
                                       7, 8, 3,18,22,27,23,25,24,19,21,26,14,17,16,11,12,21,17,16,
                                       3, 4,20, 2, 4, 6, 6, 7,28,28,29,29,15,15,14,10,19,13,13,12;				
 		    solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
@@ -348,7 +301,6 @@ namespace PlatonicLibrary{
     
 
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1){
-        cout << "costruiamo duale" << endl;
         solido.NumCells0Ds = solido1.NumCells2Ds;
         solido.NumCells1Ds = solido1.NumCells1Ds;
         solido.NumCells2Ds = solido1.NumCells0Ds;
@@ -386,71 +338,21 @@ namespace PlatonicLibrary{
             double y = solido.Cells0DsCoordinates(1,j);
             double z = solido.Cells0DsCoordinates(2,j);
             double norm = sqrt(x*x+y*y+z*z);
-            cout << Pid << " " << Qid << "" << Sid  << endl;
-            cout << Px << " " << Py << "" << Pz  << endl;
-            cout << Qx << " " << Qy << "" << Qz  << endl;
-            cout << Sx << " " << Sy << "" << Sz  << endl;
-            cout << x << " " << y << "" << z << " " << norm << endl;
             solido.Cells0DsCoordinates(0,j) /= norm;
             solido.Cells0DsCoordinates(1,j) /= norm;
             solido.Cells0DsCoordinates(2,j) /= norm;
-            cout << "definitive: " << solido.Cells0DsCoordinates(0,j) << solido.Cells0DsCoordinates(1,j) << solido.Cells0DsCoordinates(2,j) << endl;
-        }
-    //     cout << solido.Cells0DsCoordinates << endl;
-    //     cout << solido1.Cells2DsVertices << endl;
-		
-	// 	MatrixXi links = MatrixXi::Zero(solido.NumCells0Ds, solido.NumCells0Ds);
-    //     unsigned int edgeIndex = 0;
-
-    //    for (unsigned int k = 0; k < solido1.NumCells1Ds; ++k) {
-	// 	int adjacent[2];
-	// 	int n = 0;
-
-	//    for (unsigned int i = 0; i < solido1.NumCells2Ds; ++i) {
-	// 	for (unsigned int j = 0; j < 3; ++j) {
-    //         if (solido1.Cells2DsEdges(j, i) == k) {
-    //             if (n < 2) {
-    //                 adjacent[n] = i;
-    //                 ++n;
-    //             }
-    //         }
-    //     }
-	//   }
-
-	//   if (n == 2) {
-    //     int Faces1 = adjacent[0];
-    //     int Faces2 = adjacent[1];
-
-    //     if (links(Faces1, Faces2) == 0 && Faces1 != Faces2) {
-    //         solido.Cells1DsExtrema(0, edgeIndex) = Faces1;
-    //         solido.Cells1DsExtrema(1, edgeIndex) = Faces2;
-
-    //         links(Faces1, Faces2) = 1;
-    //         links(Faces2, Faces1) = 1;
-
-    //         ++edgeIndex;
-    //      }
-    //    }
-    //  }
-
-    //  solido.NumCells1Ds = edgeIndex;
-        
+        }        
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adiacenti a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,3*solido.NumCells1Ds);
         unsigned int nlati = 0;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
             vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
             for(unsigned int adj = 0;adj<solido.q;adj++){
-                cout << "idfaccia:  " << idfaccia << "  j:  " << adj << endl;
-                cout << idfaccia << "  adj:  " << adj << endl;
                 solido.Cells1DsExtrema(0,nlati) = idfaccia;
                 solido.Cells1DsExtrema(1,nlati) = vettore[adj];
                 nlati ++;
             }
         }
-    
         return 0;
     }
 }
-
-//creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
