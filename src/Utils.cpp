@@ -400,8 +400,6 @@ namespace PlatonicLibrary{
                 solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
             }
         }	
-        
-        cout << solido.Cells2DsVertices << endl;
         return 0;
     }
 }
