@@ -91,6 +91,16 @@ namespace PlatonicLibrary{
                 }
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
+            solido.VerticeFaces.reserve(solido.NumCells0Ds);
+            //riservo memoria
+            for (auto& sottovettore : solido.VerticeFaces) {
+                sottovettore.reserve(5); // riserva spazio per 5 elementi per ogni sottovettore
+            }
+            for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
+                for(unsigned int j = 0;j<solido.p;j++){
+                    solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
+                }
+            }
         }else if(solido.p == 4 && solido.q == 3){
             //CUBO, duale dell'ottaedro
             //creo una nuova istanza di solido, solido1, in cui genero l'ottaedro, e poi passo solido e solido1 a Duale per creare il cubo
@@ -144,9 +154,16 @@ namespace PlatonicLibrary{
                 }
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
-            cout << solido.Cells2DsNeighborhood[0][0] << endl;
-            cout << solido.Cells2DsNeighborhood[0][1] << endl;
-            cout << solido.Cells2DsNeighborhood[0][2] << endl;
+            solido.VerticeFaces.reserve(solido.NumCells0Ds);
+            //riservo memoria
+            for (auto& sottovettore : solido.VerticeFaces) {
+                sottovettore.reserve(5); // riserva spazio per 5 elementi per ogni sottovettore
+            }
+            for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
+                for(unsigned int j = 0;j<solido.p;j++){
+                    solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
+                }
+            }
         }else if(solido.p == 5 && solido.q == 3){
             //DODECAEDRO, duale dell'icosaedro
             PlatonicSolids solido1;
@@ -191,7 +208,8 @@ namespace PlatonicLibrary{
             solido.Cells2DsVertices << 0,0,0,0,0,1,1,1, 8, 8, 9, 9,7, 7, 6,4, 4, 2, 2, 2,
                                        1,1,4,4,5,9,6,6, 6, 4, 5, 7,6,11,10,5, 2, 5, 3, 3,
                                        8,9,8,5,9,7,7,8,10,10,11,11,3, 3, 3,2,10,11,11,10;
-            
+
+
 			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);						
 			solido.Cells2DsEdges <<  0, 0, 1, 1, 2, 8, 5, 5,25,20,22,27,23,26,24,18,10,11, 9, 9,
                                       7, 8, 3,18,22,27,23,25,24,19,21,26,14,17,16,11,12,21,17,16,
@@ -211,6 +229,16 @@ namespace PlatonicLibrary{
                 }
                 }
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
+            }
+            solido.VerticeFaces.reserve(solido.NumCells0Ds);
+            //riservo memoria
+            for (auto& sottovettore : solido.VerticeFaces) {
+                sottovettore.reserve(5); // riserva spazio per 5 elementi per ogni sottovettore
+            }
+            for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
+                for(unsigned int j = 0;j<solido.p;j++){
+                    solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
+                }
             }	
 		}	
 
@@ -343,16 +371,40 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates(2,j) /= norm;
         }        
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adiacenti a quello (inizio ad avere il duplicato dei lati)
-        solido.Cells1DsExtrema = MatrixXi::Zero(2,3*solido.NumCells1Ds);
+        solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+        solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
             vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
             for(unsigned int adj = 0;adj<solido.q;adj++){
-                solido.Cells1DsExtrema(0,nlati) = idfaccia;
-                solido.Cells1DsExtrema(1,nlati) = vettore[adj];
-                nlati ++;
-            }
+                if(idfaccia<vettore[adj]){
+                    solido.Cells1DsExtrema(0,nlati) = idfaccia;
+                    solido.Cells1DsExtrema(1,nlati) = vettore[adj];
+                    nlati ++;
+                }
+                }
         }
+        // cout << solido.Cells1DsExtrema << endl;
+        // solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
+        // for(unsigned int j = 0; j < solido.NumCells2Ds; j++)
+        //         solido.Cells2DsId[j] = j;
+
+        unsigned int nfacce = 0;
+        solido.Cells2DsEdges = MatrixXi::Zero(3, 60 *solido.NumCells2Ds);
+        
+        solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
+        unsigned int temp1 = 0;
+        for(auto& el : solido1.VerticeFaces){
+            unsigned int temp2 = 0;
+            for(auto& id : el){
+                solido.Cells2DsVertices(temp1,temp2) = id;
+                cout << id << endl;
+                temp2 ++;
+            }
+            cout << "ciao" << endl;
+            temp1++;
+        }
+        cout << temp1 << endl;
         return 0;
     }
 }
