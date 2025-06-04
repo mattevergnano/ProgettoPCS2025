@@ -112,7 +112,6 @@ namespace PlatonicLibrary{
             return 0;
         }else if(solido.p == 3 && solido.q == 4){
             //OTTAEDRO
-            cout << "ottaedro" << endl;
             solido.NumCells0Ds = 6;
 			solido.NumCells1Ds = 12;
 			solido.NumCells2Ds = 8;
@@ -239,7 +238,12 @@ namespace PlatonicLibrary{
                 for(unsigned int j = 0;j<solido.p;j++){
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                 }
-            }	
+            }
+            // for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
+            //     for(unsigned int j = 0;j<solido.q;j++){
+            //         cout << solido.VerticeFaces[i][j] << endl;
+            //     }
+            // }		
 		}	
 
     return 0;
@@ -388,23 +392,16 @@ namespace PlatonicLibrary{
         // solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
         // for(unsigned int j = 0; j < solido.NumCells2Ds; j++)
         //         solido.Cells2DsId[j] = j;
-
-        unsigned int nfacce = 0;
-        solido.Cells2DsEdges = MatrixXi::Zero(3, 60 *solido.NumCells2Ds);
         
-        solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-        unsigned int temp1 = 0;
-        for(auto& el : solido1.VerticeFaces){
-            unsigned int temp2 = 0;
-            for(auto& id : el){
-                solido.Cells2DsVertices(temp1,temp2) = id;
-                cout << id << endl;
-                temp2 ++;
+        solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
+        solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
+        for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
+            for(unsigned int j = 0;j<solido1.q;j++){
+                solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
             }
-            cout << "ciao" << endl;
-            temp1++;
-        }
-        cout << temp1 << endl;
+        }	
+        
+        cout << solido.Cells2DsVertices << endl;
         return 0;
     }
 }
