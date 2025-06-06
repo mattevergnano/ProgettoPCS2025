@@ -1,8 +1,8 @@
 #include<iostream>
 #include<math.h>
 #include<tgmath.h>
-#include<Utils.hpp>
-#include"PlatonicSolids.hpp"
+#include "Utils.hpp"
+#include "PlatonicSolids.hpp"
 #include "Eigen/Eigen"
 #include<string>
 #include<iomanip>
@@ -222,12 +222,19 @@ namespace PlatonicLibrary{
                     for(unsigned int j : solido.Cells2DsId){
                         for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
                             if(i != j && latoi == latoj){
+                                // vettore.insert(vettore.begin(),j);
                                 vettore.push_back(j);
                             }
                         }
                 }
                 }
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
+            }
+            for(auto& v1 : solido.Cells2DsNeighborhood){
+                for(auto& e : v1){
+                    cout << e << " ";
+                }
+                cout << endl;
             }
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
             //riservo memoria
@@ -386,7 +393,7 @@ namespace PlatonicLibrary{
                     solido.Cells1DsExtrema(1,nlati) = vettore[adj];
                     nlati ++;
                 }
-                }
+            }
         }
         // cout << solido.Cells1DsExtrema << endl;
         // solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
@@ -399,7 +406,19 @@ namespace PlatonicLibrary{
             for(unsigned int j = 0;j<solido1.q;j++){
                 solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
             }
-        }	
+        }
+        cout << solido.Cells1DsExtrema << endl;	
+        cout << solido.Cells2DsVertices << endl;
+        // for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+        //     unsigned int nlati = 0;
+        //     for(unsigned int j=0;j<solido.p;j++){
+        //         for(unsigned int k=0;k<solido.NumCells1Ds;k++)
+        //             if(solido.Cells1DsExtrema(0,k)==solido.Cells2DsVertices(i,j) && solido.Cells1DsExtrema(1,k)==solido.Cells2DsVertices(i,(j+1)%solido.p)){
+        //                 solido.Cells2DsEdges(nlati,i)=k;
+        //                 nlati++;
+        //             }
+        //     }
+        // }
         return 0;
     }
 }
