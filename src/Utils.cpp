@@ -12,6 +12,9 @@
 using namespace std;
 using namespace Eigen;
 
+bool comp(unsigned int a,unsigned int b) {
+    return a < b;
+}
 namespace PlatonicLibrary{
     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
 		string str = ""; //remove Project name
@@ -89,6 +92,7 @@ namespace PlatonicLibrary{
                         }
                 }
                 }
+                sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
@@ -151,6 +155,7 @@ namespace PlatonicLibrary{
                         }
                 }
                 }
+                sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
@@ -228,9 +233,10 @@ namespace PlatonicLibrary{
                         }
                 }
                 }
+                sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
-            for(auto& v1 : solido.Cells2DsNeighborhood){
+            for(auto& v1 : solido.Cells2DsNeighborhood){ 
                 for(auto& e : v1){
                     cout << e << " ";
                 }
@@ -245,12 +251,7 @@ namespace PlatonicLibrary{
                 for(unsigned int j = 0;j<solido.p;j++){
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                 }
-            }
-            // for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
-            //     for(unsigned int j = 0;j<solido.q;j++){
-            //         cout << solido.VerticeFaces[i][j] << endl;
-            //     }
-            // }		
+            }	
 		}	
 
     return 0;
@@ -399,7 +400,13 @@ namespace PlatonicLibrary{
         // solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds, 0);
         // for(unsigned int j = 0; j < solido.NumCells2Ds; j++)
         //         solido.Cells2DsId[j] = j;
-        
+        cout << "neighborhood" << endl;
+        for(auto& v : solido1.Cells2DsNeighborhood){
+            for(auto& e : v){
+                cout << e << " ";
+            }
+            cout << endl;
+        }
         solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
