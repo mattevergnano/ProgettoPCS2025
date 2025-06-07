@@ -98,12 +98,15 @@ namespace PlatonicLibrary{
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
-                sottovettore.reserve(5); // riserva spazio per 5 elementi per ogni sottovettore
+                sottovettore.reserve(solido.q); // riserva spazio per 5 elementi per ogni sottovettore
             }
             for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
-                for(unsigned int j = 0;j<solido.p;j++){
+                for(unsigned int j = 0;j<solido.q;j++){
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                 }
+            }
+            for(auto& el : solido.VerticeFaces){
+                sort(el.begin(),el.end(),comp);
             }
         }else if(solido.p == 4 && solido.q == 3){
             //CUBO, duale dell'ottaedro
@@ -161,12 +164,15 @@ namespace PlatonicLibrary{
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
-                sottovettore.reserve(5); // riserva spazio per 5 elementi per ogni sottovettore
+                sottovettore.reserve(solido.q); // riserva spazio per 5 elementi per ogni sottovettore
             }
             for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
-                for(unsigned int j = 0;j<solido.p;j++){
+                for(unsigned int j = 0;j<solido.q;j++){
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                 }
+            }
+            for(auto& el : solido.VerticeFaces){
+                sort(el.begin(),el.end(),comp);
             }
         }else if(solido.p == 5 && solido.q == 3){
             //DODECAEDRO, duale dell'icosaedro
@@ -251,6 +257,9 @@ namespace PlatonicLibrary{
                 for(unsigned int j = 0;j<solido.p;j++){
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                 }
+            }
+            for(auto& el : solido.VerticeFaces){
+                sort(el.begin(),el.end(),comp);
             }	
 		}	
 
@@ -381,7 +390,9 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates(0,j) /= norm;
             solido.Cells0DsCoordinates(1,j) /= norm;
             solido.Cells0DsCoordinates(2,j) /= norm;
-        }        
+        } 
+        
+        
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adiacenti a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
         solido.Cells1DsExtrema.setConstant(1000);
@@ -416,16 +427,20 @@ namespace PlatonicLibrary{
         }
         cout << solido.Cells1DsExtrema << endl;	
         cout << solido.Cells2DsVertices << endl;
-        // for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-        //     unsigned int nlati = 0;
-        //     for(unsigned int j=0;j<solido.p;j++){
-        //         for(unsigned int k=0;k<solido.NumCells1Ds;k++)
-        //             if(solido.Cells1DsExtrema(0,k)==solido.Cells2DsVertices(i,j) && solido.Cells1DsExtrema(1,k)==solido.Cells2DsVertices(i,(j+1)%solido.p)){
-        //                 solido.Cells2DsEdges(nlati,i)=k;
-        //                 nlati++;
-        //             }
-        //     }
-        // }
+        for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+            unsigned int nlati = 0;
+            for(unsigned int j=0;j<solido.p;j++){
+                for(unsigned int k=0;k<solido.NumCells1Ds;k++){
+                    if(solido.Cells1DsExtrema(0,k)==solido.Cells2DsVertices(i,j) && solido.Cells1DsExtrema(1,k)==solido.Cells2DsVertices(i,(j+1)%solido.p)){
+                        solido.Cells2DsEdges(nlati,i)=k;
+                        nlati++;
+                    }
+                }
+            }
+        }
+        cout << solido.Cells2DsEdges << endl;
+
+
         return 0;
     }
 }
