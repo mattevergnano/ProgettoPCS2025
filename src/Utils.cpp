@@ -432,13 +432,13 @@ namespace PlatonicLibrary{
     }
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
-        unsigned int npunti = solido.NumCells2Ds * (solido.b+1)*(solido.b+2)/2;
+        // unsigned int npunti = solido.NumCells2Ds * (solido.b+1)*(solido.b+2)/2+solido.b*solido.NumCells0Ds;
+        unsigned int npunti = 3*solido.b*solido.b
         unsigned int nlati = solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
         MatrixXd punti = MatrixXd::Zero(3,npunti);
         MatrixXi lati = MatrixXi::Zero(2,nlati);
         unsigned int counter = 0;
         for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){
-            // cout << solido.Cells0DsCoordinates(0,v1) << solido.Cells0DsCoordinates(1,v1) << solido.Cells0DsCoordinates(2,v1) << endl;
             //divido ogni lato in b segmenti
             for(unsigned int lato = 0;lato<3;lato++){
                 double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
@@ -447,7 +447,7 @@ namespace PlatonicLibrary{
                 double x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
                 double y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
                 double z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                for (unsigned int i = 0; i < solido.b; i++) {
+                for (unsigned int i = 0; i <= solido.b; i++) {
                     double t = static_cast<double>(i) / (solido.b);
                     punti(0, counter) = (1 - t) * x1 + t * x2;
                     punti(1, counter) = (1 - t) * y1 + t * y2;
@@ -456,9 +456,9 @@ namespace PlatonicLibrary{
                 }
             }
         }
-        cout << counter << endl;
-        cout << npunti << endl;
-        solido.Cells0DsCoordinates.resize(3,npunti);
+        // punti.resize(3,counter);
+        cout << counter << npunti << endl;
+        solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti;
         return 0;
     }
