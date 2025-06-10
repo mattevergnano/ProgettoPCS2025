@@ -231,7 +231,7 @@ namespace PlatonicLibrary{
                                       3, 4,20, 2, 4, 6, 6, 7,28,28,29,29,15,15,14,10,19,13,13,12;				
 		    solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
-            
+
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
@@ -428,6 +428,38 @@ namespace PlatonicLibrary{
             }
         }
 
+        return 0;
+    }
+    int CreateMesh(PlatonicSolids& solido){
+        cout << "create mesh" << endl;
+        unsigned int npunti = solido.NumCells2Ds * (solido.b+1)*(solido.b+2)/2;
+        unsigned int nlati = solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
+        MatrixXd punti = MatrixXd::Zero(3,npunti);
+        MatrixXi lati = MatrixXi::Zero(2,nlati);
+        unsigned int counter = 0;
+        for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){
+            // cout << solido.Cells0DsCoordinates(0,v1) << solido.Cells0DsCoordinates(1,v1) << solido.Cells0DsCoordinates(2,v1) << endl;
+            //divido ogni lato in b segmenti
+            for(unsigned int lato = 0;lato<3;lato++){
+                double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                double z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                double x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                double y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                double z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                for (unsigned int i = 0; i < solido.b; i++) {
+                    double t = static_cast<double>(i) / (solido.b);
+                    punti(0, counter) = (1 - t) * x1 + t * x2;
+                    punti(1, counter) = (1 - t) * y1 + t * y2;
+                    punti(2, counter) = (1 - t) * z1 + t * z2;
+                    counter++;
+                }
+            }
+        }
+        cout << counter << endl;
+        cout << npunti << endl;
+        solido.Cells0DsCoordinates.resize(3,npunti);
+        solido.Cells0DsCoordinates=punti;
         return 0;
     }
 }

@@ -14,6 +14,10 @@ int main(int argc,char  *argv[]){
 	FileCell0Ds(solido);
 	FileCell1Ds(solido);
 	FileCell2Ds(solido);
+    if(solido.p==3){
+        CreateMesh(solido);
+    }
+    
     Gedim::UCDUtilities utilities;
     {
         vector<Gedim::UCDProperty<double>> cell0Ds_properties(1);
