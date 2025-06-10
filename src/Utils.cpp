@@ -95,6 +95,7 @@ namespace PlatonicLibrary{
                 sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
+
             solido.VerticeFaces.reserve(solido.NumCells0Ds);
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
@@ -146,21 +147,7 @@ namespace PlatonicLibrary{
                                     0,  10,  0,  1,  6,  6,  11,  4;
 			solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3;
-            // solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
-            // for(unsigned int i : solido.Cells2DsId){
-            //     vector<unsigned int> vettore;
-            //     for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
-            //         for(unsigned int j : solido.Cells2DsId){
-            //             for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
-            //                 if(i != j && latoi == latoj){
-            //                     vettore.push_back(j);
-            //                 }
-            //             }
-            //     }
-            //     }
-            //     sort(vettore.begin(), vettore.end(), comp);
-            //     solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
-            // }
+
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
@@ -177,6 +164,7 @@ namespace PlatonicLibrary{
                 sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
+
             solido.VerticeFaces.reserve(solido.NumCells0Ds); //un vettore per ogni vertice
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
@@ -243,6 +231,7 @@ namespace PlatonicLibrary{
                                       3, 4,20, 2, 4, 6, 6, 7,28,28,29,29,15,15,14,10,19,13,13,12;				
 		    solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
+            
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
@@ -259,6 +248,7 @@ namespace PlatonicLibrary{
                 sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
+
             solido.VerticeFaces.reserve(solido.NumCells0Ds); //un vettore per ogni vertice
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
