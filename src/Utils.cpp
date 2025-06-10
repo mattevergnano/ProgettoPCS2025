@@ -433,13 +433,15 @@ namespace PlatonicLibrary{
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
         // unsigned int npunti = solido.NumCells2Ds * (solido.b+1)*(solido.b+2)/2+solido.b*solido.NumCells0Ds;
-        unsigned int npunti = 3*solido.b*solido.b
-        unsigned int nlati = solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
+        unsigned int npunti = 1000;//3*solido.b*solido.b*5;
+        unsigned int nlati = 1000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
         MatrixXd punti = MatrixXd::Zero(3,npunti);
         MatrixXi lati = MatrixXi::Zero(2,nlati);
         unsigned int counter = 0;
         for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){
             //divido ogni lato in b segmenti
+            // unsigned int npunti = nfaccia*(solido.b+1)*(solido.b+2)/2;
+            // unsigned int counter = npunti;
             for(unsigned int lato = 0;lato<3;lato++){
                 double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
                 double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
@@ -452,14 +454,22 @@ namespace PlatonicLibrary{
                     punti(0, counter) = (1 - t) * x1 + t * x2;
                     punti(1, counter) = (1 - t) * y1 + t * y2;
                     punti(2, counter) = (1 - t) * z1 + t * z2;
+                    lati(0,counter) = counter;
+                    lati(1,counter) = (counter+1);
                     counter++;
+
                 }
             }
+            
+            
         }
         // punti.resize(3,counter);
         cout << counter << npunti << endl;
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti;
+        solido.Cells1DsExtrema.resize(2,counter);
+        solido.Cells1DsExtrema=lati;
+
         return 0;
     }
 }
