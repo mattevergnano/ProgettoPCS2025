@@ -440,7 +440,9 @@ namespace PlatonicLibrary{
         unsigned int counter = 0;
         for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){
             //divido ogni lato in b segmenti
+            unsigned int counterfaccia = counter; //id primo punto della faccia
             for(unsigned int lato = 0;lato<3;lato++){
+                unsigned int counterlato = counter;
                 double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
                 double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
                 double z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
@@ -455,13 +457,17 @@ namespace PlatonicLibrary{
                     lati(0,counter) = counter;
                     lati(1,counter) = (counter+1);
                     counter++;
-
                 }
+                lati(1,counter-1) = (counterlato);
+            }
+            cout << "counter: " << counter-1 << endl;
+            for(unsigned int i=1;i<solido.b;i++){
+                lati(0,counter)= counterfaccia + i;
+                lati(1,counter)= counterfaccia + 2 * solido.b - i;
+                counter ++;
             }
             
-            
         }
-        cout << counter << npunti << endl;
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti;
         solido.Cells1DsExtrema.resize(2,counter);
