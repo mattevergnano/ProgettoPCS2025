@@ -473,14 +473,23 @@ namespace PlatonicLibrary{
             //solido.Cells2DsEdges(0,nfaccia) numero lato nella faccia, 0,1,2
             for(unsigned int j=0;j<3;j++){
                 //lato j e lato (j+1)%3. Controllo se 2° estremo j e 1° estremo j+1 coincidono. nel caso collego
-                // if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%2,nfaccia)))
-                // {
-                //     cout << "giusto" << endl;
-                // } else{
-                //     cout << "inverso" << endl;
-                // }
-                cout << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia)) << endl;;
-                cout << solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%2,nfaccia)) << endl;
+                if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%3,nfaccia)))
+                {
+                    cout << "giusto" << endl;
+                    //prendo da counter di j e collego da 2b indietro
+                    for(unsigned int i=1;i<solido.b;i++){
+                        lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+                        lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
+                        counter ++;
+                    }
+                } else{
+                    cout << "inverso" << endl;
+                    for(unsigned int i=1;i<solido.b;i++){
+                        lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+                        lati(1,counter)=latiOriginali(0,solido.Cells2DsEdges((j+1)%3,nfaccia))+i;
+                        counter ++;
+                    }
+                }
 
             }
 
