@@ -484,8 +484,13 @@ namespace PlatonicLibrary{
                         lati(1,counter) = (counter+1);
                         counter++;
                     }
+					punti(0, counter) = x2;
+                    punti(1, counter) = y2;
+                    punti(2, counter) = z2;
+
                     lati(1,counter-1) = (counterlato);
                     latiOriginali(1,solido.Cells2DsEdges(lato,nfaccia))=counter-1;
+					
                 }else{
                     cout << "ho già il lato" << endl;
                 }}
