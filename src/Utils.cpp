@@ -446,16 +446,45 @@ namespace PlatonicLibrary{
             //divido ogni lato in b segmenti
             unsigned int counterfaccia = counter; //id primo punto della faccia
             for(unsigned int lato = 0;lato<3;lato++){
-                if(latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia)) == 1000){
-                    unsigned int counterlato = counter;
-                    latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
-                    double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                    double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                    double z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                    double x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                    double y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                    double z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                    for (unsigned int i = 0; i <= solido.b; i++) {
+                unsigned int counterlato = counter;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;
+                double x2 = 0.0;
+                double y2 = 0.0;
+                double z2 = 0.0;
+                if(latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia)) == 1000){ //se non ho ancora il lato
+                    if(lato == 0){
+                        latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
+                        x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                    }
+                    else if(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia))==solido.Cells1DsExtrema(1,solido.Cells2DsEdges((lato-1),nfaccia))){ //se il lato successivo ha il primo estremo coincidente con il secondo di questo lato
+                        cout << "giusto " << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)) << " " <<solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia)) << endl;
+                        latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
+                        x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        // for?
+                    }else{
+                        cout << "inverso " << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)) << " " <<solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia)) << endl;
+                        latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
+                        x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
+                        x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
+                        //for?
+                    }
+                    for (unsigned int i = 0; i < solido.b; i++) {
                         double t = static_cast<double>(i) / (solido.b);
                         punti(0, counter) = (1 - t) * x1 + t * x2;
                         punti(1, counter) = (1 - t) * y1 + t * y2;
@@ -473,23 +502,26 @@ namespace PlatonicLibrary{
             //solido.Cells2DsEdges(0,nfaccia) numero lato nella faccia, 0,1,2
             for(unsigned int j=0;j<3;j++){
                 //lato j e lato (j+1)%3. Controllo se 2° estremo j e 1° estremo j+1 coincidono. nel caso collego
-                if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%3,nfaccia)))
-                {
-                    cout << "giusto" << endl;
-                    //prendo da counter di j e collego da 2b indietro
+                // if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%3,nfaccia)))
+                // {
+                //     cout << "giusto" << endl;
+                //     //prendo da counter di j e collego da 2b indietro
                     for(unsigned int i=1;i<solido.b;i++){
                         lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
                         lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
                         counter ++;
+                        // lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+                        // lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
+                        // counter ++;
                     }
-                } else{
-                    cout << "inverso" << endl;
-                    for(unsigned int i=1;i<solido.b;i++){
-                        lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
-                        lati(1,counter)=latiOriginali(0,solido.Cells2DsEdges((j+1)%3,nfaccia))+i;
-                        counter ++;
-                    }
-                }
+                // } else{
+                //     cout << "inverso" << endl;
+                //     for(unsigned int i=1;i<solido.b;i++){
+                //         lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+                //         lati(1,counter)=latiOriginali(0,solido.Cells2DsEdges((j+1)%3,nfaccia))+i;
+                //         counter ++;
+                //     }
+                // }
 
             }
 
