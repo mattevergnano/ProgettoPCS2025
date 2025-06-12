@@ -454,16 +454,7 @@ namespace PlatonicLibrary{
                 double y2 = 0.0;
                 double z2 = 0.0;
                 if(latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia)) == 1000){ //se non ho ancora il lato
-                    if(lato == 0){
-                        latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
-                        x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                        y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                        z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-                        x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                        y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                        z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-                    }
-                    else if(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia))==solido.Cells1DsExtrema(1,solido.Cells2DsEdges((lato-1),nfaccia))){ //se il lato successivo ha il primo estremo coincidente con il secondo di questo lato
+                    if(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia))==solido.Cells1DsExtrema(1,solido.Cells2DsEdges((lato-1)%3,nfaccia))){ //se il lato successivo ha il primo estremo coincidente con il secondo di questo lato
                         cout << "giusto " << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)) << " " <<solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia)) << endl;
                         latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
                         x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
