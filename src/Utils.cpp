@@ -433,8 +433,8 @@ namespace PlatonicLibrary{
 
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
-        unsigned int npunti = 1000;//3*solido.b*solido.b*5;
-        unsigned int nlati = 1000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
+        unsigned int npunti = 3*solido.b*solido.b*5;
+        unsigned int nlati = solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds;
         MatrixXd punti(3,npunti);
         punti.setConstant(2.0);
         MatrixXi lati(2,nlati);
@@ -487,43 +487,65 @@ namespace PlatonicLibrary{
 					punti(0, counter) = x2;
                     punti(1, counter) = y2;
                     punti(2, counter) = z2;
-
                     lati(1,counter-1) = (counterlato);
                     latiOriginali(1,solido.Cells2DsEdges(lato,nfaccia))=counter-1;
+					counter ++;
 					
                 }else{
                     cout << "ho già il lato" << endl;
-                }}
-            //prendo due lati adiacenti. Per ciascuno ho gli intervalli di counter in cui si trovano i punti
-            //solido.Cells2DsEdges(0,nfaccia) numero lato nella faccia, 0,1,2
-            for(unsigned int j=0;j<3;j++){
-                //lato j e lato (j+1)%3. Controllo se 2° estremo j e 1° estremo j+1 coincidono. nel caso collego
-                // if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%3,nfaccia)))
-                // {
-                //     cout << "giusto" << endl;
-                //     //prendo da counter di j e collego da 2b indietro
-                    for(unsigned int i=1;i<solido.b;i++){
-                        lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
-                        lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
-                        counter ++;
-                        // lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
-                        // lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
-                        // counter ++;
-                    }
-                // } else{
-                //     cout << "inverso" << endl;
-                //     for(unsigned int i=1;i<solido.b;i++){
-                //         lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
-                //         lati(1,counter)=latiOriginali(0,solido.Cells2DsEdges((j+1)%3,nfaccia))+i;
-                //         counter ++;
-                //     }
-                // }
-
+                }
+            
+                //nella faccia prendo 2 lati
+            // //prendo due lati adiacenti. Per ciascuno ho gli intervalli di counter in cui si trovano i punti
+            // //solido.Cells2DsEdges(0,nfaccia) numero lato nella faccia, 0,1,2
+            // for(unsigned int j=0;j<3;j++){
+            //     //lato j e lato (j+1)%3. Controllo se 2° estremo j e 1° estremo j+1 coincidono. nel caso collego
+            //     // if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(j,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((j+1)%3,nfaccia)))
+            //     // {
+            //     //     cout << "giusto" << endl;
+            //     //     //prendo da counter di j e collego da 2b indietro
+            //         for(unsigned int i=1;i<solido.b;i++){
+            //             lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+            //             lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
+            //             counter ++;
+            //             // lati(0,counter)=latiOriginali(0,solido.Cells2DsEdges(j,nfaccia))+i;
+            //             // lati(1,counter)=latiOriginali(1,solido.Cells2DsEdges((j+1)%3,nfaccia))-i;
+            //             // counter ++;
+            //         }
             }
-
-
+            //prendere 2 lati. fare divisione per i primi b-2 punti.
+            
+            
         }
-        cout << latiOriginali << endl;
+        for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){
+            unsigned int lato0 = solido.Cells2DsEdges(0,nfaccia);
+            unsigned int lato1 = solido.Cells2DsEdges(1,nfaccia);
+            unsigned int counterlato0_iniziale = latiOriginali(0,lato0);
+            unsigned int counterlato0_finale = latiOriginali(1,lato0);
+            unsigned int counterlato1_iniziale = latiOriginali(0,lato1);
+            unsigned int counterlato1_finale = latiOriginali(1,lato1);
+            cout << "counterlato0_iniziale: " << counterlato0_iniziale << " counterlato0_finale: " << counterlato0_finale << endl;
+            cout << "counterlato1_iniziale: " << counterlato1_iniziale << " counterlato1_finale: " << counterlato1_finale << endl;
+            for(unsigned int i=1;i<solido.b-1;i++){
+                unsigned int x1 = punti(0,counterlato0_iniziale+i);
+                unsigned int y1 = punti(1,counterlato0_iniziale+i);
+                unsigned int z1 = punti(2,counterlato0_iniziale+i);
+                unsigned int x2 = punti(0,counterlato1_finale-i);
+                unsigned int y2 = punti(1,counterlato1_finale-i);
+                unsigned int z2 = punti(2,counterlato1_finale-i);
+                cout << x1 << " " << y1 << " " << z1 << endl;
+                for(unsigned int j=1;j<solido.b-i;j++){
+                    double t = static_cast<double>(j) / (solido.b-i);
+                    punti(0, counter) = (1 - t) * x1 + t * x2;
+                    punti(1, counter) = (1 - t) * y1 + t * y2;
+                    punti(2, counter) = (1 - t) * z1 + t * z2;
+                    lati(0,counter) = counter;
+                    lati(1,counter) = (counter+1);
+                    counter++;
+                    }
+                }     
+        }
+        cout << counter << endl;
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti;
         solido.Cells1DsExtrema.resize(2,counter);
