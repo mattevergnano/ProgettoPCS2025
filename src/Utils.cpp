@@ -35,10 +35,15 @@ namespace PlatonicLibrary{
                 solido.b = stoi(argv[3]);
                 solido.c = stoi(argv[4]);
             };
-        } else{
-            cerr << "Not Valid input" << endl; //every other case
-            return 1;
-        }
+		} else if(argc == 7){
+                solido.b = stoi(argv[3]);
+                solido.c = stoi(argv[4]);
+                solido.id_vertice1 = stoi(argv[5]);
+				solido.id_vertice2 = stoi(argv[6]);
+            } if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
+				cerr << "Not Valid input" << endl; //every other case
+				return 1;
+            }
         //check for p and q
         if(solido.p < 3 || solido.q <3){
             cerr << "Not Valid input" << endl;
@@ -553,4 +558,34 @@ namespace PlatonicLibrary{
 
         return 0;
     }
+	
+ /*
+	int ShortestPath (PlatonicSolids& solido){
+		
+	
+        for (unsigned int i=0; i < solido.Cells0DsId.size(); i++) {
+		   for (unsigned int j =0; j < solido.Cells0DsId.size(); j++){
+             if (solido.id_vertice1 == solido.Cells0DsId[i] && solido.id_vertice2 == solido.Cells0DsId[j]) {
+                 cout << "trovato" <<  endl;
+				 
+             }
+			 else {
+                cout << "non trovato" << std::endl;
+             }
+           }
+        }
+		
+		
+		  
+		
+		
+		
+		
+		
+	    return 0;	
+	}
+	
+ */
+	
+	
 }

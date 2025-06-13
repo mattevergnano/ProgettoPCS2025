@@ -46,6 +46,8 @@ namespace PlatonicLibrary{
         unsigned int q = 0;
         unsigned int b = 0;
         unsigned int c = 0;
+		unsigned int id_vertice1 = 0;
+		unsigned int id_vertice2 = 0;
 
     };
 }
