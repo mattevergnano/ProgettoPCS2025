@@ -8,6 +8,8 @@
 #include<iomanip>
 #include<fstream>
 #include<vector>
+#include <queue>
+#include <unordered map>
 
 using namespace std;
 using namespace Eigen;
@@ -562,8 +564,8 @@ namespace PlatonicLibrary{
  /*
 	int ShortestPath (PlatonicSolids& solido){
 		
-	
-        for (unsigned int i=0; i < solido.Cells0DsId.size(); i++) {
+	int n= solido.Cells1DsId.size() //numero dei nodi
+        for (unsigned int i=0; i < n; i++) {
 		   for (unsigned int j =0; j < solido.Cells0DsId.size(); j++){
              if (solido.id_vertice1 == solido.Cells0DsId[i] && solido.id_vertice2 == solido.Cells0DsId[j]) {
                  cout << "trovato" <<  endl;
@@ -574,6 +576,34 @@ namespace PlatonicLibrary{
              }
            }
         }
+		Algoritmo BFS
+
+		queue<int> Q;
+		vector<int> distanza(n,-1)
+		vector<bool> visited(n, false);
+		
+		Q.push(solido.id_vertice1);
+		visited[solido.id_vertice1]=true;
+		distanza[soldo.id_vertice1]=0;
+
+		while (!Q empty){
+			int u=Q.dequeue(); o Q.front()
+			Q.pop()
+		}
+		
+		for (int w : solido.LA[u]){
+			if(!visited[w]){
+				visited[w] = true;
+                distanza[w] = distanza[u] + 1;
+                Q.push(w);
+				 if (w == id_vertice2) {
+                    cout << "Cammino minimo trovato: " << distanza[w] << " passi." << endl;
+                    return distanza[w];
+                }
+
+			}
+		}
+		}
 		
 		
 		  
@@ -582,7 +612,8 @@ namespace PlatonicLibrary{
 		
 		
 		
-	    return 0;	
+	 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
+    return -1
 	}
 	
  */
