@@ -560,7 +560,7 @@ namespace PlatonicLibrary{
 
     //     return 0;
     // }
-        int CreateMesh(PlatonicSolids& solido){
+    int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
         unsigned int npunti = 1000;//3*solido.b*solido.b*5;
         unsigned int nlati = 1000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds*5;
@@ -612,13 +612,13 @@ namespace PlatonicLibrary{
                         lati(1,counter) = (counter+1);
                         counter++;
                     }
-					punti(0, counter) = x2;
+                    punti(0, counter) = x2;
                     punti(1, counter) = y2;
                     punti(2, counter) = z2;
                     lati(1,counter-1) = (counterlato);
                     latiOriginali(1,solido.Cells2DsEdges(lato,nfaccia))=counter;
-					counter ++;
-					
+                    counter ++;
+                    
                 }
             }
             //prendere 2 lati. fare divisione per i primi b-2 punti.
