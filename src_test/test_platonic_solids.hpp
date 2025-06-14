@@ -450,10 +450,8 @@ TEST(FileCellTest, Icosahedron) {
     TestFileCell1DsOutput(solido);
     TestFileCell2DsOutput(solido);
 }
-
-
 	
-	
+
 }
 
 

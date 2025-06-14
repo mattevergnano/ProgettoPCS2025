@@ -8,6 +8,8 @@
 #include<iomanip>
 #include<fstream>
 #include<vector>
+#include <queue>
+#include <unordered map>
 
 using namespace std;
 using namespace Eigen;
@@ -35,10 +37,15 @@ namespace PlatonicLibrary{
                 solido.b = stoi(argv[3]);
                 solido.c = stoi(argv[4]);
             };
-        } else{
-            cerr << "Not Valid input" << endl; //every other case
-            return 1;
-        }
+		} else if(argc == 7){
+                solido.b = stoi(argv[3]);
+                solido.c = stoi(argv[4]);
+                solido.id_vertice1 = stoi(argv[5]);
+				solido.id_vertice2 = stoi(argv[6]);
+            } if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
+				cerr << "Not Valid input" << endl; //every other case
+				return 1;
+            }
         //check for p and q
         if(solido.p < 3 || solido.q <3){
             cerr << "Not Valid input" << endl;
@@ -553,4 +560,63 @@ namespace PlatonicLibrary{
 
         return 0;
     }
+	
+ /*
+	int ShortestPath (PlatonicSolids& solido){
+		
+	int n= solido.Cells1DsId.size() //numero dei nodi
+        for (unsigned int i=0; i < n; i++) {
+		   for (unsigned int j =0; j < solido.Cells0DsId.size(); j++){
+             if (solido.id_vertice1 == solido.Cells0DsId[i] && solido.id_vertice2 == solido.Cells0DsId[j]) {
+                 cout << "trovato" <<  endl;
+				 
+             }
+			 else {
+                cout << "non trovato" << std::endl;
+             }
+           }
+        }
+		Algoritmo BFS
+
+		queue<int> Q;
+		vector<int> distanza(n,-1)
+		vector<bool> visited(n, false);
+		
+		Q.push(solido.id_vertice1);
+		visited[solido.id_vertice1]=true;
+		distanza[soldo.id_vertice1]=0;
+
+		while (!Q empty){
+			int u=Q.dequeue(); o Q.front()
+			Q.pop()
+		}
+		
+		for (int w : solido.LA[u]){
+			if(!visited[w]){
+				visited[w] = true;
+                distanza[w] = distanza[u] + 1;
+                Q.push(w);
+				 if (w == id_vertice2) {
+                    cout << "Cammino minimo trovato: " << distanza[w] << " passi." << endl;
+                    return distanza[w];
+                }
+
+			}
+		}
+		}
+		
+		
+		  
+		
+		
+		
+		
+		
+	 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
+    return -1
+	}
+	
+ */
+	
+	
 }
