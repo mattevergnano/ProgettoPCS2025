@@ -11,12 +11,13 @@ int main(int argc,char  *argv[]){
     PlatonicSolids solido;
     ImportValue(argc,argv,solido);
     CreateSolid(solido);
-	FileCell0Ds(solido);
-	FileCell1Ds(solido);
-	FileCell2Ds(solido);
-    if(solido.p==3){
+	if(solido.p==3){
         CreateMesh(solido);
     }
+    FileCell0Ds(solido);
+	FileCell1Ds(solido);
+	FileCell2Ds(solido);
+    
     
     Gedim::UCDUtilities utilities;
     {
