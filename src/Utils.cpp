@@ -501,7 +501,7 @@ namespace PlatonicLibrary{
         }
         cout << "vertici originali 1: " << verticiOriginali << endl;
 
-        
+
             //prendere 2 lati. fare divisione per i primi b-2 punti.
         for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){ //guardo una faccia per volta
             unsigned int lato0 = solido.Cells2DsEdges(0,nfaccia);//salvo i 3 lati della faccia
@@ -636,7 +636,7 @@ namespace PlatonicLibrary{
                     
                     }   
                 }
-            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
+            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 1 lato1
                 for(unsigned int i=0;i<solido.b-2;i++){
                     double x1 = punti(0,counterlato0_finale-i);
                     double y1 = punti(1,counterlato0_finale-i);
@@ -697,7 +697,7 @@ namespace PlatonicLibrary{
                     
                     }   
                 }
-            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
+            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 0 lato1
                 for(unsigned int i=0;i<solido.b-2;i++){
                     double x1 = punti(0,counterlato0_finale-i);
                     double y1 = punti(1,counterlato0_finale-i);
@@ -760,19 +760,10 @@ namespace PlatonicLibrary{
                 }
             }
         }
-        // cout << counter << endl;
-        // cout << latiOriginali << endl;
-        // punti.leftCols(counter);
         solido.Cells0DsCoordinates.resize(3,counter);
-        // cout << punti << endl;
         solido.Cells0DsCoordinates=punti.leftCols(counter);
-        // lati.leftCols(idlato);
         solido.Cells1DsExtrema.resize(2,idlato);
-        // cout << lati << endl;
         solido.Cells1DsExtrema=lati.leftCols(idlato);
-        // cout << solido.Cells0DsCoordinates << endl;
-        // cout << solido.Cells1DsExtrema << endl;
-        // cout << verticiOriginali << endl;
         return 0;
     }
 }
@@ -820,14 +811,6 @@ namespace PlatonicLibrary{
 			}
 		}
 		}
-		
-		
-		  
-		
-		
-		
-		
-		
 	 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
     return -1
 	}
