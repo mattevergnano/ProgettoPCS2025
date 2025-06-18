@@ -452,20 +452,23 @@ namespace PlatonicLibrary{
         verticiOriginali.setConstant(1000);
         unsigned int counter = 0;
         unsigned int idlato = 0;
-        for(unsigned int lato = 0;lato<solido.NumCells1Ds;lato++){
+        cout << "vertici originali 0: " << verticiOriginali << endl;
+        for(unsigned int lato = 0;lato<solido.NumCells1Ds;lato++){ //scorro ogni lato
             double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,lato));
             double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,lato));
             double z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,lato));
             double x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,lato));
             double y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,lato));
             double z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,lato));
-            if(verticiOriginali(solido.Cells1DsExtrema(0,lato)==1000)){ // non ho ancora salvato il punto
+            if(verticiOriginali(solido.Cells1DsExtrema(0,lato))==1000){ // non ho ancora salvato il punto
                 verticiOriginali(solido.Cells1DsExtrema(0,lato))=counter;
                 punti(0, counter) = x1;
                 punti(1, counter) = y1;
                 punti(2, counter) = z1;
                 counter ++;
+                // cout << solido.Cells1DsExtrema(0,lato) << endl;
             }
+            cout << solido.Cells1DsExtrema(0,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(0,lato))<< endl;
             latiOriginali(0,lato)=counter; //primo punto che metterò sul lato
             lati(0,idlato)=verticiOriginali(solido.Cells1DsExtrema(0,lato));
             lati(1,idlato)=counter;
@@ -489,93 +492,28 @@ namespace PlatonicLibrary{
                 punti(1, counter) = y2;
                 punti(2, counter) = z2;
                 counter++;
+                // cout << solido.Cells1DsExtrema(1,lato) << endl;
             }
+            cout << solido.Cells1DsExtrema(1,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(1,lato))<< endl;
             lati(0,idlato)=counter-2;
             lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,lato));
             idlato++;
         }
+        cout << "vertici originali 1: " << verticiOriginali << endl;
 
-
-        // for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){ //scorro ogni faccia
-        //     //divido ogni lato in b segmenti
-        //     for(unsigned int lato = 0;lato<3;lato++){ //scorro ogni lato della faccia, non mi interesso dell'orientamento, lo aggiusto poi dopo
-        //         double x1 = 0.0;
-        //         double y1 = 0.0;
-        //         double z1 = 0.0;
-        //         double x2 = 0.0;
-        //         double y2 = 0.0;
-        //         double z2 = 0.0;
-        //         if(latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia)) == 1000){ //se non ho ancora il lato lo seleziono e inizio a creare i punti
-        //             // if(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia))==solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia))){ //se il lato successivo ha il primo estremo coincidente con il secondo di questo lato
-        //                 // cout << "giusto " << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)) << " " <<solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia)) << endl;
-        //             x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //                 // for?
-        //             // }else{
-        //             //     // cout << "inverso " << solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)) << " " <<solido.Cells1DsExtrema(0,solido.Cells2DsEdges((lato+1)%3,nfaccia)) << endl;
-        //             //     x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     z1 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     x2 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     y2 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     z2 = solido.Cells0DsCoordinates(2,solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             //     //for?
-        //             // }
-        //             if(verticiOriginali(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)))==1000){ // non ho ancora salvato il punto
-        //                 verticiOriginali(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)))=counter;
-        //                 punti(0, counter) = x1;
-        //                 punti(1, counter) = y1;
-        //                 punti(2, counter) = z1;
-        //                 counter ++;
-        //             }
-        //             latiOriginali(0,solido.Cells2DsEdges(lato,nfaccia))=counter;
-        //             //inserisco primo lato
-        //             lati(0,idlato)=verticiOriginali(solido.Cells1DsExtrema(0,solido.Cells2DsEdges(lato,nfaccia)));
-        //             lati(1,idlato)=counter;
-        //             idlato++;
-        //             for (unsigned int i = 1; i < solido.b; i++) {
-        //                 double t = static_cast<double>(i) / (solido.b);
-        //                 punti(0, counter) = (1 - t) * x1 + t * x2;
-        //                 punti(1, counter) = (1 - t) * y1 + t * y2;
-        //                 punti(2, counter) = (1 - t) * z1 + t * z2;
-        //                 if(i<solido.b-1){
-        //                     lati(0,idlato) = counter;
-        //                     lati(1,idlato) = counter+1; 
-        //                     idlato++;
-        //                 }
-        //                 counter++;
-        //             }
-        //             latiOriginali(1,solido.Cells2DsEdges(lato,nfaccia))=counter-1;
-        //             if(verticiOriginali(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)))==1000){ // non ho ancora salvato il punto
-        //                 verticiOriginali(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)))=counter;
-        //                 punti(0, counter) = x2;
-        //                 punti(1, counter) = y2;
-        //                 punti(2, counter) = z2;
-        //                 counter++;
-        //             }
-        //             lati(0,idlato)=counter-2;
-        //             lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,solido.Cells2DsEdges(lato,nfaccia)));
-        //             idlato++;
-                    
-        //         }
-        //     }
-        //     //prendere 2 lati. fare divisione per i primi b-2 punti.
-        // }
+        
+            //prendere 2 lati. fare divisione per i primi b-2 punti.
         for(unsigned int nfaccia=0;nfaccia<solido.NumCells2Ds;nfaccia++){ //guardo una faccia per volta
             unsigned int lato0 = solido.Cells2DsEdges(0,nfaccia);//salvo i 3 lati della faccia
             unsigned int lato1 = solido.Cells2DsEdges(1,nfaccia);
             unsigned int lato2 = solido.Cells2DsEdges(2,nfaccia);
-            unsigned int counterlato0_iniziale = latiOriginali(0,lato0); //salvo counter iniziale e finale per ogni lato (esclusi i vertici)
+            unsigned int counterlato0_iniziale = latiOriginali(0,lato0); //salvo counter iniziale e finale per ogni lato (esclusi i vertici) sono dal vertice 0 al vertice 1
             unsigned int counterlato0_finale = latiOriginali(1,lato0);
             unsigned int counterlato1_iniziale = latiOriginali(0,lato1);
             unsigned int counterlato1_finale = latiOriginali(1,lato1);
             unsigned int counterlato2_iniziale = latiOriginali(0,lato2);
             unsigned int counterlato2_finale = latiOriginali(1,lato2);
-            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato1 e lato0 adiacenti giusti
+            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato1)){ //estr1 lato0 = estr0 lato1
                 for(unsigned int i=0;i<solido.b-2;i++){ //se b=3 scelgo solo il primo punto, numero di segmenti interni da creare e partizionare
                     double x1 = punti(0,counterlato0_iniziale+i);
                     double y1 = punti(1,counterlato0_iniziale+i);
@@ -638,7 +576,6 @@ namespace PlatonicLibrary{
                     }
                 }     
             }else if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
-                cout << "hello" << endl;
                 for(unsigned int i=0;i<solido.b-2;i++){
                     double x1 = punti(0,counterlato0_iniziale+i);
                     double y1 = punti(1,counterlato0_iniziale+i);
@@ -688,9 +625,9 @@ namespace PlatonicLibrary{
                                 lati(1,idlato) = counterlato2_finale;
                                 idlato++;
                                 lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_iniziale;
+                                lati(1,idlato) = counterlato1_finale;
                                 idlato++;
-                                lati(0,idlato) = counterlato1_finale;
+                                lati(0,idlato) = counterlato1_iniziale;
                                 lati(1,idlato) = counterlato2_iniziale;
                                 idlato++;
                             }
@@ -700,7 +637,6 @@ namespace PlatonicLibrary{
                     }   
                 }
             }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
-                cout << "hello" << endl;
                 for(unsigned int i=0;i<solido.b-2;i++){
                     double x1 = punti(0,counterlato0_finale-i);
                     double y1 = punti(1,counterlato0_finale-i);
@@ -734,25 +670,25 @@ namespace PlatonicLibrary{
                             lati(0,idlato) = counter;
                             lati(1,idlato) = counterlato2_finale;
                             idlato++;
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
+                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
+                                lati(0,idlato) = counterlato0_finale;
                                 lati(1,idlato) = counterlato2_iniziale;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
+                                lati(0,idlato) = counterlato0_iniziale;
                                 lati(1,idlato) = counterlato1_finale;
                                 idlato++;
                                 lati(0,idlato) = counterlato1_iniziale;
                                 lati(1,idlato) = counterlato2_finale;
                                 idlato++;
                             }
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
+                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
+                                lati(0,idlato) = counterlato0_finale;
                                 lati(1,idlato) = counterlato2_finale;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_iniziale;
+                                lati(0,idlato) = counterlato0_iniziale;
+                                lati(1,idlato) = counterlato1_finale;
                                 idlato++;
-                                lati(0,idlato) = counterlato1_finale;
+                                lati(0,idlato) = counterlato1_iniziale;
                                 lati(1,idlato) = counterlato2_iniziale;
                                 idlato++;
                             }
@@ -762,7 +698,6 @@ namespace PlatonicLibrary{
                     }   
                 }
             }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
-                cout << "hello" << endl;
                 for(unsigned int i=0;i<solido.b-2;i++){
                     double x1 = punti(0,counterlato0_finale-i);
                     double y1 = punti(1,counterlato0_finale-i);
@@ -796,22 +731,22 @@ namespace PlatonicLibrary{
                             lati(0,idlato) = counter;
                             lati(1,idlato) = counterlato2_finale;
                             idlato++;
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
+                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
+                                lati(0,idlato) = counterlato0_finale;
                                 lati(1,idlato) = counterlato2_iniziale;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_finale;
+                                lati(0,idlato) = counterlato0_iniziale;
+                                lati(1,idlato) = counterlato1_iniziale;
                                 idlato++;
-                                lati(0,idlato) = counterlato1_iniziale;
+                                lati(0,idlato) = counterlato1_finale;
                                 lati(1,idlato) = counterlato2_finale;
                                 idlato++;
                             }
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
+                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
+                                lati(0,idlato) = counterlato0_finale;
                                 lati(1,idlato) = counterlato2_finale;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
+                                lati(0,idlato) = counterlato0_iniziale;
                                 lati(1,idlato) = counterlato1_iniziale;
                                 idlato++;
                                 lati(0,idlato) = counterlato1_finale;
@@ -825,8 +760,8 @@ namespace PlatonicLibrary{
                 }
             }
         }
-        cout << counter << endl;
-        cout << latiOriginali << endl;
+        // cout << counter << endl;
+        // cout << latiOriginali << endl;
         // punti.leftCols(counter);
         solido.Cells0DsCoordinates.resize(3,counter);
         // cout << punti << endl;
@@ -835,9 +770,9 @@ namespace PlatonicLibrary{
         solido.Cells1DsExtrema.resize(2,idlato);
         // cout << lati << endl;
         solido.Cells1DsExtrema=lati.leftCols(idlato);
-        cout << solido.Cells0DsCoordinates << endl;
-        cout << solido.Cells1DsExtrema << endl;
-        cout << verticiOriginali << endl;
+        // cout << solido.Cells0DsCoordinates << endl;
+        // cout << solido.Cells1DsExtrema << endl;
+        // cout << verticiOriginali << endl;
         return 0;
     }
 }
