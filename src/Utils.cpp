@@ -456,7 +456,7 @@ namespace PlatonicLibrary{
         unsigned int idt = 0; //id triangolo
         MatrixXi latiTriangoli(3,ntriangoli);
         MatrixXi verticiTriangoli(3,ntriangoli);
-        cout << "vertici originali 0: " << verticiOriginali << endl;
+        // cout << "vertici originali 0: " << verticiOriginali << endl;
         for(unsigned int lato = 0;lato<solido.NumCells1Ds;lato++){ //scorro ogni lato
             double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,lato));
             double y1 = solido.Cells0DsCoordinates(1,solido.Cells1DsExtrema(0,lato));
@@ -503,7 +503,7 @@ namespace PlatonicLibrary{
             lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,lato));
             idlato++;
         }
-        cout << "vertici originali 1: " << verticiOriginali << endl;
+        // cout << "vertici originali 1: " << verticiOriginali << endl;
 
 
             //prendere 2 lati. fare divisione per i primi b-2 punti.
@@ -533,54 +533,113 @@ namespace PlatonicLibrary{
                         punti(0, counter) = (1-t) * x1 + t * x2;
                         punti(1, counter) = (1-t) * y1 + t * y2;
                         punti(2, counter) = (1-t) * z1 + t * z2;
-                        if(j<solido.b-2-i){
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_finale;
-                            idlato++;
-                            //sono già nel caso in cui lato0 e lato1 sono giusti
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato2_iniziale;
+                        if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
+                            if(j==1){ //giallo
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_iniziale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_finale;
-                                lati(1,idlato) = counterlato2_finale;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i+1;
                                 idlato++;
                             }
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato2_finale;
+                            if(j==1 && j!=solido.b-2-i){//verde
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_iniziale;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
                                 idlato++;
-                                lati(0,idlato) = counterlato1_finale;
-                                lati(1,idlato) = counterlato2_iniziale;
+                            }
+                            if(i==0){ //viola
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_iniziale+j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_iniziale+j;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i<solido.b-3){ //blu
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i==solido.b-3){ //rosa
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j-1;
+                                idlato++;
+                            }
+                            if(j<solido.b-2-i&&j>1){//grigio
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            
+                        }
+                        if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
+                            if(j==1){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i+1;
+                                idlato++;
+                            }
+                            if(j==1 && j!=solido.b-2-i){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
+                                idlato++;
+                            }
+                            if(i==0){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_finale-j+1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_finale-j;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i<solido.b-3){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i==solido.b-3){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j-1;
                                 idlato++;
                             }
                         }
-                        counter++;
                     }
-                }     
-            }else if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
-                for(unsigned int i=0;i<solido.b-2;i++){
+                }
+            }
+            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato1)){ //estr1 lato0 = estr1 lato1
+                for(unsigned int i=0;i<solido.b-2;i++){ //se b=3 scelgo solo il primo punto, numero di segmenti interni da creare e partizionare
                     double x1 = punti(0,counterlato0_iniziale+i);
                     double y1 = punti(1,counterlato0_iniziale+i);
                     double z1 = punti(2,counterlato0_iniziale+i);
@@ -589,181 +648,350 @@ namespace PlatonicLibrary{
                     double z2 = punti(2,counterlato1_iniziale+i);
                     // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
                     // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
-                    for(unsigned int j=1;j<solido.b-(i+1);j++){
+                    // cout << counter << endl;
+                    for(unsigned int j=1;j<solido.b-(i+1);j++){ //numero di punti per ogni segmento interno
                         double t = static_cast<double>(j) / (solido.b-i-1);
                         punti(0, counter) = (1-t) * x1 + t * x2;
                         punti(1, counter) = (1-t) * y1 + t * y2;
                         punti(2, counter) = (1-t) * z1 + t * z2;
-                        if(j==1){
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_finale;
-                            idlato++;
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato2_iniziale;
+                        if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
+                            if(j==1){ //giallo
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_finale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_iniziale;
-                                lati(1,idlato) = counterlato2_finale;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i+1;
                                 idlato++;
                             }
-                            if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato2_finale;
+                            if(j==1 && j!=solido.b-2-i){//verde
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
                                 idlato++;
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato1_finale;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
                                 idlato++;
-                                lati(0,idlato) = counterlato1_iniziale;
-                                lati(1,idlato) = counterlato2_iniziale;
+                            }
+                            if(i==0){ //viola
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_iniziale+j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_iniziale+j;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i<solido.b-3){ //blu
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i==solido.b-3){ //rosa
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j-1;
+                                idlato++;
+                            }
+                            if(j<solido.b-2-i&&j>1){//grigio
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            
+                        }
+                        if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
+                            if(j==1){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato0_iniziale+i+1;
+                                idlato++;
+                            }
+                            if(j==1 && j!=solido.b-2-i){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-2-i;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+1;
+                                idlato++;
+                            }
+                            if(i==0){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_finale-j+1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato2_finale-j;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i<solido.b-3){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_finale-j-1;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counter+solido.b-3-i;
+                                idlato++;
+                            }
+                            if(j==solido.b-2-i&&i==solido.b-3){
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j;
+                                idlato++;
+                                lati(0,idlato)=counter;
+                                lati(1,idlato)=counterlato1_iniziale+j-1;
                                 idlato++;
                             }
                         }
-                        counter++;
-                    
-                    }   
-                }
-            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 1 lato1
-                for(unsigned int i=0;i<solido.b-2;i++){
-                    double x1 = punti(0,counterlato0_finale-i);
-                    double y1 = punti(1,counterlato0_finale-i);
-                    double z1 = punti(2,counterlato0_finale-i);
-                    double x2 = punti(0,counterlato1_iniziale+i);
-                    double y2 = punti(1,counterlato1_iniziale+i);
-                    double z2 = punti(2,counterlato1_iniziale+i);
-                    // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
-                    // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
-                    for(unsigned int j=1;j<solido.b-(i+1);j++){
-                        double t = static_cast<double>(j) / (solido.b-i-1);
-                        punti(0, counter) = (1-t) * x1 + t * x2;
-                        punti(1, counter) = (1-t) * y1 + t * y2;
-                        punti(2, counter) = (1-t) * z1 + t * z2;
-                        if(j==1){
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_finale;
-                            idlato++;
-                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato2_iniziale;
-                                idlato++;
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato1_finale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_iniziale;
-                                lati(1,idlato) = counterlato2_finale;
-                                idlato++;
-                            }
-                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato2_finale;
-                                idlato++;
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato1_finale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_iniziale;
-                                lati(1,idlato) = counterlato2_iniziale;
-                                idlato++;
-                            }
-                        }
-                        counter++;
-                    
-                    }   
-                }
-            }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 0 lato1
-                for(unsigned int i=0;i<solido.b-2;i++){
-                    double x1 = punti(0,counterlato0_finale-i);
-                    double y1 = punti(1,counterlato0_finale-i);
-                    double z1 = punti(2,counterlato0_finale-i);
-                    double x2 = punti(0,counterlato1_finale-i);
-                    double y2 = punti(1,counterlato1_finale-i);
-                    double z2 = punti(2,counterlato1_finale-i);
-                    // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
-                    // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
-                    for(unsigned int j=1;j<solido.b-(i+1);j++){
-                        double t = static_cast<double>(j) / (solido.b-i-1);
-                        punti(0, counter) = (1-t) * x1 + t * x2;
-                        punti(1, counter) = (1-t) * y1 + t * y2;
-                        punti(2, counter) = (1-t) * z1 + t * z2;
-                        if(j==1){
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato0_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato1_finale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_iniziale;
-                            idlato++;
-                            lati(0,idlato) = counter;
-                            lati(1,idlato) = counterlato2_finale;
-                            idlato++;
-                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato2_iniziale;
-                                idlato++;
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato1_iniziale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_finale;
-                                lati(1,idlato) = counterlato2_finale;
-                                idlato++;
-                            }
-                            if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
-                                lati(0,idlato) = counterlato0_finale;
-                                lati(1,idlato) = counterlato2_finale;
-                                idlato++;
-                                lati(0,idlato) = counterlato0_iniziale;
-                                lati(1,idlato) = counterlato1_iniziale;
-                                idlato++;
-                                lati(0,idlato) = counterlato1_finale;
-                                lati(1,idlato) = counterlato2_iniziale;
-                                idlato++;
-                            }
-                        }
-                        counter++;
-                    
-                    }   
+                    }
                 }
             }
         }
+        
+            //             if(j<solido.b-2-i){
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_finale;
+            //                 idlato++;
+            //                 //sono già nel caso in cui lato0 e lato1 sono giusti
+            //                 if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato1_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_finale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                 }
+            //                 if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato1_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_finale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                 }
+            //             }
+            //             counter++;
+            //         }
+            //     }     
+            // }else if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 1 lato0 = vertice 1 lato1
+            //     for(unsigned int i=0;i<solido.b-2;i++){
+            //         double x1 = punti(0,counterlato0_iniziale+i);
+            //         double y1 = punti(1,counterlato0_iniziale+i);
+            //         double z1 = punti(2,counterlato0_iniziale+i);
+            //         double x2 = punti(0,counterlato1_iniziale+i);
+            //         double y2 = punti(1,counterlato1_iniziale+i);
+            //         double z2 = punti(2,counterlato1_iniziale+i);
+            //         // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
+            //         // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
+            //         for(unsigned int j=1;j<solido.b-(i+1);j++){
+            //             double t = static_cast<double>(j) / (solido.b-i-1);
+            //             punti(0, counter) = (1-t) * x1 + t * x2;
+            //             punti(1, counter) = (1-t) * y1 + t * y2;
+            //             punti(2, counter) = (1-t) * z1 + t * z2;
+            //             if(j==1){
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_finale;
+            //                 idlato++;
+            //                 if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato2)){
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato1_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_iniziale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                 }
+            //                 if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato2)){
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato1_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_iniziale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                 }
+            //             }
+            //             counter++;
+                    
+            //         }   
+            //     }
+            // }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(1,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 1 lato1
+            //     for(unsigned int i=0;i<solido.b-2;i++){
+            //         double x1 = punti(0,counterlato0_finale-i);
+            //         double y1 = punti(1,counterlato0_finale-i);
+            //         double z1 = punti(2,counterlato0_finale-i);
+            //         double x2 = punti(0,counterlato1_iniziale+i);
+            //         double y2 = punti(1,counterlato1_iniziale+i);
+            //         double z2 = punti(2,counterlato1_iniziale+i);
+            //         // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
+            //         // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
+            //         for(unsigned int j=1;j<solido.b-(i+1);j++){
+            //             double t = static_cast<double>(j) / (solido.b-i-1);
+            //             punti(0, counter) = (1-t) * x1 + t * x2;
+            //             punti(1, counter) = (1-t) * y1 + t * y2;
+            //             punti(2, counter) = (1-t) * z1 + t * z2;
+            //             if(j==1){
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_finale;
+            //                 idlato++;
+            //                 if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato1_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_iniziale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                 }
+            //                 if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato1_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_iniziale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                 }
+            //             }
+            //             counter++;
+                    
+            //         }   
+            //     }
+            // }else if(solido.Cells1DsExtrema(0,lato0)==solido.Cells1DsExtrema(0,lato1)){ //lato0 e lato1 adiacenti inversi, vertice 0 lato0 = vertice 0 lato1
+            //     for(unsigned int i=0;i<solido.b-2;i++){
+            //         double x1 = punti(0,counterlato0_finale-i);
+            //         double y1 = punti(1,counterlato0_finale-i);
+            //         double z1 = punti(2,counterlato0_finale-i);
+            //         double x2 = punti(0,counterlato1_finale-i);
+            //         double y2 = punti(1,counterlato1_finale-i);
+            //         double z2 = punti(2,counterlato1_finale-i);
+            //         // cout  << "1 " << x1 << " " << y1 << " " << z1 << endl;
+            //         // cout  << "2 "  << x2 << " " << y2 << " " << z2 << endl;
+            //         for(unsigned int j=1;j<solido.b-(i+1);j++){
+            //             double t = static_cast<double>(j) / (solido.b-i-1);
+            //             punti(0, counter) = (1-t) * x1 + t * x2;
+            //             punti(1, counter) = (1-t) * y1 + t * y2;
+            //             punti(2, counter) = (1-t) * z1 + t * z2;
+            //             if(j==1){
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato0_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato1_finale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_iniziale;
+            //                 idlato++;
+            //                 lati(0,idlato) = counter;
+            //                 lati(1,idlato) = counterlato2_finale;
+            //                 idlato++;
+            //                 if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(0,lato2)){
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato1_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_finale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                 }
+            //                 if(solido.Cells1DsExtrema(1,lato0)==solido.Cells1DsExtrema(1,lato2)){
+            //                     lati(0,idlato) = counterlato0_finale;
+            //                     lati(1,idlato) = counterlato2_finale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato0_iniziale;
+            //                     lati(1,idlato) = counterlato1_iniziale;
+            //                     idlato++;
+            //                     lati(0,idlato) = counterlato1_finale;
+            //                     lati(1,idlato) = counterlato2_iniziale;
+            //                     idlato++;
+            //                 }
+            //             }
+            //             counter++;
+                    
+            //         }   
+                // }
+            // }
+        // }
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
