@@ -442,6 +442,7 @@ namespace PlatonicLibrary{
         cout << "create mesh" << endl;
         unsigned int npunti = 1000;//3*solido.b*solido.b*5;
         unsigned int nlati = 1000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds*5;
+        unsigned int ntriangoli = 1000;
         MatrixXd punti(3,npunti);
         punti.setConstant(2.0);
         MatrixXi lati(2,nlati);
@@ -452,6 +453,9 @@ namespace PlatonicLibrary{
         verticiOriginali.setConstant(1000);
         unsigned int counter = 0;
         unsigned int idlato = 0;
+        unsigned int idt = 0; //id triangolo
+        MatrixXi latiTriangoli(3,ntriangoli);
+        MatrixXi verticiTriangoli(3,ntriangoli);
         cout << "vertici originali 0: " << verticiOriginali << endl;
         for(unsigned int lato = 0;lato<solido.NumCells1Ds;lato++){ //scorro ogni lato
             double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,lato));
@@ -529,7 +533,7 @@ namespace PlatonicLibrary{
                         punti(0, counter) = (1-t) * x1 + t * x2;
                         punti(1, counter) = (1-t) * y1 + t * y2;
                         punti(2, counter) = (1-t) * z1 + t * z2;
-                        if(j==1){
+                        if(j<solido.b-2-i){
                             lati(0,idlato) = counter;
                             lati(1,idlato) = counterlato0_iniziale;
                             idlato++;
