@@ -86,7 +86,7 @@ namespace PlatonicLibrary{
             solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3;
 
-            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adiacenti alla faccia, ovvero quelli che hanno un lato in comune
+            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adjacency alla faccia, ovvero quelli che hanno un lato in comune
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
@@ -400,7 +400,7 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates(2,j) /= norm;
         } 
         
-        //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adiacenti a quello (inizio ad avere il duplicato dei lati)
+        //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adjacency a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
         solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
@@ -1112,17 +1112,85 @@ namespace PlatonicLibrary{
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
         solido.Cells1DsExtrema=lati.leftCols(idlato);
+        
+		MatrixXi triangles_vertices(3, idt); 
+
+
+		MatrixXi triangles_adjacency = MatrixXi::Zero(idt, idt);
+
 		
+		for (unsigned int i = 0; i < idt; i++) {
+			
+			vector<unsigned int> t1 = {
+				static_cast<unsigned int>(triangles_vertices(0, i)),
+				static_cast<unsigned int>(triangles_vertices(1, i)),
+				static_cast<unsigned int>(triangles_vertices(2, i))
+			};
+
+			for (unsigned int j = i + 1; j < idt; j++) {
+				
+				vector<unsigned int> t2 = {
+					static_cast<unsigned int>(triangles_vertices(0, j)),
+					static_cast<unsigned int>(triangles_vertices(1, j)),
+					static_cast<unsigned int>(triangles_vertices(2, j))
+				};
+
+				
+				unsigned int common = 0;
+				for (unsigned int a : t1)
+					for (unsigned int b : t2)
+						if (a == b) common++;
+
+				
+				if (common == 2) {
+					triangles_adjacency(i, j) = 1;
+					triangles_adjacency(j, i) = 1; 
+				}
+			}
+		}
+
 		
-		//for(int=0; i < idLato;++1){
-		//	int u= solido.Cells1DsExtrema(0,i);
-        //    int v= solido.Cells1DsExtrema(1,i);
-		//    adj[u].pushback(v);
-        //    adj[v].push_back(u);
-        //    cout << "Salvati" << endl;			
-		//}
-		//solido.grafo =adj;
-	
+		cout << "\nAdiacenze triangoli:\n";
+		for (unsigned int i = 0; i < idt; i++) {
+			cout << "Triangoli adjacency al triangolo " << i << ": ";
+			for (unsigned int j = 0; j < idt; j++) {
+				if (triangles_adjacency(i, j) == 1)
+					cout << j << " ";
+			}
+			cout << endl;
+		}
+
+		
+		unsigned int n_punti = counter;
+		unsigned int n_lati = idlato;
+
+		
+		vector<vector<unsigned int>> adjacency(n_punti);
+		for (unsigned int i = 0; i < n_lati; i++) {
+			unsigned int v0 = lati(0, i);
+			unsigned int v1 = lati(1, i);
+			adjacency[v0].push_back(v1);
+			adjacency[v1].push_back(v0); 
+		}
+
+		
+		cout << "\nNumero punti generati: " << n_punti << endl;
+		for (unsigned int i = 0; i < n_punti; i++) {
+			cout << "Punto " << i << ": (" << punti(0,i) << ", " << punti(1,i) << ", " << punti(2,i) << ")" << endl;
+		}
+
+		cout << "\nNumero lati generati: " << n_lati << endl;
+		for (unsigned int i = 0; i < n_lati; i++) {
+			cout << "Lato " << i << ": " << lati(0,i) << " <-> " << lati(1,i) << endl;
+		}
+
+		cout << "\nAdiacenza vertici:\n";
+		for (unsigned int i = 0; i < n_punti; i++) {
+			cout << "Vertice " << i << ": ";
+			for (auto v : adjacency[i])
+				cout << v << " ";
+			cout << endl;
+		}
         return 0;
     }
 }
