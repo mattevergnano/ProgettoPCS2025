@@ -1112,6 +1112,17 @@ namespace PlatonicLibrary{
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
         solido.Cells1DsExtrema=lati.leftCols(idlato);
+		
+		
+		//for(int=0; i < idLato;++1){
+		//	int u= solido.Cells1DsExtrema(0,i);
+        //    int v= solido.Cells1DsExtrema(1,i);
+		//    adj[u].pushback(v);
+        //    adj[v].push_back(u);
+        //    cout << "Salvati" << endl;			
+		//}
+		//solido.grafo =adj;
+	
         return 0;
     }
 }
