@@ -437,13 +437,13 @@ namespace PlatonicLibrary{
 
         return 0;
     }
-    int SphereProjection(double& x, double& y, double& z){
-        double norm = sqrt(x*x+y*y+z*z);
-        x /= norm;
-        y /= norm;
-        z /= norm;
-        return 0;
-    }
+    // int SphereProjection(double& x, double& y, double& z){
+    //     double norm = sqrt(x*x+y*y+z*z);
+    //     x /= norm;
+    //     y /= norm;
+    //     z /= norm;
+    //     return 0;
+    // }
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
         unsigned int npunti = 10000;//3*solido.b*solido.b*5;
@@ -1114,12 +1114,39 @@ namespace PlatonicLibrary{
             }
         }
 
+
+
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
         solido.Cells1DsExtrema=lati.leftCols(idlato);
-        
-        
+
+        // for(unsigned int j=0;j<counter;j++){
+        //     double x = solido.Cells0DsCoordinates(0,j);
+        //     double y = solido.Cells0DsCoordinates(1,j);
+        //     double z = solido.Cells0DsCoordinates(2,j);
+        //     double norm = sqrt(x*x+y*y+z*z);
+        //     solido.Cells0DsCoordinates(0,j) /= norm;
+        //     solido.Cells0DsCoordinates(1,j) /= norm;
+        //     solido.Cells0DsCoordinates(2,j) /= norm;
+        // }
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
+        double norm = 0.0;
+        for (unsigned int i = 0; i < solido.Cells0DsCoordinates.cols(); ++i) {
+            x = solido.Cells0DsCoordinates(0, i);
+            y = solido.Cells0DsCoordinates(1, i);
+            z = solido.Cells0DsCoordinates(2, i);
+            norm = sqrt(x*x + y*y + z*z);
+            if (norm != 0.0) {
+                solido.Cells0DsCoordinates(0, i) = x / norm;
+                solido.Cells0DsCoordinates(1, i) = y / norm;
+                solido.Cells0DsCoordinates(2, i) = z / norm;
+            } else {
+                cerr << "Warning: punto nullo alla colonna " << i << endl;
+            }
+        }
 
 		MatrixXi triangles_vertices(3, idt); 
 
