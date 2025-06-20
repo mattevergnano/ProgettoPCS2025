@@ -437,7 +437,13 @@ namespace PlatonicLibrary{
 
         return 0;
     }
-
+    int SphereProjection(double& x, double& y, double& z){
+        double norm = sqrt(x*x+y*y+z*z);
+        x /= norm;
+        y /= norm;
+        z /= norm;
+        return 0;
+    }
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
         unsigned int npunti = 10000;//3*solido.b*solido.b*5;
@@ -1107,12 +1113,14 @@ namespace PlatonicLibrary{
                 idlato++;
             }
         }
-        
+
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
         solido.Cells1DsExtrema=lati.leftCols(idlato);
         
+        
+
 		MatrixXi triangles_vertices(3, idt); 
 
 
@@ -1194,7 +1202,7 @@ namespace PlatonicLibrary{
         return 0;
     }
 }
-	
+
  /*
 	int ShortestPath (PlatonicSolids& solido){
 		
