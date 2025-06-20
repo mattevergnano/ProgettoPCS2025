@@ -440,8 +440,8 @@ namespace PlatonicLibrary{
 
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
-        unsigned int npunti = 1000;//3*solido.b*solido.b*5;
-        unsigned int nlati = 1000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds*5;
+        unsigned int npunti = 10000;//3*solido.b*solido.b*5;
+        unsigned int nlati = 10000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds*5;
         unsigned int ntriangoli = 1000;
         MatrixXd punti(3,npunti);
         punti.setConstant(2.0);
@@ -740,10 +740,10 @@ namespace PlatonicLibrary{
                             }
                             if(i==0){ //viola
                                 lati(0,idlato)=counter;
-                                lati(1,idlato)=counterlato2_iniziale+j-1;
+                                lati(1,idlato)=counterlato2_finale-j+1;
                                 idlato++;
                                 lati(0,idlato)=counter;
-                                lati(1,idlato)=counterlato2_iniziale+j;
+                                lati(1,idlato)=counterlato2_finale-j;
                                 idlato++;
                             }
                             if(j==solido.b-2-i&&i<solido.b-3){ //blu
