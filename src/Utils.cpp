@@ -478,7 +478,7 @@ namespace PlatonicLibrary{
                 counter ++;
                 // cout << solido.Cells1DsExtrema(0,lato) << endl;
             }
-            cout << solido.Cells1DsExtrema(0,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(0,lato))<< endl;
+            // cout << solido.Cells1DsExtrema(0,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(0,lato))<< endl;
             latiOriginali(0,lato)=counter; //primo punto che metterò sul lato
             lati(0,idlato)=verticiOriginali(solido.Cells1DsExtrema(0,lato));
             lati(1,idlato)=counter;
@@ -502,12 +502,17 @@ namespace PlatonicLibrary{
                 punti(1, counter) = y2;
                 punti(2, counter) = z2;
                 counter++;
+                lati(0,idlato)=counter-2;
+                lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,lato));
+                idlato++;
                 // cout << solido.Cells1DsExtrema(1,lato) << endl;
+            }else{
+                lati(0,idlato)=counter-1;
+                lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,lato));
+                idlato++;
             }
-            cout << solido.Cells1DsExtrema(1,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(1,lato))<< endl;
-            lati(0,idlato)=counter-2;
-            lati(1,idlato)=verticiOriginali(solido.Cells1DsExtrema(1,lato));
-            idlato++;
+            // cout << solido.Cells1DsExtrema(1,lato) << " " << verticiOriginali(solido.Cells1DsExtrema(1,lato))<< endl;
+            
         }
         // cout << "vertici originali 1: " << verticiOriginali << endl;
 
