@@ -8,8 +8,8 @@
 #include<iomanip>
 #include<fstream>
 #include<vector>
-#include <queue>
-#include <unordered_map>
+#include<queue>
+#include<unordered_map>
 
 using namespace std;
 using namespace Eigen;
@@ -36,16 +36,16 @@ namespace PlatonicLibrary{
             }else{ //both b and c
                 solido.b = stoi(argv[3]);
                 solido.c = stoi(argv[4]);
-            };}
-		// } else if(argc == 7){
-        //         solido.b = stoi(argv[3]);
-        //         solido.c = stoi(argv[4]);
-        //         solido.id_vertice1 = stoi(argv[5]);
-		// 		solido.id_vertice2 = stoi(argv[6]);
-        //     } if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
-		// 		cerr << "Not Valid input" << endl; //every other case
-		// 		return 1;
-        //     }
+            };
+	    } else if(argc == 7){
+                 solido.b = stoi(argv[3]);
+                 solido.c = stoi(argv[4]);
+                 solido.id_vertice1 = stoi(argv[5]);
+		 		 solido.id_vertice2 = stoi(argv[6]);
+                } if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
+		        	cerr << "Not Valid input" << endl; //every other case
+		   		return 1;
+                }
         //check for p and q
         if(solido.p < 3 || solido.q <3){
             cerr << "Not Valid input" << endl;
@@ -86,7 +86,7 @@ namespace PlatonicLibrary{
             solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
             solido.Cells2DsNumEdges << 3, 3, 3, 3;
 
-            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono adjacency alla faccia, ovvero quelli che hanno un lato in comune
+            //creare un vettore di vettori, ogni vettore piccolo contiene gli id delle facce che sono solido.adjacency alla faccia, ovvero quelli che hanno un lato in comune
             solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
@@ -400,7 +400,7 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates(2,j) /= norm;
         } 
         
-        //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce adjacency a quello (inizio ad avere il duplicato dei lati)
+        //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
         solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
@@ -1153,6 +1153,7 @@ namespace PlatonicLibrary{
             }
         }
 
+       /*
 		MatrixXi triangles_vertices(3, idt); 
 
 
@@ -1200,19 +1201,23 @@ namespace PlatonicLibrary{
 			cout << endl;
 		}
 
+		*/
+		unsigned int n_punti = counter-1;
+		unsigned int n_lati = idlato-1;
+   
 		
-		unsigned int n_punti = counter;
-		unsigned int n_lati = idlato;
-
-		
-		vector<vector<unsigned int>> adjacency(n_punti);
+		solido.adjacency.resize(n_punti);
+		for(auto& k : solido.adjacency){
+		    k = {};	
+		}	
 		for (unsigned int i = 0; i < n_lati; i++) {
 			unsigned int v0 = lati(0, i);
 			unsigned int v1 = lati(1, i);
-			adjacency[v0].push_back(v1);
-			adjacency[v1].push_back(v0); 
+			solido.adjacency[v0].push_back(v1);
+			solido.adjacency[v1].push_back(v0); 
 		}
-
+		
+	
 		
 		cout << "\nNumero punti generati: " << n_punti << endl;
 		for (unsigned int i = 0; i < n_punti; i++) {
@@ -1224,64 +1229,74 @@ namespace PlatonicLibrary{
 			cout << "Lato " << i << ": " << lati(0,i) << " <-> " << lati(1,i) << endl;
 		}
 
+     /*
 		cout << "\nAdiacenza vertici:\n";
 		for (unsigned int i = 0; i < n_punti; i++) {
 			cout << "Vertice " << i << ": ";
-			for (auto v : adjacency[i])
+			for (auto v : solido.adjacency[i])
 				cout << v << " ";
 			cout << endl;
 		}
+		*/
+		
         return 0;
     }
-}
 
- /*
-	int ShortestPath (PlatonicSolids& solido){
+
+ 
+	int ShortestPath(PlatonicSolids& solido){
 		
-	int n= solido.Cells1DsId.size() //numero dei nodi
+		cout << solido.Cells0DsCoordinates.size() << endl;
+		
+	    int n= solido.Cells1DsExtrema.size(); //numero dei nodi
+		/*
         for (unsigned int i=0; i < n; i++) {
-		   for (unsigned int j =0; j < solido.Cells0DsId.size(); j++){
-             if (solido.id_vertice1 == solido.Cells0DsId[i] && solido.id_vertice2 == solido.Cells0DsId[j]) {
-                 cout << "trovato" <<  endl;
-				 
+		   for (unsigned int j =0; j < n; j++){
+             if (solido.id_vertice1 == i && solido.id_vertice2 == j) {
+                 cout << "trovato" <<  endl; 
              }
-			 else {
-                cout << "non trovato" << std::endl;
-             }
+			 //else {
+              //  cerr << "Error" << endl;
+             //}
            }
         }
-		Algoritmo BFS
-
-		queue<int> Q;
-		vector<int> distanza(n,-1)
-		vector<bool> visited(n, false);
+		*/
+		MatrixXi AdjacencyVertices = MatrixXi::Zero(n,n);
 		
-		Q.push(solido.id_vertice1);
-		visited[solido.id_vertice1]=true;
-		distanza[soldo.id_vertice1]=0;
+		if(solido.id_vertice1 < n  && solido.id_vertice2 < n){
+		   
+			queue<int> Q;
+			vector<int> distanza(n,-1);
+			vector<bool> visited(n, false);
+			
+			Q.push(solido.id_vertice1);
+			visited[solido.id_vertice1]=true;
+			distanza[solido.id_vertice1]=0;
 
-		while (!Q empty){
-			int u=Q.dequeue(); o Q.front()
-			Q.pop()
-		}
-		
-		for (int w : solido.LA[u]){
-			if(!visited[w]){
-				visited[w] = true;
-                distanza[w] = distanza[u] + 1;
-                Q.push(w);
-				 if (w == id_vertice2) {
-                    cout << "Cammino minimo trovato: " << distanza[w] << " passi." << endl;
-                    return distanza[w];
-                }
+			while(!Q.empty()){
+				int u=Q.back(); //o Q.front()
+				Q.pop();
+				for(int w : solido.adjacency[u]){
+				  if(!visited[w]){
+					visited[w] = true;
+					distanza[w] = distanza[u] + 1;
+					Q.push(w);
+					 if(w == solido.id_vertice2) {
+						cout << "Cammino minimo trovato: " << distanza[w] << " passi." << endl;
+						return distanza[w];
+					}
 
+				  }
+			    }   
 			}
-		}
-		}
-	 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
-    return -1
-	}
-	
- */
-	
+			
+			
+			
+		 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
+	    } 
+	 
+      return 0;
+	}	
+ 
+}	
 	

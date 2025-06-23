@@ -49,5 +49,9 @@ namespace PlatonicLibrary{
 		unsigned int id_vertice1 = 0;
 		unsigned int id_vertice2 = 0;
 
+        vector<vector<unsigned int>> adjacency = {}; 
+
+
+
     };
 }

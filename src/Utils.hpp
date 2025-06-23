@@ -14,5 +14,6 @@ namespace PlatonicLibrary{
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1);
     int CreateMesh(PlatonicSolids& solido);
     int SphereProjection(double& x, double& y, double& z);
+	int ShortestPath(PlatonicSolids& solido);
 }
 
