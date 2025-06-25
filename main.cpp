@@ -17,7 +17,7 @@ int main(int argc,char  *argv[]){
     FileCell0Ds(solido);
 	FileCell1Ds(solido);
 	FileCell2Ds(solido);
-    //ShortestPath(solido);
+    ShortestPath(solido);
     
     Gedim::UCDUtilities utilities;
     {

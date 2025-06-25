@@ -38,21 +38,31 @@ namespace PlatonicLibrary{
                 solido.c = stoi(argv[4]);
             };
 	    } else if(argc == 7){
-                 solido.b = stoi(argv[3]);
-                 solido.c = stoi(argv[4]);
-                 solido.id_vertice1 = stoi(argv[5]);
-		 		 solido.id_vertice2 = stoi(argv[6]);
-                } if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
-		        	cerr << "Not Valid input" << endl; //every other case
+            if(stoi(argv[3])!=0 && stoi(argv[4])==0){ //input like p q b 0
+                solido.b = stoi(argv[3]);
+            }else if(stoi(argv[3]) == 0 && stoi(argv[4])!=0){ //input like p q 0 b
+                solido.b = stoi(argv[4]); //only b if the third input is 0
+            }else if(stoi(argv[3]) == 0 && stoi(argv[4]) == 0){ //input like p q b c
+                cerr << "Not valid input, b and c are 0" << endl;
+                return 1;
+            }else{ //both b and c
+                solido.b = stoi(argv[3]);
+                solido.c = stoi(argv[4]);
+            };
+            solido.id_vertice1 = stoi(argv[5]);
+		 	solido.id_vertice2 = stoi(argv[6]);
+            if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
+		        cerr << "Not Valid input" << endl; //every other case
 		   		return 1;
-                }
+            }
+        }
         //check for p and q
         if(solido.p < 3 || solido.q <3){
             cerr << "Not Valid input" << endl;
             return 1;
         }
         return 0;
-    };
+    }
    
 	int CreateSolid(PlatonicSolids& solido){
         //classify type of polyhedra
@@ -446,8 +456,11 @@ namespace PlatonicLibrary{
     // }
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
-        unsigned int npunti = 10000;//3*solido.b*solido.b*5;
-        unsigned int nlati = 10000;//solido.b*solido.b*solido.NumCells2Ds*3/2+solido.NumCells1Ds*5;
+        // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        // unsigned int nlati = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        unsigned int nlati1 = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        unsigned int nlati = 5000;
         unsigned int ntriangoli = 1000;
         MatrixXd punti(3,npunti);
         punti.setConstant(2.0);
@@ -459,9 +472,9 @@ namespace PlatonicLibrary{
         verticiOriginali.setConstant(1000);
         unsigned int counter = 0;
         unsigned int idlato = 0;
-        unsigned int idt = 0; //id triangolo
-        MatrixXi latiTriangoli(3,ntriangoli);
-        MatrixXi verticiTriangoli(3,ntriangoli);
+        // unsigned int idt = 0; //id triangolo
+        // MatrixXi latiTriangoli(3,ntriangoli);
+        // MatrixXi verticiTriangoli(3,ntriangoli);
         // cout << "vertici originali 0: " << verticiOriginali << endl;
         for(unsigned int lato = 0;lato<solido.NumCells1Ds;lato++){ //scorro ogni lato
             double x1 = solido.Cells0DsCoordinates(0,solido.Cells1DsExtrema(0,lato));
@@ -1120,7 +1133,8 @@ namespace PlatonicLibrary{
         }
 
 
-
+        cout << nlati1 << endl;
+        cout << idlato << endl;
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
@@ -1202,101 +1216,102 @@ namespace PlatonicLibrary{
 		}
 
 		*/
-		unsigned int n_punti = counter-1;
-		unsigned int n_lati = idlato-1;
+		unsigned int n_punti = counter;
+		unsigned int n_lati = idlato;
    
 		
 		solido.adjacency.resize(n_punti);
 		for(auto& k : solido.adjacency){
 		    k = {};	
 		}	
-		for (unsigned int i = 0; i < n_lati; i++) {
+		for(unsigned int i = 0; i < n_lati; i++) {
 			unsigned int v0 = lati(0, i);
 			unsigned int v1 = lati(1, i);
 			solido.adjacency[v0].push_back(v1);
 			solido.adjacency[v1].push_back(v0); 
 		}
+        for(unsigned int i = 0; i < n_punti; i++){
+            sort(solido.adjacency[i].begin(), solido.adjacency[i].end(), comp);
+            // for(unsigned int j=0;j<solido.adjacency[i].size();j++)
+            //     cout << solido.adjacency[i][j] << endl;
+        }
 		
-	
 		
-		cout << "\nNumero punti generati: " << n_punti << endl;
-		for (unsigned int i = 0; i < n_punti; i++) {
-			cout << "Punto " << i << ": (" << punti(0,i) << ", " << punti(1,i) << ", " << punti(2,i) << ")" << endl;
-		}
+		// cout << "\nNumero punti generati: " << n_punti << endl;
+		// for(unsigned int i = 0; i < n_punti; i++) {
+		// 	cout << "Punto " << i << ": (" << punti(0,i) << ", " << punti(1,i) << ", " << punti(2,i) << ")" << endl;
+		// }
 
-		cout << "\nNumero lati generati: " << n_lati << endl;
-		for (unsigned int i = 0; i < n_lati; i++) {
-			cout << "Lato " << i << ": " << lati(0,i) << " <-> " << lati(1,i) << endl;
-		}
+		// cout << "\nNumero lati generati: " << n_lati << endl;
+		// for(unsigned int i = 0; i < n_lati; i++) {
+		// 	cout << "Lato " << i << ": " << lati(0,i) << " <-> " << lati(1,i) << endl;
+		// }
 
-     /*
-		cout << "\nAdiacenza vertici:\n";
-		for (unsigned int i = 0; i < n_punti; i++) {
-			cout << "Vertice " << i << ": ";
-			for (auto v : solido.adjacency[i])
-				cout << v << " ";
-			cout << endl;
-		}
-		*/
+		// cout << "\nAdiacenza vertici:\n";
+		// for (unsigned int i = 0; i < n_punti; i++) {
+		// 	cout << "Vertice " << i << ": ";
+		// 	for (auto v : solido.adjacency[i])
+		// 		cout << v << " ";
+		// 	cout << endl;
+		// }
+		
 		
         return 0;
     }
-
-
  
 	int ShortestPath(PlatonicSolids& solido){
-		
-		cout << solido.Cells0DsCoordinates.size() << endl;
-		
-	    int n= solido.Cells1DsExtrema.size(); //numero dei nodi
-		/*
-        for (unsigned int i=0; i < n; i++) {
-		   for (unsigned int j =0; j < n; j++){
-             if (solido.id_vertice1 == i && solido.id_vertice2 == j) {
-                 cout << "trovato" <<  endl; 
-             }
-			 //else {
-              //  cerr << "Error" << endl;
-             //}
-           }
-        }
-		*/
-		MatrixXi AdjacencyVertices = MatrixXi::Zero(n,n);
+	    int n = solido.adjacency.size(); //numero dei nodi
+        cout << n << endl;
+        // for(unsigned int i=0; i < n; i++){
+		//     for (unsigned int j = 0; j < n; j++){
+        //         if (solido.id_vertice1 == i && solido.id_vertice2 == j) {
+        //             cout << "trovato" <<  endl; 
+        //         }
+        //     }
+        // }
 		
 		if(solido.id_vertice1 < n  && solido.id_vertice2 < n){
-		   
 			queue<int> Q;
 			vector<int> distanza(n,-1);
 			vector<bool> visited(n, false);
+            vector<int> predecessore(n, -1);
 			
 			Q.push(solido.id_vertice1);
 			visited[solido.id_vertice1]=true;
 			distanza[solido.id_vertice1]=0;
 
 			while(!Q.empty()){
-				int u=Q.back(); //o Q.front()
+				unsigned int u=Q.front(); //o Q.front()
 				Q.pop();
-				for(int w : solido.adjacency[u]){
-				  if(!visited[w]){
-					visited[w] = true;
-					distanza[w] = distanza[u] + 1;
-					Q.push(w);
-					 if(w == solido.id_vertice2) {
-						cout << "Cammino minimo trovato: " << distanza[w] << " passi." << endl;
-						return distanza[w];
-					}
 
-				  }
+				for(unsigned int w : solido.adjacency[u]){
+				    if(!visited[w]){
+					    visited[w] = true;
+					    distanza[w] = distanza[u] + 1;
+                        predecessore[w] = u;
+					    Q.push(w);
+					    if(w == solido.id_vertice2){
+                            cout << "Cammino trovato: " << distanza[w] << " passi." << endl;
+                            vector<int> path;
+                            for(int at = w; at != -1; at = predecessore[at]) {
+                                path.push_back(at);
+                            }
+                            reverse(path.begin(), path.end());
+                            cout << "Cammino: ";
+                            for(int v : path)
+                                cout << v << " ";
+                            cout << endl;
+                            return 0;
+                        }
+				    }
 			    }   
-			}
-			
-			
-			
-		 cout << "Nessun cammino tra " << solido.id_vertice1 << " e " << solido.id_vertice2 << endl;
-	    } 
-	 
+		    }
+        }else{
+            cerr << "Not valid vertice indexes" << endl;
+            return 1;
+        }
       return 0;
-	}	
+	}
  
 }	
 	
