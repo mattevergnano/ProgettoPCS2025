@@ -28,9 +28,15 @@ int main(int argc,char  *argv[]){
         cell0Ds_properties[0].NumComponents = 1;
 
         vector<double> cell0Ds_marker(solido.NumCells0Ds, 0.0);
+
+        for(const auto &m : solido.ShortPathVertices)
+            for(const unsigned int id: m.second)
+                cell0Ds_marker.at(id) = m.first;
+
         cell0Ds_properties[0].Data = cell0Ds_marker.data();
         utilities.ExportPoints("./Cell0Ds.inp",
-                               solido.Cells0DsCoordinates
+                               solido.Cells0DsCoordinates,
+                               cell0Ds_properties
                             );
     }
 
@@ -44,7 +50,7 @@ int main(int argc,char  *argv[]){
 
         vector<double> cell1Ds_marker(solido.NumCells1Ds, 0.0);
 
-        for(const auto &m : solido.ShortPath)
+        for(const auto &m : solido.ShortPathEdges)
             for(const unsigned int id: m.second)
                 cell1Ds_marker.at(id) = m.first;
 

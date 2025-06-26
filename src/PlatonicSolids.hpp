@@ -51,7 +51,8 @@ namespace PlatonicLibrary{
 
         vector<vector<unsigned int>> adjacency = {}; 
 
-        map<unsigned int, list<unsigned int>> ShortPath = {};
+        map<unsigned int, list<unsigned int>> ShortPathVertices = {};
+        map<unsigned int, list<unsigned int>> ShortPathEdges = {};
 
     };
 }

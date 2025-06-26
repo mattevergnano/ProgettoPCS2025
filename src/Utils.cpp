@@ -1292,8 +1292,17 @@ namespace PlatonicLibrary{
                             }
                             reverse(path.begin(), path.end());
                             cout << "Cammino vertici: ";
-                            for(int v : path){
+                            for(unsigned int v : path){
                                 cout << v << " ";
+                                const auto it = solido.ShortPathVertices.find(1);
+                                if(it == solido.ShortPathVertices.end())
+                                {
+                                    solido.ShortPathVertices.insert({1, {v}});
+                                }
+                                else
+                                {
+                                    it->second.push_back(v);
+                                }
                             }
                             cout << endl;
                             for(unsigned int i = 0;i<solido.NumCells1Ds;i++){
@@ -1306,7 +1315,15 @@ namespace PlatonicLibrary{
                             cout << "Cammino lati: ";
                             for(unsigned int e : edgepath){
                                 cout << e << " ";
-                                solido.ShortPath.insert({1, {e}});
+                                const auto it = solido.ShortPathEdges.find(1);
+                                if(it == solido.ShortPathEdges.end())
+                                {
+                                    solido.ShortPathEdges.insert({1, {e}});
+                                }
+                                else
+                                {
+                                    it->second.push_back(e);
+                                }
                             }
                             cout << endl;
                             return 0;
