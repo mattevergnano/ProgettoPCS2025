@@ -447,20 +447,26 @@ namespace PlatonicLibrary{
 
         return 0;
     }
-    // int SphereProjection(double& x, double& y, double& z){
-    //     double norm = sqrt(x*x+y*y+z*z);
-    //     x /= norm;
-    //     y /= norm;
-    //     z /= norm;
-    //     return 0;
-    // }
     int CreateMesh(PlatonicSolids& solido){
         cout << "create mesh" << endl;
         // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
         // unsigned int nlati = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
-        unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
-        unsigned int nlati1 = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
-        unsigned int nlati = 5000;
+        // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        // unsigned int nlati1 = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
+        unsigned int nlati = 0;
+        unsigned int npunti = 0;
+        if(solido.q == 3){
+            nlati = 6*solido.b*solido.b;
+            npunti = 2*solido.b*solido.b+2;
+        }
+        if(solido.q == 4){
+            nlati = 12*solido.b*solido.b;
+            npunti = 4*solido.b*solido.b+2;
+        }
+        if(solido.q == 5){
+            nlati = 30*solido.b*solido.b;
+            npunti = 10*solido.b*solido.b+2;
+        }
         unsigned int ntriangoli = 1000;
         MatrixXd punti(3,npunti);
         punti.setConstant(2.0);
@@ -1131,24 +1137,11 @@ namespace PlatonicLibrary{
                 idlato++;
             }
         }
-
-
-        cout << nlati1 << endl;
-        cout << idlato << endl;
         solido.Cells0DsCoordinates.resize(3,counter);
         solido.Cells0DsCoordinates=punti.leftCols(counter);
         solido.Cells1DsExtrema.resize(2,idlato);
         solido.Cells1DsExtrema=lati.leftCols(idlato);
 
-        // for(unsigned int j=0;j<counter;j++){
-        //     double x = solido.Cells0DsCoordinates(0,j);
-        //     double y = solido.Cells0DsCoordinates(1,j);
-        //     double z = solido.Cells0DsCoordinates(2,j);
-        //     double norm = sqrt(x*x+y*y+z*z);
-        //     solido.Cells0DsCoordinates(0,j) /= norm;
-        //     solido.Cells0DsCoordinates(1,j) /= norm;
-        //     solido.Cells0DsCoordinates(2,j) /= norm;
-        // }
         double x = 0.0;
         double y = 0.0;
         double z = 0.0;
@@ -1254,14 +1247,14 @@ namespace PlatonicLibrary{
 		// 		cout << v << " ";
 		// 	cout << endl;
 		// }
-		
+		solido.NumCells0Ds = npunti;
+        solido.NumCells1Ds = nlati;
 		
         return 0;
     }
  
 	int ShortestPath(PlatonicSolids& solido){
 	    int n = solido.adjacency.size(); //numero dei nodi
-        cout << n << endl;
         // for(unsigned int i=0; i < n; i++){
 		//     for (unsigned int j = 0; j < n; j++){
         //         if (solido.id_vertice1 == i && solido.id_vertice2 == j) {
@@ -1293,13 +1286,28 @@ namespace PlatonicLibrary{
 					    if(w == solido.id_vertice2){
                             cout << "Cammino trovato: " << distanza[w] << " passi." << endl;
                             vector<int> path;
+                            vector<int> edgepath;
                             for(int at = w; at != -1; at = predecessore[at]) {
                                 path.push_back(at);
                             }
                             reverse(path.begin(), path.end());
-                            cout << "Cammino: ";
-                            for(int v : path)
+                            cout << "Cammino vertici: ";
+                            for(int v : path){
                                 cout << v << " ";
+                            }
+                            cout << endl;
+                            for(unsigned int i = 0;i<solido.NumCells1Ds;i++){
+                                for(unsigned int k = 0;k<path.size();k++){
+                                    if((solido.Cells1DsExtrema(0,i)==path[k] && (solido.Cells1DsExtrema(1,i)==path[(k+1)%(path.size())])) || (solido.Cells1DsExtrema(1,i)==path[k] && (solido.Cells1DsExtrema(0,i)==path[(k+1)%(path.size())]))){
+                                        edgepath.push_back(i);
+                                    }
+                                }
+                            }
+                            cout << "Cammino lati: ";
+                            for(unsigned int e : edgepath){
+                                cout << e << " ";
+                                solido.ShortPath.insert({1, {e}});
+                            }
                             cout << endl;
                             return 0;
                         }

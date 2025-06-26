@@ -44,12 +44,17 @@ int main(int argc,char  *argv[]){
 
         vector<double> cell1Ds_marker(solido.NumCells1Ds, 0.0);
 
+        for(const auto &m : solido.ShortPath)
+            for(const unsigned int id: m.second)
+                cell1Ds_marker.at(id) = m.first;
+
         cell1Ds_properties[0].Data = cell1Ds_marker.data();
 
         utilities.ExportSegments("./Cell1Ds.inp",
                                  solido.Cells0DsCoordinates,
                                  solido.Cells1DsExtrema,
-                                 {});
+                                 {},
+                                cell1Ds_properties);
     }
 
     return 0;   
