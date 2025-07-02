@@ -10,14 +10,26 @@ using namespace PlatonicLibrary;
 int main(int argc,char  *argv[]){
     PlatonicSolids solido;
     ImportValue(argc,argv,solido);
-    CreateSolid(solido);
 	if(solido.p==3){
+        CreateSolid(solido);
         CreateMesh(solido);
+        cout << solido.NumCells0Ds << endl;
     }
-    FileCell0Ds(solido);
-	FileCell1Ds(solido);
-	FileCell2Ds(solido);
-    ShortestPath(solido);
+    if(solido.q==3 && solido.p != 3){
+        PlatonicSolids solido1;
+        solido1.p=solido.q;
+        solido1.q=solido.p;
+        solido1.b=solido.b;
+        solido1.id_vertice1 = solido.id_vertice1;
+        solido1.id_vertice2 = solido.id_vertice2;
+        CreateSolid(solido1);
+        CreateMesh(solido1);
+        DualPolyhedron(solido,solido1);
+    }
+    // FileCell0Ds(solido);
+	// FileCell1Ds(solido);
+	// FileCell2Ds(solido);
+    // ShortestPath(solido);
     
     Gedim::UCDUtilities utilities;
     {
@@ -62,6 +74,5 @@ int main(int argc,char  *argv[]){
                                  {},
                                 cell1Ds_properties);
     }
-
     return 0;   
 }

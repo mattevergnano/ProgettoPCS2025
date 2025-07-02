@@ -52,7 +52,7 @@ namespace PlatonicLibrary{
             };
             solido.id_vertice1 = stoi(argv[5]);
 		 	solido.id_vertice2 = stoi(argv[6]);
-            if (stoi(argv[3]) == 0 || stoi(argv[4]) == 0 || stoi(argv[5]) == 0 || stoi(argv[6])== 0){
+            if((stoi(argv[3]) == 0 && stoi(argv[4]) == 0) || (stoi(argv[5]) == 0 && stoi(argv[6])== 0)){
 		        cerr << "Not Valid input" << endl; //every other case
 		   		return 1;
             }
@@ -410,7 +410,6 @@ namespace PlatonicLibrary{
             solido.Cells0DsCoordinates(1,j) /= norm;
             solido.Cells0DsCoordinates(2,j) /= norm;
         } 
-        
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
         solido.Cells1DsExtrema.setConstant(1000);
@@ -445,7 +444,7 @@ namespace PlatonicLibrary{
                 }
             }
         }
-
+        cout << solido.Cells2DsEdges << endl;
         return 0;
     }
     int CreateMesh(PlatonicSolids& solido){
@@ -1161,6 +1160,7 @@ namespace PlatonicLibrary{
             }
         }
 
+
        /*
 		MatrixXi triangles_vertices(3, idt); 
 
@@ -1228,15 +1228,21 @@ namespace PlatonicLibrary{
             sort(solido.adjacency[i].begin(), solido.adjacency[i].end(), comp);
         }
 		
+        // for(auto& sottovettore: solido.adjacency){
+        //         for(auto& el : sottovettore){
+        //             cout << el << " ";
+        //         }
+        //         cout << endl;
+        // }   
+        
         set<tuple<unsigned int, unsigned int, unsigned int>> triangoli;
 
         for (unsigned int u = 0; u < solido.adjacency.size(); ++u) {
             for (unsigned int v : solido.adjacency[u]) {
-                if (v <= u) continue; // evita duplicati simmetrici
+                if(v <= u) continue; // evita duplicati simmetrici
 
-                for (unsigned int w : solido.adjacency[v]) {
+                for(unsigned int w : solido.adjacency[v]) {
                     if (w <= v || w == u) continue; // evita duplicati e cicli
-
                     // controlla che w sia adiacente anche a u
                     if (find(solido.adjacency[u].begin(), solido.adjacency[u].end(), w) != solido.adjacency[u].end()) {
                         // ordina i vertici del triangolo per evitare duplicati
@@ -1247,17 +1253,24 @@ namespace PlatonicLibrary{
                 }
             }
         }
-        for (const auto& [v1, v2, v3] : triangoli) {
+
+        // for(const auto& t : triangoli) {
+        //     unsigned int a = get<0>(t);
+        //     unsigned int b = get<1>(t);
+        //     unsigned int c = get<2>(t);
+        //     cout << "Triangolo: " << a << " " << b << " " << c << endl;
+        // }
+        for(const auto& [v1, v2, v3] : triangoli) {
             Vector3i vertici(v1, v2, v3);
             Vector3i lati;
 
-            for (int i = 0; i < 3; ++i) {
+            for(int i = 0; i < 3; ++i) {
                 unsigned int a = vertici(i);
                 unsigned int b = vertici((i + 1) % 3);
-                for (unsigned int idlato = 0; idlato < solido.NumCells1Ds; ++idlato) {
+                for(unsigned int idlato = 0; idlato < solido.NumCells1Ds; ++idlato) {
                     unsigned int u = solido.Cells1DsExtrema(0, idlato);
                     unsigned int v = solido.Cells1DsExtrema(1, idlato);
-                    if ((a == u && b == v) || (a == v && b == u)) {
+                    if((a == u && b == v) || (a == v && b == u)) {
                         lati(i) = idlato;
                         break;
                     }
@@ -1265,12 +1278,14 @@ namespace PlatonicLibrary{
             }
 
             // Aggiungi ai dati del solido
-            // solido.Cells2DsVertices.reserve(3, solido.Cells2DsVertices.cols() + 1);
-            // solido.Cells2DsEdges.reserve(3, solido.Cells2DsEdges.cols() + 1);
+            solido.Cells2DsVertices.conservativeResize(3, solido.Cells2DsVertices.cols() + 1);
+            solido.Cells2DsEdges.conservativeResize(3, solido.Cells2DsEdges.cols() + 1);
             solido.Cells2DsVertices.col(solido.Cells2DsVertices.cols() - 1) = vertici;
             solido.Cells2DsEdges.col(solido.Cells2DsEdges.cols() - 1) = lati;
         }
         solido.NumCells2Ds = solido.Cells2DsVertices.cols();
+
+        // cout << solido.Cells2DsEdges << endl;
 
         solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
             for(unsigned int i : solido.Cells2DsId){
@@ -1287,21 +1302,30 @@ namespace PlatonicLibrary{
                 sort(vettore.begin(), vettore.end(), comp);
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
-
-            // solido.VerticeFaces.reserve(solido.NumCells0Ds);
+            solido.NumCells0Ds = solido.Cells0DsCoordinates.cols();
+            solido.NumCells1Ds = solido.Cells1DsExtrema.cols();
+            solido.VerticeFaces.resize(solido.NumCells0Ds);
             // //riservo memoria
-            // for (auto& sottovettore : solido.VerticeFaces) {
-            //     sottovettore.reserve(10); // riserva spazio per 3 elementi per ogni sottovettore
-            // }
-            // for(unsigned int i = 0;i<solido.NumCells2Ds;i++){
-            //     for(unsigned int j = 0;j<3;j++){
-            //         solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
+            for (auto& sottovettore : solido.VerticeFaces) {
+                sottovettore.reserve(10); // riserva spazio per 3 elementi per ogni sottovettore
+            }
+            
+            for(unsigned int i = 0;i<solido.Cells2DsVertices.cols();i++){
+                for(unsigned int j = 0;j<solido.Cells2DsVertices.rows();j++){
+                    // cout << "j " << j << " i " << i << endl;
+                    solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
+                    // cout << solido.Cells2DsVertices(j,i) << endl;
+                }
+            }
+            for(auto& el : solido.VerticeFaces){
+                sort(el.begin(),el.end(),comp);
+            }
+            // for(auto& sottovettore: solido.VerticeFaces){
+            //     for(auto& el : sottovettore){
+            //         cout << el << " ";
             //     }
+            //     cout << endl;
             // }
-            // for(auto& el : solido.VerticeFaces){
-            //     sort(el.begin(),el.end(),comp);
-            // }
-		
 		// cout << "\nNumero punti generati: " << n_punti << endl;
 		// for(unsigned int i = 0; i < n_punti; i++) {
 		// 	cout << "Punto " << i << ": (" << punti(0,i) << ", " << punti(1,i) << ", " << punti(2,i) << ")" << endl;
@@ -1319,8 +1343,8 @@ namespace PlatonicLibrary{
 		// 		cout << v << " ";
 		// 	cout << endl;
 		// }
-		solido.NumCells0Ds = npunti;
-        solido.NumCells1Ds = nlati;
+		// solido.NumCells0Ds = npunti;
+        // solido.NumCells1Ds = nlati;
 		
         return 0;
     }
