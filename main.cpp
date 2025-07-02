@@ -22,6 +22,7 @@ int main(int argc,char  *argv[]){
         solido1.b=solido.b;
         solido1.id_vertice1 = solido.id_vertice1;
         solido1.id_vertice2 = solido.id_vertice2;
+        cout << solido1.p << " " << solido1.q << endl;
         CreateSolid(solido1);
         CreateMesh(solido1);
         DualPolyhedron(solido,solido1);

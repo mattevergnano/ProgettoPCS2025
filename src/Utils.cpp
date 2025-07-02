@@ -414,8 +414,10 @@ namespace PlatonicLibrary{
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
         solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
+        cout << solido.NumCells1Ds << endl;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
             vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
+            cout <<  solido1.Cells2DsNeighborhood[idfaccia].size() << endl;
             for(unsigned int adj = 0;adj<solido.q;adj++){
                 if(idfaccia<vettore[adj]){
                     solido.Cells1DsExtrema(0,nlati) = idfaccia;
@@ -424,6 +426,8 @@ namespace PlatonicLibrary{
                 }
             }
         }
+
+
         solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
@@ -1286,8 +1290,9 @@ namespace PlatonicLibrary{
         solido.NumCells2Ds = solido.Cells2DsVertices.cols();
 
         // cout << solido.Cells2DsEdges << endl;
-
+        
         solido.Cells2DsNeighborhood.reserve(solido.NumCells2Ds);
+        // cout << "neigh " <<solido.Cells2DsNeighborhood.capacity()<< endl;
             for(unsigned int i : solido.Cells2DsId){
                 vector<unsigned int> vettore;
                 for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
@@ -1300,8 +1305,10 @@ namespace PlatonicLibrary{
                 }
                 }
                 sort(vettore.begin(), vettore.end(), comp);
+                cout << vettore.size() << endl;
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
+            // cout << "neigh " <<solido.Cells2DsNeighborhood.size()<< endl;
             solido.NumCells0Ds = solido.Cells0DsCoordinates.cols();
             solido.NumCells1Ds = solido.Cells1DsExtrema.cols();
             solido.VerticeFaces.resize(solido.NumCells0Ds);
@@ -1345,7 +1352,15 @@ namespace PlatonicLibrary{
 		// }
 		// solido.NumCells0Ds = npunti;
         // solido.NumCells1Ds = nlati;
-		
+		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+        for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+            solido.Cells3DsVertices[i]=i;
+        solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+        for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+            solido.Cells3DsEdges[i]=i;
+        solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+        for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+            solido.Cells3DsFaces[i]=i;
         return 0;
     }
  

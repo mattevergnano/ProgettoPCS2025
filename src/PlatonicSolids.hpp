@@ -41,6 +41,9 @@ namespace PlatonicLibrary{
         
         vector<vector<unsigned int>> Cells2DsNeighborhood;
 
+        VectorXi Cells3DsVertices = {};
+        VectorXi Cells3DsEdges = {};
+        VectorXi Cells3DsFaces = {};
         //parameters
         unsigned int p = 0;
         unsigned int q = 0;
