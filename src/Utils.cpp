@@ -413,7 +413,7 @@ namespace PlatonicLibrary{
         } 
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
-        solido.Cells1DsExtrema.setConstant(1000);
+        // solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
         // cout << solido.NumCells1Ds << endl;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
@@ -437,24 +437,24 @@ namespace PlatonicLibrary{
 
         solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
-        for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
-            for(unsigned int j = 0;j<solido1.q;j++){
-                solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
-            }
-        }
-        for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-            unsigned int nlati=0;
-            for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
-                for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
-                    for(unsigned int s=0;s<solido.NumCells1Ds;s++){
-                        if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
-                            solido.Cells2DsEdges(nlati,i)=s;
-                            nlati++;
-                        }
-                    }
-                }
-            }
-        }
+        // for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
+        //     for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
+        //         solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
+        //     }
+        // }
+        // for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+        //     unsigned int nlati=0;
+        //     for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
+        //         for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
+        //             for(unsigned int s=0;s<solido.NumCells1Ds;s++){
+        //                 if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
+        //                     solido.Cells2DsEdges(nlati,i)=s;
+        //                     nlati++;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         // cout << solido.Cells2DsEdges << endl;
         return 0;
     }
@@ -1225,7 +1225,7 @@ namespace PlatonicLibrary{
 		unsigned int n_lati = idlato;
    
 		
-		solido.adjacency.resize(n_punti);
+		solido.adjacency.resize(n_punti); //contiene i vertici adiacenti (che comunicano con un lato)
 		for(auto& k : solido.adjacency){
 		    k = {};	
 		}	
@@ -1258,7 +1258,7 @@ namespace PlatonicLibrary{
                     if(find(solido.adjacency[u].begin(), solido.adjacency[u].end(), w) != solido.adjacency[u].end()) {
                         // ordina i vertici del triangolo per evitare duplicati
                         vector<unsigned int> vert = {u, v, w};
-                        sort(vert.begin(), vert.end());
+                        sort(vert.begin(), vert.end(),comp);
                         triangoli.insert({vert[0], vert[1], vert[2]});
                     }
                 }
@@ -1347,7 +1347,7 @@ namespace PlatonicLibrary{
             }
             
             for(unsigned int i = 0;i<solido.Cells2DsVertices.cols();i++){
-                for(unsigned int j = 0;j<solido.Cells2DsVertices.rows();j++){
+                for(unsigned int j = 0;j<solido.Cells2DsVertices.col(i).size();j++){
                     // cout << "j " << j << " i " << i << endl;
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                     // cout << solido.Cells2DsVertices(j,i) << endl;
@@ -1392,7 +1392,7 @@ namespace PlatonicLibrary{
             solido.Cells3DsFaces[i]=i;
         return 0;
     }
- /*
+ 
 	int ShortestPath(PlatonicSolids& solido){
 	    int n = solido.adjacency.size(); //numero dei nodi
         // for(unsigned int i=0; i < n; i++){
@@ -1477,7 +1477,7 @@ namespace PlatonicLibrary{
         }
       return 0;
 	}
- */
+/*
  
  int ShortestPath(PlatonicSolids& solido){
     int n = solido.adjacency.size();
@@ -1563,7 +1563,7 @@ namespace PlatonicLibrary{
     cerr << "Nessun cammino trovato tra i vertici specificati." << endl;
     return 2;  // nessun cammino trovato
 }
-
+*/
  
 }	
 	
