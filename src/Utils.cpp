@@ -1414,7 +1414,7 @@ namespace PlatonicLibrary{
 		*/
         return 0;
     }
-	
+
 	void FileCell3Ds(PlatonicSolids& solido) {
 		ofstream outputFile("Cells3Ds.txt");
 		if (!outputFile) {
@@ -1446,6 +1446,7 @@ namespace PlatonicLibrary{
 			 << solido.Cells3DsFaces.size() << " faces." << endl;
     }
 	
+
 	int ShortestPath(PlatonicSolids& solido){
 	    int n = solido.adjacency.size(); //numero dei nodi
         // for(unsigned int i=0; i < n; i++){
@@ -1530,6 +1531,95 @@ namespace PlatonicLibrary{
         }
       return 0;
 	}
+
+/*
+ 
+ int ShortestPath(PlatonicSolids& solido){
+    int n = solido.adjacency.size();
+
+    // Controllo validità indici (>=0 e < n)
+    if(solido.id_vertice1 < 0 || solido.id_vertice2 < 0 || solido.id_vertice1 >= n || solido.id_vertice2 >= n){
+        cerr << "Not valid vertice indexes" << endl;
+        return 1;
+    }
+
+    queue<int> Q;
+    vector<int> distanza(n, -1);
+    vector<bool> visited(n, false);
+    vector<int> predecessore(n, -1);
+
+    Q.push(solido.id_vertice1);
+    visited[solido.id_vertice1] = true;
+    distanza[solido.id_vertice1] = 0;
+
+    while(!Q.empty()){
+        int u = Q.front();
+        Q.pop();
+
+        for(int w : solido.adjacency[u]){
+            if(!visited[w]){
+                visited[w] = true;
+                distanza[w] = distanza[u] + 1;
+                predecessore[w] = u;
+                Q.push(w);
+
+                if(w == solido.id_vertice2){
+                    cout << "Cammino trovato: " << distanza[w] << " passi." << endl;
+
+                    vector<int> path;
+                    for(int at = w; at != -1; at = predecessore[at]){
+                        path.push_back(at);
+                    }
+                    reverse(path.begin(), path.end());
+
+                    cout << "Cammino vertici: ";
+                    for(int v : path){
+                        cout << v << " ";
+                    }
+                    cout << endl;
+
+                    // Inserisco il path nel dizionario correttamente: attenzione all'uso di iterator
+                    auto itV = solido.ShortPathVertices.find(1);
+                    if(itV == solido.ShortPathVertices.end()){
+                     solido.ShortPathVertices[1] = list<unsigned int>(path.begin(), path.end());  // creo la coppia con la lista completa
+                    } else {
+                        itV->second = list<unsigned int>(path.begin(), path.end());  // sovrascrivo (o si potrebbe aggiungere)
+                    }
+
+                    vector<int> edgepath;
+                    for(unsigned int i = 0; i < solido.NumCells1Ds; i++){
+                        for(unsigned int k = 0; k < path.size() - 1; k++){  // path.size()-1 perché k+1 senza modulo
+                            if((solido.Cells1DsExtrema(0, i) == path[k] && solido.Cells1DsExtrema(1, i) == path[k+1]) ||
+                               (solido.Cells1DsExtrema(1, i) == path[k] && solido.Cells1DsExtrema(0, i) == path[k+1])){
+                                edgepath.push_back(i);
+                            }
+                        }
+                    }
+
+                    cout << "Cammino lati: ";
+                    for(int e : edgepath){
+                        cout << e << " ";
+                    }
+                    cout << endl;
+
+                    auto itE = solido.ShortPathEdges.find(1);
+                    if(itE == solido.ShortPathEdges.end()){
+                        solido.ShortPathEdges[1] = std::list<unsigned int>(edgepath.begin(), edgepath.end());;
+                    } else {
+                       itE->second = std::list<unsigned int>(edgepath.begin(), edgepath.end());
+                    }
+
+                    return 0;  // successo
+                }
+            }
+        }
+    }
+
+    cerr << "Nessun cammino trovato tra i vertici specificati." << endl;
+    return 2;  // nessun cammino trovato
+}
+*/
+
  
 }	
 	
