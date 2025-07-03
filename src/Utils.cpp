@@ -418,14 +418,20 @@ namespace PlatonicLibrary{
         // cout << solido.NumCells1Ds << endl;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
             vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
+            // cout << idfaccia << ": ";
+            // for(auto& el:vettore){
+            //     cout << el << " ";
+            // }
+            // cout << endl;
             if(solido1.Cells2DsNeighborhood[idfaccia].size()!=0){
-            for(unsigned int adj = 0;adj<solido.q;adj++){
-                if(idfaccia<vettore[adj]){
-                    solido.Cells1DsExtrema(0,nlati) = idfaccia;
-                    solido.Cells1DsExtrema(1,nlati) = vettore[adj];
-                    nlati ++;
+                for(unsigned int adj = 0;adj<solido.q;adj++){
+                    if(idfaccia<vettore[adj]){
+                        solido.Cells1DsExtrema(0,nlati) = idfaccia;
+                        solido.Cells1DsExtrema(1,nlati) = vettore[adj];
+                        nlati ++;
+                    }
                 }
-            }}
+            }
         }
 
 
@@ -1272,7 +1278,7 @@ namespace PlatonicLibrary{
             for(unsigned int i = 0; i < 3; ++i) {
                 unsigned int a = vertici(i);
                 unsigned int b = vertici((i + 1) % 3);
-                for(unsigned int idlato = 0; idlato < solido.NumCells1Ds; ++idlato) {
+                for(unsigned int idlato = 0; idlato < solido.Cells1DsExtrema.size(); ++idlato) {
                     unsigned int u = solido.Cells1DsExtrema(0, idlato);
                     unsigned int v = solido.Cells1DsExtrema(1, idlato);
                     if((a == u && b == v) || (a == v && b == u)) {
@@ -1290,10 +1296,11 @@ namespace PlatonicLibrary{
         }
         solido.NumCells2Ds = solido.Cells2DsVertices.cols();
         cout << "2D " <<solido.NumCells2Ds << endl;
+        cout << solido.Cells2DsEdges.transpose() << endl;
         
         solido.Cells2DsNeighborhood.resize(solido.NumCells2Ds);
         // cout << "neigh " <<solido.Cells2DsNeighborhood.capacity()<< endl;
-            for(unsigned int i : solido.Cells2DsId){
+            for(unsigned int i=0;i<solido.NumCells2Ds;i++){
                 vector<unsigned int> vettore;
                 for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
                     for(unsigned int j=0;j<solido.NumCells2Ds;j++){
