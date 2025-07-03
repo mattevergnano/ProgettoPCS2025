@@ -13,7 +13,6 @@ int main(int argc,char  *argv[]){
 	if(solido.p==3){
         CreateSolid(solido);
         CreateMesh(solido);
-        cout << solido.NumCells0Ds << endl;
     }
     if(solido.q==3 && solido.p != 3){
         PlatonicSolids solido1;
@@ -22,7 +21,6 @@ int main(int argc,char  *argv[]){
         solido1.b=solido.b;
         solido1.id_vertice1 = solido.id_vertice1;
         solido1.id_vertice2 = solido.id_vertice2;
-        cout << solido1.p << " " << solido1.q << endl;
         CreateSolid(solido1);
         CreateMesh(solido1);
         DualPolyhedron(solido,solido1);
@@ -30,7 +28,7 @@ int main(int argc,char  *argv[]){
     // FileCell0Ds(solido);
 	// FileCell1Ds(solido);
 	// FileCell2Ds(solido);
-    // ShortestPath(solido);
+    ShortestPath(solido);
     
     Gedim::UCDUtilities utilities;
     {
