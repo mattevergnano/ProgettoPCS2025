@@ -1248,14 +1248,14 @@ namespace PlatonicLibrary{
         
         set<tuple<unsigned int, unsigned int, unsigned int>> triangoli;
 
-        for (unsigned int u = 0; u < solido.adjacency.size(); ++u) {
-            for (unsigned int v : solido.adjacency[u]) {
+        for(unsigned int u = 0; u < solido.adjacency.size(); ++u) {
+            for(unsigned int v : solido.adjacency[u]) {
                 if(v <= u) continue; // evita duplicati simmetrici
 
                 for(unsigned int w : solido.adjacency[v]) {
-                    if (w <= v || w == u) continue; // evita duplicati e cicli
+                    if(w <= v || w == u) continue; // evita duplicati e cicli
                     // controlla che w sia adiacente anche a u
-                    if (find(solido.adjacency[u].begin(), solido.adjacency[u].end(), w) != solido.adjacency[u].end()) {
+                    if(find(solido.adjacency[u].begin(), solido.adjacency[u].end(), w) != solido.adjacency[u].end()) {
                         // ordina i vertici del triangolo per evitare duplicati
                         vector<unsigned int> vert = {u, v, w};
                         sort(vert.begin(), vert.end());
@@ -1296,24 +1296,24 @@ namespace PlatonicLibrary{
         }
         solido.NumCells2Ds = solido.Cells2DsVertices.cols();
         cout << "2D " <<solido.NumCells2Ds << endl;
-        cout << solido.Cells2DsEdges.transpose() << endl;
+        // cout << solido.Cells2DsEdges.transpose() << endl;
         
         solido.Cells2DsNeighborhood.resize(solido.NumCells2Ds);
         // cout << "neigh " <<solido.Cells2DsNeighborhood.capacity()<< endl;
             for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-                vector<unsigned int> vettore;
+                set<unsigned int> vicini;
                 for(unsigned int latoi : solido.Cells2DsEdges.col(i)){
                     for(unsigned int j=0;j<solido.NumCells2Ds;j++){
+                        if(i==j) continue;
                         for(unsigned int latoj : solido.Cells2DsEdges.col(j)){
                             if(i != j && latoi == latoj){
-                                vettore.push_back(j);
+                                vicini.insert(j);
                             }
                         }
                 }
                 }
-                sort(vettore.begin(), vettore.end(), comp);
                 // cout << vettore.size() << endl;
-                solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
+                solido.Cells2DsNeighborhood[i] = vector<unsigned int>(vicini.begin(),vicini.end());
             }
             // for(auto& vett : solido.Cells2DsNeighborhood){
             //     for(auto& el : vett){
