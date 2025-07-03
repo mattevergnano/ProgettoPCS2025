@@ -310,109 +310,138 @@ TEST(CreateSolidTest, Icosahedron) {
     }
 }
 
-
-void TestFileCell0DsOutput(const PlatonicSolids& solido) {
+void TestFileCell0DsOutput(PlatonicSolids& solido) {
+    CreateSolid(solido);
     FileCell0Ds(solido);
 
-    ifstream file("Cells0Ds.txt");
-    ASSERT_TRUE(!!file) << "Failed to open Cells0Ds.txt";
+    std::ifstream file("Cells0Ds.txt");
+    ASSERT_TRUE(file.is_open()) << "Cannot open Cells0Ds.txt";
 
-    string line;
-    int n = 0;
+    std::string line;
+    std::getline(file, line);
+    EXPECT_TRUE(line.find("ID") != std::string::npos && line.find("x") != std::string::npos);
 
-    getline(file, line);
-    ++n;
-    EXPECT_EQ(line, "ID    x              y              z") << "Header line is incorrect.";
-
-    while (getline(file, line)) {
-        ++n;
-
-        istringstream ss(line);
+    int count = 0;
+    while (std::getline(file, line)) {
+        ++count;
+        std::istringstream ss(line);
         int id;
         double x, y, z;
-        EXPECT_TRUE((ss >> id >> x >> y >> z)) << "Malformed data line.";
+        EXPECT_TRUE(ss >> id >> x >> y >> z) << "Malformed data at line " << count+1 << ": " << line;
+        EXPECT_EQ(id, count - 1);
     }
-
-    EXPECT_EQ(n, solido.NumCells0Ds + 1) << "Incorrect number of lines in Cells0Ds.txt.";
+    EXPECT_EQ(count, solido.NumCells0Ds);
 }
 
-void TestFileCell1DsOutput(const PlatonicSolids& solido) {
+void TestFileCell1DsOutput(PlatonicSolids& solido) {
+    CreateSolid(solido);
     FileCell1Ds(solido);
 
-    ifstream file("Cells1Ds.txt");
-    ASSERT_TRUE(!!file) << "Failed to open Cells1Ds.txt";
+    std::ifstream file("Cells1Ds.txt");
+    ASSERT_TRUE(file.is_open()) << "Cannot open Cells1Ds.txt";
 
-    string line;
-    int n = 0;
+    std::string line;
+    std::getline(file, line);
+    EXPECT_TRUE(line.find("ID") != std::string::npos && line.find("Initial") != std::string::npos);
 
-    getline(file, line);
-    ++n;
-    EXPECT_EQ(line, "ID\tInitial Vertices\tFinal Vertices") << "Header line is incorrect.";
-
-    while (getline(file, line)) {
-        ++n;
-
-        istringstream ss(line);
-        int id, InitialVertices, FinalVertices;
-        EXPECT_TRUE((ss >> id >> InitialVertices >> FinalVertices)) << "Malformed data line.";
+    int count = 0;
+    while (std::getline(file, line)) {
+        ++count;
+        std::istringstream ss(line);
+        int id, initV, finalV;
+        EXPECT_TRUE(ss >> id >> initV >> finalV) << "Malformed data at line " << count+1 << ": " << line;
+        EXPECT_EQ(id, count - 1);
     }
-
-    EXPECT_EQ(n, solido.NumCells1Ds + 1) << "Incorrect number of lines in Cells1Ds.txt.";
+    EXPECT_EQ(count, solido.NumCells1Ds);
 }
 
-void TestFileCell2DsOutput(const PlatonicSolids& solido) {
-    
-	FileCell2Ds(solido);
+void TestFileCell2DsOutput(PlatonicSolids& solido) {
+    CreateSolid(solido);
+    FileCell2Ds(solido);
 
-    ifstream file("Cells2Ds.txt");
-    ASSERT_TRUE(!!file) << "Failed to open Cells2Ds.txt";
+    std::ifstream file("Cells2Ds.txt");
+    ASSERT_TRUE(file.is_open()) << "Cannot open Cells2Ds.txt";
 
-    string line;
-    int n = 0;
+    std::string line;
+    std::getline(file, line);
+    EXPECT_TRUE(line.find("ID") != std::string::npos && line.find("NumVertices") != std::string::npos);
 
-    
-    getline(file, line);
-    ++n;
-    EXPECT_EQ(line, "ID\tNumVertices\tNumEdges\tVerticesIDs\t\tEdgesIDs") << "Header line is incorrect.";
-
-    while (getline(file, line)) {
-        ++n;
-
-        istringstream ss(line);
+    int count = 0;
+    while (std::getline(file, line)) {
+        ++count;
+        std::istringstream ss(line);
         int id, numVertices, numEdges;
-
-        
-        EXPECT_TRUE(ss >> id >> numVertices >> numEdges) << "Malformed data line: " << line;
-
+        EXPECT_TRUE(ss >> id >> numVertices >> numEdges) << "Malformed header data at line " << count+1 << ": " << line;
+        EXPECT_EQ(id, count - 1);
 
         for (int i = 0; i < numVertices; ++i) {
-            int vertexId;
-            EXPECT_TRUE(ss >> vertexId) << "Missing or invalid vertex ID in line.";
+            int vId;
+            EXPECT_TRUE(ss >> vId) << "Missing vertex ID at line " << count+1 << ": " << line;
         }
-
         for (int i = 0; i < numEdges; ++i) {
-            int edgeId;
-            EXPECT_TRUE(ss >> edgeId) << "Missing or invalid edge ID in line.";
+            int eId;
+            EXPECT_TRUE(ss >> eId) << "Missing edge ID at line " << count+1 << ": " << line;
         }
-
-       
     }
-
-    EXPECT_EQ(n, solido.NumCells2Ds + 1) << "Incorrect number of lines in Cells2Ds.txt.";
+    EXPECT_EQ(count, solido.NumCells2Ds);
 }
 
+void TestFileCell3DsOutput(PlatonicSolids& solido) {
+    CreateSolid(solido);
+    FileCell3Ds(solido);
+
+    std::ifstream file("Cells3Ds.txt");
+    ASSERT_TRUE(file.is_open()) << "Cannot open Cells3Ds.txt";
+
+    std::string line;
+
+    std::getline(file, line);
+    EXPECT_EQ(line, "FinalVertices:");
+
+    for (size_t i = 0; i < solido.Cells3DsVertices.size(); ++i) {
+        ASSERT_TRUE(std::getline(file, line));
+        std::istringstream ss(line);
+        unsigned int id;
+        EXPECT_TRUE(ss >> id) << "Bad vertex id line " << i+1;
+        EXPECT_EQ(id, solido.Cells3DsVertices[i]);
+    }
+
+    std::getline(file, line);
+    EXPECT_EQ(line, "Edges:");
+
+    for (size_t i = 0; i < solido.Cells3DsEdges.size(); ++i) {
+        ASSERT_TRUE(std::getline(file, line));
+        std::istringstream ss(line);
+        unsigned int id;
+        EXPECT_TRUE(ss >> id) << "Bad edge id line " << i+1;
+        EXPECT_EQ(id, solido.Cells3DsEdges[i]);
+    }
+
+    std::getline(file, line);
+    EXPECT_EQ(line, "Faces:");
+
+    for (size_t i = 0; i < solido.Cells3DsFaces.size(); ++i) {
+        ASSERT_TRUE(std::getline(file, line));
+        std::istringstream ss(line);
+        unsigned int id;
+        EXPECT_TRUE(ss >> id) << "Bad face id line " << i+1;
+        EXPECT_EQ(id, solido.Cells3DsFaces[i]);
+    }
+
+    EXPECT_FALSE(std::getline(file, line));
+}
 
 TEST(FileCellTest, Tetrahedron) {
     PlatonicSolids solid;
     solid.p = 3;
     solid.q = 3;
 
-    CreateSolid(solid);
-	cout << solid.p << endl;
-    
+   CreateSolid(solid);
+
    TestFileCell0DsOutput(solid);
    TestFileCell1DsOutput(solid);
    TestFileCell2DsOutput(solid);
+   TestFileCell3DsOutput(solid);
 }
 
 
@@ -423,7 +452,8 @@ TEST(FileCellTest, Cube) {
    CreateSolid(solido);
    TestFileCell0DsOutput(solido);
    TestFileCell1DsOutput(solido);
-   TestFileCell2DsOutput(solido);
+  TestFileCell2DsOutput(solido);
+  TestFileCell3DsOutput(solido);
 }
 
 TEST(FileCellTest, Octahedron) {
@@ -434,6 +464,7 @@ TEST(FileCellTest, Octahedron) {
    TestFileCell0DsOutput(solido);
    TestFileCell1DsOutput(solido);
    TestFileCell2DsOutput(solido);
+   TestFileCell3DsOutput(solido);
 }
 
 TEST(FileCellTest, Dodecahedron) {
@@ -444,6 +475,7 @@ TEST(FileCellTest, Dodecahedron) {
    TestFileCell0DsOutput(solido);
    TestFileCell1DsOutput(solido);
    TestFileCell2DsOutput(solido);
+   TestFileCell3DsOutput(solido);
 }
 
 TEST(FileCellTest, Icosahedron) {
@@ -453,15 +485,26 @@ TEST(FileCellTest, Icosahedron) {
    CreateSolid(solido);
     TestFileCell0DsOutput(solido);
     TestFileCell1DsOutput(solido);
-    TestFileCell2DsOutput(solido);
+   TestFileCell2DsOutput(solido);
+  TestFileCell3DsOutput(solido);
 }
 
+void CheckValidVertices(const PlatonicSolids& solido, int start, int end) {
+    int n = solido.adjacency.size();
+    ASSERT_GE(start, 0) << "Indice start negativo";
+    ASSERT_GE(end, 0) << "Indice end negativo";
+    ASSERT_LT(start, n) << "Indice start (" << start << ") non valido, supera numero vertici (" << n << ")";
+    ASSERT_LT(end, n) << "Indice end (" << end << ") non valido, supera numero vertici (" << n << ")";
+}
 
 void CheckShortestPath(PlatonicSolids& solido,
                        int InitialVertices,
                        int FinalVertices,
-                       const vector<unsigned int>& Vertices,
+                       const vector<unsigned int>& FinalVerticesPath,
                        const vector<unsigned int>& Edge) {
+						   
+	
+	CheckValidVertices(solido, InitialVertices, FinalVertices);
     
     solido.id_vertice1 = InitialVertices;
     solido.id_vertice2 = FinalVertices;
@@ -471,9 +514,9 @@ void CheckShortestPath(PlatonicSolids& solido,
 
     EXPECT_EQ(ShortestPath(solido), 0) << "The function performs correctly";
 
-    ASSERT_TRUE(solido.ShortPathVertices.count(1)) << "The vertices path is missing";
+    ASSERT_TRUE(solido.ShortPathVertices.count(1)) << "The FinalVertices path is missing";
     vector<unsigned int> computedVertices(solido.ShortPathVertices[1].begin(), solido.ShortPathVertices[1].end());
-    EXPECT_EQ(computedVertices, Vertices) << "The vertices path is not correct";
+    EXPECT_EQ(computedVertices, FinalVerticesPath) << "The FinalVertices path is not correct";
 
     ASSERT_TRUE(solido.ShortPathEdges.count(1)) << "The edge path is missing";
     vector<unsigned int> computedEdges(solido.ShortPathEdges[1].begin(), solido.ShortPathEdges[1].end());
@@ -485,22 +528,21 @@ TEST(ShortestPathTest, Tetrahedron) {
     solido.p = 3; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> Vertices = {0, 2};
+    vector<unsigned int> FinalVertices = {0, 2};
     vector<unsigned int> Edge = {1};
 
-    CheckShortestPath(solido, 0, 2, Vertices, Edge);
+    CheckShortestPath(solido, 0, 2, FinalVertices, Edge);
 }
 
-/*
 TEST(ShortestPathTest, Cube) {
     PlatonicSolids solido;
     solido.p = 4; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> Vertices = {0, 1, 6};
+    vector<unsigned int> FinalVertices = {0, 1, 6};
     vector<unsigned int> Edge = {0, 5};
 
-    CheckShortestPath(solido, 0, 6, Vertices, Edge);
+    CheckShortestPath(solido, 0, 6, FinalVertices, Edge);
 }
 
 TEST(ShortestPathTest, Octahedron) {
@@ -508,10 +550,10 @@ TEST(ShortestPathTest, Octahedron) {
     solido.p = 3; solido.q = 4; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> Vertices = {0, 3};
+    vector<unsigned int> FinalVertices = {0, 3};
     vector<unsigned int> Edge = {2};
 
-    CheckShortestPath(solido, 0, 3, Vertices, Edge);
+    CheckShortestPath(solido, 0, 3, FinalVertices, Edge);
 }
 
 TEST(ShortestPathTest, Dodecahedron) {
@@ -519,10 +561,10 @@ TEST(ShortestPathTest, Dodecahedron) {
     solido.p = 5; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> Vertices = {0, 5, 9};
+    vector<unsigned int> FinalVertices = {0, 5, 9};
     vector<unsigned int> Edge = {4, 7};
 
-    CheckShortestPath(solido, 0, 9, Vertices, Edge);
+    CheckShortestPath(solido, 0, 9, FinalVertices, Edge);
 }
 
 TEST(ShortestPathTest, Icosahedron) {
@@ -530,12 +572,11 @@ TEST(ShortestPathTest, Icosahedron) {
     solido.p = 3; solido.q = 5; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> Vertices = {0, 7};
+    vector<unsigned int> FinalVertices = {0, 7};
     vector<unsigned int> Edge = {3};
 
-    CheckShortestPath(solido, 0, 7, Vertices, Edge);
+    CheckShortestPath(solido, 0, 7, FinalVertices, Edge);
 }
-*/
 
 }
 

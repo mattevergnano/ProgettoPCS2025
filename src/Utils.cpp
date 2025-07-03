@@ -64,7 +64,7 @@ namespace PlatonicLibrary{
         }
         return 0;
     }
-   
+  
 	int CreateSolid(PlatonicSolids& solido){
         //classify type of polyhedra
         if(solido.p == 3 && solido.q == 3){
@@ -114,7 +114,7 @@ namespace PlatonicLibrary{
                 solido.Cells2DsNeighborhood.insert(solido.Cells2DsNeighborhood.begin() + i,vettore);
             }
 
-            solido.VerticeFaces.reserve(solido.NumCells0Ds);// ho messo resize , al posto di reserve
+            solido.VerticeFaces.resize(solido.NumCells0Ds);// ho messo resize , al posto di reserve
             //riservo memoria
             for (auto& sottovettore : solido.VerticeFaces) {
                 sottovettore.reserve(solido.q); // riserva spazio per 5 elementi per ogni sottovettore
@@ -127,6 +127,15 @@ namespace PlatonicLibrary{
             for(auto& el : solido.VerticeFaces){
                 sort(el.begin(),el.end(),comp);
             }
+			solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+			for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+				solido.Cells3DsVertices[i]=i;
+			solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+			for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+				solido.Cells3DsEdges[i]=i;
+			solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+			for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+				solido.Cells3DsFaces[i]=i;
         }else if(solido.p == 4 && solido.q == 3){
             //CUBO, duale dell'ottaedro
             //creo una nuova istanza di solido, solido1, in cui genero l'ottaedro, e poi passo solido e solido1 a Duale per creare il cubo
@@ -196,7 +205,15 @@ namespace PlatonicLibrary{
             for(auto& el : solido.VerticeFaces){
                 sort(el.begin(),el.end(),comp);
             }	
-        
+			solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+			for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+				solido.Cells3DsVertices[i]=i;
+			solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+			for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+				solido.Cells3DsEdges[i]=i;
+			solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+			for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+				solido.Cells3DsFaces[i]=i; 
         }else if(solido.p == 5 && solido.q == 3){
             //DODECAEDRO, duale dell'icosaedro
             PlatonicSolids solido1;
@@ -279,13 +296,21 @@ namespace PlatonicLibrary{
             }
             for(auto& el : solido.VerticeFaces){
                 sort(el.begin(),el.end(),comp);
-            }	
-		}	
-
+            }
+            solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+			for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+				solido.Cells3DsVertices[i]=i;
+				solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+			for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+				solido.Cells3DsEdges[i]=i;
+			solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+			for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+				solido.Cells3DsFaces[i]=i;   			
+			}	
     return 0;
     };
-	
-    void FileCell0Ds(const PlatonicSolids& solido) {
+
+    void FileCell0Ds(PlatonicSolids& solido) {
 		
 		ofstream outputFile;
 		outputFile.open("Cells0Ds.txt");
@@ -294,6 +319,8 @@ namespace PlatonicLibrary{
 		return;
 		}
 
+        CreateSolid(solido);
+       
 		outputFile << "ID    x              y              z" << endl;
 		for (unsigned int i = 0; i < solido.NumCells0Ds; ++i) {
 			outputFile << i << "    "
@@ -308,7 +335,7 @@ namespace PlatonicLibrary{
 		cout << "Cells0Ds.txt file created successfully with " << solido.NumCells0Ds << " vertices." << endl;
     }
 	
-	void FileCell1Ds(const PlatonicSolids& solido) {
+	void FileCell1Ds(PlatonicSolids& solido) {
 		
 		ofstream outputFile;
 		outputFile.open("Cells1Ds.txt");
@@ -317,7 +344,8 @@ namespace PlatonicLibrary{
         return;
 		}
 
-    
+        CreateSolid(solido);
+	
 		outputFile << "ID\tInitial Vertices\tFinal Vertices" << endl;
 
     
@@ -331,7 +359,7 @@ namespace PlatonicLibrary{
 		cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
 	}
 	
-	void FileCell2Ds(const PlatonicSolids& solido) {
+	void FileCell2Ds(PlatonicSolids& solido) {
 		
 		ofstream outputFile;
 		outputFile.open("Cells2Ds.txt");
@@ -339,8 +367,8 @@ namespace PlatonicLibrary{
 			cerr << "Error opening file: Cells2Ds.txt" << endl;
         return;
 		}
-
-    
+        
+	    CreateSolid(solido);
 		outputFile << "ID\tNumVertices\tNumEdges\tVerticesIDs\t\tEdgesIDs" << endl;
 
 		for (unsigned int i = 0; i < solido.NumCells2Ds; ++i) {
@@ -366,7 +394,6 @@ namespace PlatonicLibrary{
         outputFile.close();
         cout << "Cells2Ds.txt file created successfully with " << solido.NumCells2Ds << " faces." << endl;
     }
-	
 	
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1){
         cout << "duale" << endl;
@@ -413,7 +440,7 @@ namespace PlatonicLibrary{
         } 
         //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
         solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
-        solido.Cells1DsExtrema.setConstant(1000);
+        // solido.Cells1DsExtrema.setConstant(1000);
         unsigned int nlati = 0;
         // cout << solido.NumCells1Ds << endl;
         for(unsigned int idfaccia = 0;idfaccia<solido1.NumCells2Ds;idfaccia++){
@@ -437,25 +464,34 @@ namespace PlatonicLibrary{
 
         solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
-        for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
-            for(unsigned int j = 0;j<solido1.q;j++){
-                solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
-            }
-        }
-        for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-            unsigned int nlati=0;
-            for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
-                for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
-                    for(unsigned int s=0;s<solido.NumCells1Ds;s++){
-                        if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
-                            solido.Cells2DsEdges(nlati,i)=s;
-                            nlati++;
-                        }
-                    }
-                }
-            }
-        }
-        // cout << solido.Cells2DsEdges << endl;
+        // for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
+        //     for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
+        //         solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
+        //     }
+        // }
+        // for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+        //     unsigned int nlati=0;
+        //     for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
+        //         for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
+        //             for(unsigned int s=0;s<solido.NumCells1Ds;s++){
+        //                 if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
+        //                     solido.Cells2DsEdges(nlati,i)=s;
+        //                     nlati++;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // cout << solido.Cells2DsEdges << endl;  
+		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+        for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+            solido.Cells3DsVertices[i]=i;
+        solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+        for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+            solido.Cells3DsEdges[i]=i;
+        solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+        for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+            solido.Cells3DsFaces[i]=i;
         return 0;
     }
     int CreateMesh(PlatonicSolids& solido){
@@ -1225,7 +1261,7 @@ namespace PlatonicLibrary{
 		unsigned int n_lati = idlato;
    
 		
-		solido.adjacency.resize(n_punti);
+		solido.adjacency.resize(n_punti); //contiene i vertici adiacenti (che comunicano con un lato)
 		for(auto& k : solido.adjacency){
 		    k = {};	
 		}	
@@ -1258,7 +1294,7 @@ namespace PlatonicLibrary{
                     if(find(solido.adjacency[u].begin(), solido.adjacency[u].end(), w) != solido.adjacency[u].end()) {
                         // ordina i vertici del triangolo per evitare duplicati
                         vector<unsigned int> vert = {u, v, w};
-                        sort(vert.begin(), vert.end());
+                        sort(vert.begin(), vert.end(),comp);
                         triangoli.insert({vert[0], vert[1], vert[2]});
                     }
                 }
@@ -1347,7 +1383,7 @@ namespace PlatonicLibrary{
             }
             
             for(unsigned int i = 0;i<solido.Cells2DsVertices.cols();i++){
-                for(unsigned int j = 0;j<solido.Cells2DsVertices.rows();j++){
+                for(unsigned int j = 0;j<solido.Cells2DsVertices.col(i).size();j++){
                     // cout << "j " << j << " i " << i << endl;
                     solido.VerticeFaces[solido.Cells2DsVertices(j,i)].push_back(i);
                     // cout << solido.Cells2DsVertices(j,i) << endl;
@@ -1381,6 +1417,7 @@ namespace PlatonicLibrary{
 		// }
 		// solido.NumCells0Ds = npunti;
         // solido.NumCells1Ds = nlati;
+		/*
 		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
         for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
             solido.Cells3DsVertices[i]=i;
@@ -1390,9 +1427,41 @@ namespace PlatonicLibrary{
         solido.Cells3DsFaces.resize(solido.NumCells2Ds);
         for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
             solido.Cells3DsFaces[i]=i;
+		*/
         return 0;
     }
- /*
+	
+	void FileCell3Ds(PlatonicSolids& solido) {
+		ofstream outputFile("Cells3Ds.txt");
+		if (!outputFile) {
+			cerr << "Error opening file: Cells3Ds.txt" << endl;
+			return;
+		}
+
+		CreateSolid(solido);
+
+		outputFile << "FinalVertices:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsVertices.size(); ++i) {
+			outputFile << solido.Cells3DsVertices[i] << "\n";
+		}
+
+		outputFile << "Edges:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsEdges.size(); ++i) {
+			outputFile << solido.Cells3DsEdges[i] << "\n";
+		}
+
+		outputFile << "Faces:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsFaces.size(); ++i) {
+			outputFile << solido.Cells3DsFaces[i] << "\n";
+		}
+
+		outputFile.close();
+		cout << "Cells3Ds.txt file created successfully with "
+			 << solido.Cells3DsVertices.size() << " vertices, "
+			 << solido.Cells3DsEdges.size() << " edges, and "
+			 << solido.Cells3DsFaces.size() << " faces." << endl;
+    }
+	
 	int ShortestPath(PlatonicSolids& solido){
 	    int n = solido.adjacency.size(); //numero dei nodi
         // for(unsigned int i=0; i < n; i++){
@@ -1477,93 +1546,7 @@ namespace PlatonicLibrary{
         }
       return 0;
 	}
- */
- 
- int ShortestPath(PlatonicSolids& solido){
-    int n = solido.adjacency.size();
-
-    // Controllo validità indici (>=0 e < n)
-    if(solido.id_vertice1 < 0 || solido.id_vertice2 < 0 || solido.id_vertice1 >= n || solido.id_vertice2 >= n){
-        cerr << "Not valid vertice indexes" << endl;
-        return 1;
-    }
-
-    queue<int> Q;
-    vector<int> distanza(n, -1);
-    vector<bool> visited(n, false);
-    vector<int> predecessore(n, -1);
-
-    Q.push(solido.id_vertice1);
-    visited[solido.id_vertice1] = true;
-    distanza[solido.id_vertice1] = 0;
-
-    while(!Q.empty()){
-        int u = Q.front();
-        Q.pop();
-
-        for(int w : solido.adjacency[u]){
-            if(!visited[w]){
-                visited[w] = true;
-                distanza[w] = distanza[u] + 1;
-                predecessore[w] = u;
-                Q.push(w);
-
-                if(w == solido.id_vertice2){
-                    cout << "Cammino trovato: " << distanza[w] << " passi." << endl;
-
-                    vector<int> path;
-                    for(int at = w; at != -1; at = predecessore[at]){
-                        path.push_back(at);
-                    }
-                    reverse(path.begin(), path.end());
-
-                    cout << "Cammino vertici: ";
-                    for(int v : path){
-                        cout << v << " ";
-                    }
-                    cout << endl;
-
-                    // Inserisco il path nel dizionario correttamente: attenzione all'uso di iterator
-                    auto itV = solido.ShortPathVertices.find(1);
-                    if(itV == solido.ShortPathVertices.end()){
-                     solido.ShortPathVertices[1] = list<unsigned int>(path.begin(), path.end());  // creo la coppia con la lista completa
-                    } else {
-                        itV->second = list<unsigned int>(path.begin(), path.end());  // sovrascrivo (o si potrebbe aggiungere)
-                    }
-
-                    vector<int> edgepath;
-                    for(unsigned int i = 0; i < solido.NumCells1Ds; i++){
-                        for(unsigned int k = 0; k < path.size() - 1; k++){  // path.size()-1 perché k+1 senza modulo
-                            if((solido.Cells1DsExtrema(0, i) == path[k] && solido.Cells1DsExtrema(1, i) == path[k+1]) ||
-                               (solido.Cells1DsExtrema(1, i) == path[k] && solido.Cells1DsExtrema(0, i) == path[k+1])){
-                                edgepath.push_back(i);
-                            }
-                        }
-                    }
-
-                    cout << "Cammino lati: ";
-                    for(int e : edgepath){
-                        cout << e << " ";
-                    }
-                    cout << endl;
-
-                    auto itE = solido.ShortPathEdges.find(1);
-                    if(itE == solido.ShortPathEdges.end()){
-                        solido.ShortPathEdges[1] = std::list<unsigned int>(edgepath.begin(), edgepath.end());;
-                    } else {
-                       itE->second = std::list<unsigned int>(edgepath.begin(), edgepath.end());
-                    }
-
-                    return 0;  // successo
-                }
-            }
-        }
-    }
-
-    cerr << "Nessun cammino trovato tra i vertici specificati." << endl;
-    return 2;  // nessun cammino trovato
-}
-
  
 }	
 	
+
