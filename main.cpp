@@ -28,10 +28,10 @@ int main(int argc,char  *argv[]){
         CreateMesh(solido1);
         DualPolyhedron(solido,solido1);
     }}
-    FileCell0Ds(solido);
-	FileCell1Ds(solido);
-	FileCell2Ds(solido);
-	FileCell3Ds(solido);
+    // FileCell0Ds(solido);
+	// FileCell1Ds(solido);
+	// FileCell2Ds(solido);
+	// FileCell3Ds(solido);
     ShortestPath(solido);
     
     Gedim::UCDUtilities utilities;
