@@ -1363,40 +1363,6 @@ namespace PlatonicLibrary{
                 lati(0) != std::numeric_limits<unsigned int>::max() &&
                 lati(1) != std::numeric_limits<unsigned int>::max() &&
                 lati(2) != std::numeric_limits<unsigned int>::max()) {
-                                // Prendi gli indici dei vertici originali
-                unsigned int u = vertici(0);
-                unsigned int v = vertici(1);
-                unsigned int w = vertici(2);
-                // Verifica che gli indici siano validi per Vertices_originali
-                if (u < static_cast<unsigned int>(solido.Vertices_originali.cols()) &&
-                    v < static_cast<unsigned int>(solido.Vertices_originali.cols()) &&
-                    w < static_cast<unsigned int>(solido.Vertices_originali.cols())) {
-                    // Calcola le lunghezze euclidee tra i punti originali
-                    double len_uv = sqrt(
-                        pow(solido.Vertices_originali(0, u) - solido.Vertices_originali(0, v), 2) +
-                        pow(solido.Vertices_originali(1, u) - solido.Vertices_originali(1, v), 2) +
-                        pow(solido.Vertices_originali(2, u) - solido.Vertices_originali(2, v), 2)
-                    );
-                    double len_vw = sqrt(
-                        pow(solido.Vertices_originali(0, v) - solido.Vertices_originali(0, w), 2) +
-                        pow(solido.Vertices_originali(1, v) - solido.Vertices_originali(1, w), 2) +
-                        pow(solido.Vertices_originali(2, v) - solido.Vertices_originali(2, w), 2)
-                    );
-                    double len_wu = sqrt(
-                        pow(solido.Vertices_originali(0, w) - solido.Vertices_originali(0, u), 2) +
-                        pow(solido.Vertices_originali(1, w) - solido.Vertices_originali(1, u), 2) +
-                        pow(solido.Vertices_originali(2, w) - solido.Vertices_originali(2, u), 2)
-                    );
-                    double soglia = lunghezza_originale / static_cast<double>(solido.b) + epsilon;
-                    if (len_uv > soglia || len_vw > soglia || len_wu > soglia) {
-                        std::cerr << "Triangolo scartato per lunghezza lato troppo grande: "
-                                  << "uv=" << len_uv << ", vw=" << len_vw << ", wu=" << len_wu
-                                  << " (soglia: " << soglia << "), vertici: "
-                                  << u << " " << v << " " << w << std::endl;
-                        continue; // Scarta la tripletta
-                    }
-                }
-                // Se i vertici non sono validi per Vertices_originali, accetta il triangolo comunque
                 solido.Cells2DsVertices.conservativeResize(3, solido.Cells2DsVertices.cols() + 1);
                 solido.Cells2DsEdges.conservativeResize(3, solido.Cells2DsEdges.cols() + 1);
                 solido.Cells2DsVertices.col(solido.Cells2DsVertices.cols() - 1) = vertici;
