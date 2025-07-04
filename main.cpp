@@ -10,6 +10,9 @@ using namespace PlatonicLibrary;
 int main(int argc,char  *argv[]){
     PlatonicSolids solido;
     ImportValue(argc,argv,solido);
+    if(argc==3){
+        CreateSolid(solido);
+    }else{
 	if(solido.p==3){
         CreateSolid(solido);
         CreateMesh(solido);
@@ -24,7 +27,7 @@ int main(int argc,char  *argv[]){
         CreateSolid(solido1);
         CreateMesh(solido1);
         DualPolyhedron(solido,solido1);
-    }
+    }}
     FileCell0Ds(solido);
 	FileCell1Ds(solido);
 	FileCell2Ds(solido);
