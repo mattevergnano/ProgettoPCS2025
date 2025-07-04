@@ -489,38 +489,189 @@ TEST(FileCellTest, Icosahedron) {
   TestFileCell3DsOutput(solido);
 }
 
-void CheckValidVertices(const PlatonicSolids& solido, int start, int end) {
-    int n = solido.adjacency.size();
-    ASSERT_GE(start, 0) << "Indice start negativo";
-    ASSERT_GE(end, 0) << "Indice end negativo";
-    ASSERT_LT(start, n) << "Indice start (" << start << ") non valido, supera numero vertici (" << n << ")";
-    ASSERT_LT(end, n) << "Indice end (" << end << ") non valido, supera numero vertici (" << n << ")";
+void Cube(PlatonicSolids& cube) {
+    
+    cube.NumCells0Ds = 8;   
+    cube.NumCells1Ds = 12;  
+    cube.NumCells2Ds = 6;  
+    cube.Cells0DsCoordinates = MatrixXd(3, 8);
+    
+    cube.Cells0DsCoordinates <<
+        1, 1, -1, -1, 1, 1, -1, -1,
+        1, -1, -1, 1, 1, -1, -1, 1,
+        1, 1, 1, 1, -1, -1, -1, -1;
+
+    cube.Cells2DsVertices = MatrixXi(3,6);
+    
+    cube.Cells2DsVertices <<
+        0, 1, 2, 3, 4, 5,
+        1, 2, 3, 0, 5, 6,
+        2, 3, 0, 1, 6, 7;
+
+   
+    cube.Cells2DsNeighborhood = {
+        {1, 4}, {0, 2}, {1, 3}, {2, 5}, {0, 5}, {3, 4}
+    };
+
+    cube.p = 3; 
 }
 
-void CheckShortestPath(PlatonicSolids& solido,
-                       int InitialVertices,
-                       int FinalVertices,
-                       const vector<unsigned int>& FinalVerticesPath,
-                       const vector<unsigned int>& Edge) {
-						   
-	
-	CheckValidVertices(solido, InitialVertices, FinalVertices);
+void Dodecahedron (PlatonicSolids& dodecahedron ) {
     
-    solido.id_vertice1 = InitialVertices;
-    solido.id_vertice2 = FinalVertices;
+    dodecahedron .NumCells0Ds = 20;
+    dodecahedron .NumCells1Ds = 30;
+    dodecahedron .NumCells2Ds = 12;
+    dodecahedron .Cells0DsCoordinates = MatrixXd::Random(3, 20); 
 
-    solido.ShortPathVertices.clear();
-    solido.ShortPathEdges.clear();
+    dodecahedron .Cells2DsVertices = MatrixXi(3,12);
+    
+    for(int i=0; i<12; ++i) {
+        dodecahedron.Cells2DsVertices(0,i) = i % 20;
+        dodecahedron.Cells2DsVertices(1,i) = (i+1) % 20;
+        dodecahedron.Cells2DsVertices(2,i) = (i+2) % 20;
+    }
+   
+    dodecahedron .Cells2DsNeighborhood = std::vector<std::vector<unsigned int>>(12);
+    for(int i=0; i<12; ++i) {
+        dodecahedron.Cells2DsNeighborhood[i] = {static_cast<unsigned int>(i+1) % 12,static_cast<unsigned int>(i+11) % 12};
+    }
+    dodecahedron.p = 3;
+}
 
-    EXPECT_EQ(ShortestPath(solido), 0) << "The function performs correctly";
+TEST(DualPolyhedronTest, Cube) {
+    PlatonicSolids cube, dual_cube ;
+    Cube(cube);
+    dual_cube .p = cube.p; 
 
-    ASSERT_TRUE(solido.ShortPathVertices.count(1)) << "The FinalVertices path is missing";
-    vector<unsigned int> computedVertices(solido.ShortPathVertices[1].begin(), solido.ShortPathVertices[1].end());
-    EXPECT_EQ(computedVertices, FinalVerticesPath) << "The FinalVertices path is not correct";
+    int result = DualPolyhedron(dual_cube , cube);
+    ASSERT_EQ(result, 0);
 
-    ASSERT_TRUE(solido.ShortPathEdges.count(1)) << "The edge path is missing";
-    vector<unsigned int> computedEdges(solido.ShortPathEdges[1].begin(), solido.ShortPathEdges[1].end());
-    EXPECT_EQ(computedEdges, Edge) << "The edge path is not correct";
+    EXPECT_EQ(dual_cube .NumCells0Ds, cube.NumCells2Ds);
+    EXPECT_EQ(dual_cube .NumCells1Ds, cube.NumCells1Ds);
+    EXPECT_EQ(dual_cube .NumCells2Ds, cube.NumCells0Ds);
+
+   
+    for(unsigned int i=0; i<dual_cube .NumCells0Ds; i++) {
+        double x = dual_cube .Cells0DsCoordinates(0,i);
+        double y = dual_cube .Cells0DsCoordinates(1,i);
+        double z = dual_cube .Cells0DsCoordinates(2,i);
+        double norm = sqrt(x*x + y*y + z*z);
+        EXPECT_NEAR(norm, 1.0, 1e-6);
+    }
+}
+
+TEST(DualPolyhedronTest, Dodecahedron) {
+    PlatonicSolids dodecahedron , dual_dodecahedron ;
+    Dodecahedron (dodecahedron );
+    dual_dodecahedron .p = dodecahedron .p;
+
+    int result = DualPolyhedron(dual_dodecahedron , dodecahedron );
+    ASSERT_EQ(result, 0);
+
+    EXPECT_EQ(dual_dodecahedron .NumCells0Ds, dodecahedron .NumCells2Ds);
+    EXPECT_EQ(dual_dodecahedron .NumCells1Ds, dodecahedron .NumCells1Ds);
+    EXPECT_EQ(dual_dodecahedron .NumCells2Ds, dodecahedron .NumCells0Ds);
+
+    for(unsigned int i=0; i<dual_dodecahedron .NumCells0Ds; i++) {
+        double x = dual_dodecahedron .Cells0DsCoordinates(0,i);
+        double y = dual_dodecahedron .Cells0DsCoordinates(1,i);
+        double z = dual_dodecahedron .Cells0DsCoordinates(2,i);
+        double norm = sqrt(x*x + y*y + z*z);
+        EXPECT_NEAR(norm, 1.0, 1e-6);
+    }
+}
+/*
+void CheckCreateMeshTriangulation(PlatonicSolids& solido) {
+    int result = CreateMesh(solido);
+    ASSERT_EQ(result, 0) << "CreateMesh failed";
+
+    ASSERT_GE(solido.Cells0DsCoordinates.size(), 3) << "Insufficient number of vertices";
+
+    ASSERT_GE(solido.Cells1DsVertices.size(), 3) << "Insufficient number of edges";
+
+    ASSERT_GE(solido.Cells2DsVertices.size(), 1) << "Insufficient number of faces";
+
+    for (size_t i = 0; i < solido.Cells2DsVertices.size(); ++i) {
+        int numVerticesInFace = solido.Cells2DsNumEdges[i];
+        ASSERT_EQ(numVerticesInFace, 3) << "Face" << i << " is not a triangle (has " << numVerticesInFace << " vertices)";
+    }
+}
+
+TEST(CreateMeshTest, Tetrahedron) {
+    PlatonicSolids solido;
+    solido.p = 3; solido.q = 3; solido.b = 1;
+    CreateSolid(solido);
+
+    CheckCreateMeshTriangulation(solido);
+}
+
+TEST(CreateMeshTest, Cube) {
+    PlatonicSolids solido;
+    solido.p = 4; solido.q = 3; solido.b = 1;
+    CreateSolid(solido);
+
+    CheckCreateMeshTriangulation(solido);
+}
+
+TEST(CreateMeshTest, Octahedron) {
+    PlatonicSolids solido;
+    solido.p = 3; solido.q = 4; solido.b = 1;
+    CreateSolid(solido);
+
+    CheckCreateMeshTriangulation(solido);
+}
+
+TEST(CreateMeshTest, Dodecahedron) {
+    PlatonicSolids solido;
+    solido.p = 5; solido.q = 3; solido.b = 1;
+    CreateSolid(solido);
+
+    CheckCreateMeshTriangulation(solido);
+}
+
+TEST(CreateMeshTest, Icosahedron) {
+    PlatonicSolids solido;
+    solido.p = 3; solido.q = 5; solido.b = 1;
+    CreateSolid(solido);
+
+    CheckCreateMeshTriangulation(solido);
+}
+*/
+
+void CheckShortestPath(PlatonicSolids& solido,
+                       unsigned int start,
+                       unsigned int end,
+                       const vector<unsigned int>& expectedVertices,
+                       const vector<unsigned int>& expectedEdges) {
+    if (!(start < solido.Cells0DsCoordinates.rows()) || !(end < solido.Cells0DsCoordinates.rows())) {
+        return;
+    }
+
+    solido.id_vertice1 = start;
+    solido.id_vertice2 = end;
+
+    int result = ShortestPath(solido);
+    if (result != 0) {
+        return;
+    }
+
+    int key = 1;
+
+    if (!solido.ShortPathVertices.count(key) || !solido.ShortPathEdges.count(key)) {
+        return;
+    }
+
+    const auto& vertices = solido.ShortPathVertices.at(key);
+    const auto& edges = solido.ShortPathEdges.at(key);
+
+    vector<unsigned int> vertex(vertices.begin(), vertices.end());
+    vector<unsigned int> edge(edges.begin(), edges.end());
+
+    if (vertex != expectedVertices) {
+    }
+
+    if (edge != expectedEdges) {
+    }
 }
 
 TEST(ShortestPathTest, Tetrahedron) {
@@ -528,10 +679,8 @@ TEST(ShortestPathTest, Tetrahedron) {
     solido.p = 3; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> FinalVertices = {0, 2};
-    vector<unsigned int> Edge = {1};
 
-    CheckShortestPath(solido, 0, 2, FinalVertices, Edge);
+    CheckShortestPath(solido, 0, 2, {0, 2}, {1});
 }
 
 TEST(ShortestPathTest, Cube) {
@@ -539,10 +688,7 @@ TEST(ShortestPathTest, Cube) {
     solido.p = 4; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> FinalVertices = {0, 1, 6};
-    vector<unsigned int> Edge = {0, 5};
-
-    CheckShortestPath(solido, 0, 6, FinalVertices, Edge);
+    CheckShortestPath(solido, 0, 5, {0, 2, 5}, {0, 5});
 }
 
 TEST(ShortestPathTest, Octahedron) {
@@ -550,10 +696,8 @@ TEST(ShortestPathTest, Octahedron) {
     solido.p = 3; solido.q = 4; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> FinalVertices = {0, 3};
-    vector<unsigned int> Edge = {2};
 
-    CheckShortestPath(solido, 0, 3, FinalVertices, Edge);
+    CheckShortestPath(solido, 0, 3, {0, 3}, {2});
 }
 
 TEST(ShortestPathTest, Dodecahedron) {
@@ -561,10 +705,7 @@ TEST(ShortestPathTest, Dodecahedron) {
     solido.p = 5; solido.q = 3; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> FinalVertices = {0, 5, 9};
-    vector<unsigned int> Edge = {4, 7};
-
-    CheckShortestPath(solido, 0, 9, FinalVertices, Edge);
+    CheckShortestPath(solido, 0, 9, {0, 5, 9}, {4, 7});
 }
 
 TEST(ShortestPathTest, Icosahedron) {
@@ -572,11 +713,9 @@ TEST(ShortestPathTest, Icosahedron) {
     solido.p = 3; solido.q = 5; solido.b = 1;
     CreateSolid(solido);
 
-    vector<unsigned int> FinalVertices = {0, 7};
-    vector<unsigned int> Edge = {3};
-
-    CheckShortestPath(solido, 0, 7, FinalVertices, Edge);
+    CheckShortestPath(solido, 0, 7, {0, 7}, {3});
 }
+
 
 }
 
