@@ -35,16 +35,16 @@ struct PlatonicSolids{
 -map<int,list<int>> ShortPathVertices 
 -map<int, list<int>> ShortPathEdges
 
-+ImportValue 
-+CreateSolid
-+FileCell0Ds
-+FileCell1Ds
-+FileCell2Ds
-+FileCell3Ds
-+DualPolyhedron
-+CreateMesh
-+ ShortestPath
-+VerticeAdjacency
++intImportValue()
++int CreateSolid()
++void FileCell0Ds()
++void FileCell1Ds()
++void FileCell2Ds()
++void FileCell3Ds()
++int DualPolyhedron()
++int CreateMesh()
++int ShortestPath()
++int VerticeAdjacency()
 }
 
 note left of PlatonicSolids::Cells2DsNeighborhood
