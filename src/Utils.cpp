@@ -310,7 +310,7 @@ namespace PlatonicLibrary{
     return 0;
     };
 
-    void FileCell0Ds(PlatonicSolids& solido) {
+    void FileCell0Ds(PlatonicSolids& solido){
 		
 		ofstream outputFile;
 		outputFile.open("Cells0Ds.txt");
@@ -335,7 +335,7 @@ namespace PlatonicLibrary{
 		cout << "Cells0Ds.txt file created successfully with " << solido.NumCells0Ds << " vertices." << endl;
     }
 	
-	void FileCell1Ds(PlatonicSolids& solido) {
+	void FileCell1Ds(PlatonicSolids& solido){
 		
 		ofstream outputFile;
 		outputFile.open("Cells1Ds.txt");
@@ -359,7 +359,7 @@ namespace PlatonicLibrary{
 		cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
 	}
 	
-	void FileCell2Ds(PlatonicSolids& solido) {
+	void FileCell2Ds(PlatonicSolids& solido){
 		
 		ofstream outputFile;
 		outputFile.open("Cells2Ds.txt");
@@ -395,8 +395,38 @@ namespace PlatonicLibrary{
         cout << "Cells2Ds.txt file created successfully with " << solido.NumCells2Ds << " faces." << endl;
     }
 	
+    void FileCell3Ds(PlatonicSolids& solido){
+		ofstream outputFile("Cells3Ds.txt");
+		if (!outputFile) {
+			cerr << "Error opening file: Cells3Ds.txt" << endl;
+			return;
+		}
+
+		// CreateSolid(solido);
+
+		outputFile << "FinalVertices:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsVertices.size(); ++i) {
+			outputFile << solido.Cells3DsVertices[i] << "\n";
+		}
+
+		outputFile << "Edges:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsEdges.size(); ++i) {
+			outputFile << solido.Cells3DsEdges[i] << "\n";
+		}
+
+		outputFile << "Faces:\n";
+		for (unsigned int i = 0; i < solido.Cells3DsFaces.size(); ++i) {
+			outputFile << solido.Cells3DsFaces[i] << "\n";
+		}
+
+		outputFile.close();
+		cout << "Cells3Ds.txt file created successfully with "
+			 << solido.Cells3DsVertices.size() << " vertices, "
+			 << solido.Cells3DsEdges.size() << " edges, and "
+			 << solido.Cells3DsFaces.size() << " faces." << endl;
+    }
+
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1){
-           cout << "duale" << endl;
         solido.NumCells0Ds = solido1.NumCells2Ds;
         solido.NumCells1Ds = solido1.NumCells1Ds;
         solido.NumCells2Ds = solido1.NumCells0Ds;
@@ -475,24 +505,24 @@ namespace PlatonicLibrary{
 
         solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
         solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
-        // for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
-        //     for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
-        //         solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
-        //     }
-        // }
-        // for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-        //     unsigned int nlati=0;
-        //     for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
-        //         for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
-        //             for(unsigned int s=0;s<solido.NumCells1Ds;s++){
-        //                 if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
-        //                     solido.Cells2DsEdges(nlati,i)=s;
-        //                     nlati++;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
+            for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
+                solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
+            }
+        }
+        for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+            unsigned int nlati=0;
+            for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
+                for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
+                    for(unsigned int s=0;s<solido.NumCells1Ds;s++){
+                        if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
+                            solido.Cells2DsEdges(nlati,i)=s;
+                            nlati++;
+                        }
+                    }
+                }
+            }
+        }
         // cout << solido.Cells2DsEdges << endl;
 		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
         for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
@@ -505,8 +535,8 @@ namespace PlatonicLibrary{
             solido.Cells3DsFaces[i]=i;
         return 0;
     }
+    
     int CreateMesh(PlatonicSolids& solido){
-         cout << "create mesh" << endl;
         // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
         // unsigned int nlati = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
         // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
@@ -1405,32 +1435,26 @@ namespace PlatonicLibrary{
                 latiFaccia.col(latiFaccia.cols()-1) = lati;
             }
             // controllo area triangoli
-            double x1 = solido.Cells0DsCoordinates(0,vertici[0]);
-            double y1 = solido.Cells0DsCoordinates(1,vertici[0]);
-            double z1 = solido.Cells0DsCoordinates(2,vertici[0]);
-            double x2 = solido.Cells0DsCoordinates(0,vertici[1]);
-            double y2 = solido.Cells0DsCoordinates(1,vertici[1]);
-            double z2 = solido.Cells0DsCoordinates(2,vertici[1]);
-            double x3 = solido.Cells0DsCoordinates(0,vertici[2]);
-            double y3 = solido.Cells0DsCoordinates(1,vertici[2]);
-            double z3 = solido.Cells0DsCoordinates(2,vertici[2]);
-            Vector3d A(x1, y1, z1);
-            Vector3d B(x2, y2, z2);
-            Vector3d C(x3, y3, z3);
-            double area = 0.5 * (B - A).cross(C - A).norm();
-            cout << area << endl;
+            // double x1 = solido.Cells0DsCoordinates(0,vertici[0]);
+            // double y1 = solido.Cells0DsCoordinates(1,vertici[0]);
+            // double z1 = solido.Cells0DsCoordinates(2,vertici[0]);
+            // double x2 = solido.Cells0DsCoordinates(0,vertici[1]);
+            // double y2 = solido.Cells0DsCoordinates(1,vertici[1]);
+            // double z2 = solido.Cells0DsCoordinates(2,vertici[1]);
+            // double x3 = solido.Cells0DsCoordinates(0,vertici[2]);
+            // double y3 = solido.Cells0DsCoordinates(1,vertici[2]);
+            // double z3 = solido.Cells0DsCoordinates(2,vertici[2]);
+            // Vector3d A(x1, y1, z1);
+            // Vector3d B(x2, y2, z2);
+            // Vector3d C(x3, y3, z3);
+            // double area = 0.5 * (B - A).cross(C - A).norm();
+            // cout << area << endl;
         }
         solido.Cells2DsEdges = latiFaccia;
         solido.Cells2DsVertices = verticiFaccia;
         solido.NumCells2Ds = solido.Cells2DsEdges.cols();
-        // cout << "2D " <<solido.NumCells2Ds << endl;
-        cout << solido.Cells2DsVertices.transpose() << endl;
-        cout << endl;
-        // cout << solido.Cells1DsExtrema.transpose()<< endl;
-        // cout << solido.Cells2DsEdges.transpose() << endl;
-        // for (unsigned int i = 0; i < solido.adjacency.size(); ++i) {
-        //     cout << "Vertice " << i << " ha " << solido.adjacency[i].size() << " adiacenti." << endl;
-        // }
+        // cout << solido.Cells2DsVertices.transpose() << endl;
+        // cout << endl;
         solido.Cells2DsNeighborhood.resize(solido.NumCells2Ds); //facce adiacenti tra loro (con un lato in comune)
         for(unsigned int i=0;i<solido.NumCells2Ds;i++){
             set<unsigned int> vicini;
@@ -1448,14 +1472,6 @@ namespace PlatonicLibrary{
             }
             solido.Cells2DsNeighborhood[i] = vector<unsigned int>(vicini.begin(),vicini.end());
         }
-
-        // Controllo: visualizza le facce adiacenti a ogni faccia
-        // for(auto& vett : solido.Cells2DsNeighborhood){
-        //     for(auto& el : vett){
-        //         cout << el << " ";
-        //     }
-        //     cout << endl;
-        // }
             solido.NumCells0Ds = solido.Cells0DsCoordinates.cols();
             solido.NumCells1Ds = solido.Cells1DsExtrema.cols();
             solido.VerticeFaces.resize(solido.NumCells0Ds);
@@ -1485,39 +1501,21 @@ namespace PlatonicLibrary{
             }
 
             // Controllo: verifica correttezza di VerticeFaces
-            cout << "\nVerticeFaces:" << endl;
-            for(unsigned int i = 0; i < solido.VerticeFaces.size(); ++i){
-                cout << "Vertice " << i << ": ";
-                for(unsigned int f : solido.VerticeFaces[i]){
-                    cout << f << " ";
-                }
-                cout << endl;
-            }
+            // cout << "\nVerticeFaces:" << endl;
+            // for(unsigned int i = 0; i < solido.VerticeFaces.size(); ++i){
+            //     cout << "Vertice " << i << ": ";
+            //     for(unsigned int f : solido.VerticeFaces[i]){
+            //         cout << f << " ";
+            //     }
+            //     cout << endl;
+            // }
             // for(auto& sottovettore: solido.VerticeFaces){
             //     for(auto& el : sottovettore){
             //         cout << el << " ";
             //     }
             //     cout << endl;
             // }
-		// cout << "\nNumero punti generati: " << n_punti << endl;
-		// for(unsigned int i = 0; i < n_punti; i++) {
-		// 	cout << "Punto " << i << ": (" << punti(0,i) << ", " << punti(1,i) << ", " << punti(2,i) << ")" << endl;
-		// }
 
-		// cout << "\nNumero lati generati: " << n_lati << endl;
-		// for(unsigned int i = 0; i < n_lati; i++) {
-		// 	cout << "Lato " << i << ": " << lati(0,i) << " <-> " << lati(1,i) << endl;
-		// }
-
-		// cout << "\nAdiacenza vertici:\n";
-		// for (unsigned int i = 0; i < n_punti; i++) {
-		// 	cout << "Vertice " << i << ": ";
-		// 	for (auto v : solido.adjacency[i])
-		// 		cout << v << " ";
-		// 	cout << endl;
-		// }
-		// solido.NumCells0Ds = npunti;
-        // solido.NumCells1Ds = nlati;
 		/*
 		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
         for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
@@ -1530,37 +1528,6 @@ namespace PlatonicLibrary{
             solido.Cells3DsFaces[i]=i;
 		*/
         return 0;
-    }
-
-	void FileCell3Ds(PlatonicSolids& solido) {
-		ofstream outputFile("Cells3Ds.txt");
-		if (!outputFile) {
-			cerr << "Error opening file: Cells3Ds.txt" << endl;
-			return;
-		}
-
-		// CreateSolid(solido);
-
-		outputFile << "FinalVertices:\n";
-		for (unsigned int i = 0; i < solido.Cells3DsVertices.size(); ++i) {
-			outputFile << solido.Cells3DsVertices[i] << "\n";
-		}
-
-		outputFile << "Edges:\n";
-		for (unsigned int i = 0; i < solido.Cells3DsEdges.size(); ++i) {
-			outputFile << solido.Cells3DsEdges[i] << "\n";
-		}
-
-		outputFile << "Faces:\n";
-		for (unsigned int i = 0; i < solido.Cells3DsFaces.size(); ++i) {
-			outputFile << solido.Cells3DsFaces[i] << "\n";
-		}
-
-		outputFile.close();
-		cout << "Cells3Ds.txt file created successfully with "
-			 << solido.Cells3DsVertices.size() << " vertices, "
-			 << solido.Cells3DsEdges.size() << " edges, and "
-			 << solido.Cells3DsFaces.size() << " faces." << endl;
     }
 	
     int VerticeAdjacency(PlatonicSolids& solido){
@@ -1581,7 +1548,8 @@ namespace PlatonicLibrary{
         }
         return 0;
     }
-	int ShortestPath(PlatonicSolids& solido){
+	
+    int ShortestPath(PlatonicSolids& solido){
 	    int n = solido.adjacency.size(); //numero dei nodi
         // for(unsigned int i=0; i < n; i++){
 		//     for (unsigned int j = 0; j < n; j++){
@@ -1665,9 +1633,6 @@ namespace PlatonicLibrary{
         }
       return 0;
 	}
-
-
- 
 }	
 	
 
