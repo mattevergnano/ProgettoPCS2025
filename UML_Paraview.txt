@@ -1,0 +1,49 @@
+@startuml
+struct UCDPropriety {
+-string Label
+-string UnitLabel
+-int Size
+-int NumComponents
+-any Data
+}
+class UCDCell{
+-const Types Type
+-const vector<int> PointIds
+-const int MaterialId
+-const string CellLabel
++Type(type)
++PointIds(pointIds)
++MaterialId(materialid)
+}
+note left of UCDCell
+in Types sono salvati i vari valori assegnati ai vari poligoni
+end note
+class UCDUtilities{
+-string filePath
+-Matrix points
+-cector<double> point_properties
+-matrix points
+-matrix segments
+-vector<double> segments_properties
+-vector<int> polygons_vertices
+-vector<double> polygons_properties
+-vector<double> polyhedra_properties
+-vector<int> polyhedra_vertices
+-vector materials
+-matrix lines
+-vector cells
+-vector<double> cell_properties
+
++vector<UCDCell> CreatePointCells(points, materials)
++vector<UCDCell> CreateLineCells(lines, materials)
++vector<UCDCell> CreatePolygonCells(polygons_verices, materials)
++vector<UCDCell> CreatePolyhedralCells(polyhedra_vertices, materials)
++void ExportUCDAscii(points,point_poprties, cells, cell_properties,filepath)
++void ExportPoints(filePath,points, points_properties, materials)
++void ExportSegments(filePath, points, segments, point_properties, segments_properties, materials)
++void ExportPolygons(filePath, points, polygons_vertices,points_properties, polygons_properties, materials)
++void ExportPolyhedra(filePath, points, polyhedra_vertices,points_propeties,polyhera_properties, materials)
+}
+
+@enduml
+
