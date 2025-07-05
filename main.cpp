@@ -29,10 +29,10 @@ int main(int argc,char  *argv[]){
         DualPolyhedron(solido,solido1);
         VerticeAdjacency(solido);
     }}
-    // FileCell0Ds(solido);
-	// FileCell1Ds(solido);
-	// FileCell2Ds(solido);
-	// FileCell3Ds(solido);
+    FileCell0Ds(solido);
+	FileCell1Ds(solido);
+	FileCell2Ds(solido);
+	FileCell3Ds(solido);
     ShortestPath(solido);
     
     Gedim::UCDUtilities utilities;

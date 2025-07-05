@@ -19,7 +19,7 @@ bool comp(unsigned int a,unsigned int b) {
     return a < b;
 }
 namespace PlatonicLibrary{
-    int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
+     int ImportValue(int argc, char  *argv[],PlatonicSolids& solido){
 		string str = ""; //remove Project name
         str = argv[0];
         solido.p = stoi(argv[1]); //save p
@@ -309,8 +309,8 @@ namespace PlatonicLibrary{
 			}	
     return 0;
     };
-
-    void FileCell0Ds(PlatonicSolids& solido){
+	
+	void FileCell0Ds(PlatonicSolids& solido){
 		
 		ofstream outputFile;
 		outputFile.open("Cells0Ds.txt");
@@ -319,10 +319,8 @@ namespace PlatonicLibrary{
 		return;
 		}
 
-        // CreateSolid(solido);
-       
 		outputFile << "ID    x              y              z" << endl;
-		for (unsigned int i = 0; i < solido.NumCells0Ds; ++i) {
+		for (unsigned int  i = 0; i < solido.Cells0DsId.size(); ++i) {
 			outputFile << i << "    "
 				   << fixed << setprecision(8)
 				   << solido.Cells0DsCoordinates(0, i) << "    "
@@ -332,9 +330,8 @@ namespace PlatonicLibrary{
 		}
 
 		outputFile.close();
-		cout << "Cells0Ds.txt file created successfully with " << solido.NumCells0Ds << " vertices." << endl;
     }
-	
+
 	void FileCell1Ds(PlatonicSolids& solido){
 		
 		ofstream outputFile;
@@ -344,19 +341,16 @@ namespace PlatonicLibrary{
         return;
 		}
 
-        // CreateSolid(solido);
-	
 		outputFile << "ID\tInitial Vertices\tFinal Vertices" << endl;
 
     
-		for (unsigned int i = 0; i < solido.NumCells1Ds; ++i) {
+		for (unsigned int i = 0; i < solido.Cells1DsId.size(); ++i) {
 			outputFile << i << "\t"
                    << solido.Cells1DsExtrema(0, i) << "\t\t"
                    << solido.Cells1DsExtrema(1, i) << endl;
 		}
 
 		outputFile.close();
-		cout << "Cells1Ds.txt file created successfully with " << solido.NumCells1Ds << " edges." << endl;
 	}
 	
 	void FileCell2Ds(PlatonicSolids& solido){
@@ -367,11 +361,10 @@ namespace PlatonicLibrary{
 			cerr << "Error opening file: Cells2Ds.txt" << endl;
         return;
 		}
-        
-	    // CreateSolid(solido);
+       
 		outputFile << "ID\tNumVertices\tNumEdges\tVerticesIDs\t\tEdgesIDs" << endl;
 
-		for (unsigned int i = 0; i < solido.NumCells2Ds; ++i) {
+		for (unsigned int i = 0; i < solido.Cells2DsId.size(); ++i) {
 			outputFile << i << "\t"                              
                    << solido.Cells2DsVertices.rows() << "\t\t" 
                    << solido.Cells2DsNumEdges(i) << "\t\t";    
@@ -392,7 +385,6 @@ namespace PlatonicLibrary{
 		}
 
         outputFile.close();
-        cout << "Cells2Ds.txt file created successfully with " << solido.NumCells2Ds << " faces." << endl;
     }
 	
     void FileCell3Ds(PlatonicSolids& solido){
@@ -401,8 +393,6 @@ namespace PlatonicLibrary{
 			cerr << "Error opening file: Cells3Ds.txt" << endl;
 			return;
 		}
-
-		// CreateSolid(solido);
 
 		outputFile << "FinalVertices:\n";
 		for (unsigned int i = 0; i < solido.Cells3DsVertices.size(); ++i) {
@@ -420,122 +410,118 @@ namespace PlatonicLibrary{
 		}
 
 		outputFile.close();
-		cout << "Cells3Ds.txt file created successfully with "
-			 << solido.Cells3DsVertices.size() << " vertices, "
-			 << solido.Cells3DsEdges.size() << " edges, and "
-			 << solido.Cells3DsFaces.size() << " faces." << endl;
     }
 
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1){
-        solido.NumCells0Ds = solido1.NumCells2Ds;
-        solido.NumCells1Ds = solido1.NumCells1Ds;
-        solido.NumCells2Ds = solido1.NumCells0Ds;
-        solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
-        solido.Cells1DsId = vector<unsigned int>(solido.NumCells1Ds,0);
-        solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);
-        for(unsigned int i=0;i<solido.NumCells0Ds;i++)
-            solido.Cells0DsId[i] = i;
-        for(unsigned int i=0;i<solido.NumCells1Ds;i++)
-            solido.Cells1DsId[i] = i;
-        for(unsigned int i=0;i<solido.NumCells2Ds;i++)
-            solido.Cells2DsId[i] = i;
-        MatrixXd punti = MatrixXd::Zero(3,solido.NumCells0Ds);
-        MatrixXi lati = MatrixXi::Zero(2,solido.NumCells1Ds);
-        solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
-        solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);
-        solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
-        // for (int i = 0; i < 10; ++i) {
-        //     cout << "Faccia " << i << ": ";
-        //     for (int j = 0; j < 3; ++j)
-        //         cout << solido1.Cells2DsEdges(j, i) << " ";
-        //     cout << endl;
-        // }
-        for(unsigned int j=0; j<solido1.NumCells2Ds;j++){
-            int Pid = solido1.Cells2DsVertices(0,j);
-            int Qid = solido1.Cells2DsVertices(1,j);
-            int Sid = solido1.Cells2DsVertices(2,j);
-            cout << Pid << " " << Qid << " " << Sid << endl;
-            double Px = solido1.Cells0DsCoordinates(0,Pid);
-            double Py = solido1.Cells0DsCoordinates(1,Pid);
-            double Pz = solido1.Cells0DsCoordinates(2,Pid);
-            double Qx = solido1.Cells0DsCoordinates(0,Qid);
-            double Qy = solido1.Cells0DsCoordinates(1,Qid);
-            double Qz = solido1.Cells0DsCoordinates(2,Qid);
-            double Sx = solido1.Cells0DsCoordinates(0,Sid);
-            double Sy = solido1.Cells0DsCoordinates(1,Sid);
-            double Sz = solido1.Cells0DsCoordinates(2,Sid);
-            punti(0,j) = (Px+Qx+Sx)/3;
-            punti(1,j)= (Py+Qy+Sy)/3;
-            punti(2,j)= (Pz+Qz+Sz)/3;
-            double x = punti(0,j);
-            double y = punti(1,j);
-            double z = punti(2,j);
-            double norm = sqrt(x*x+y*y+z*z);
-            punti(0,j) /= norm;
-            punti(1,j) /= norm;
-            punti(2,j) /= norm;
-            cout << punti(0,j) << " " << punti(1,j) << " " << punti(2,j) << endl;
-        } 
-        //accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
-        // solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
-        // solido.Cells1DsExtrema.setConstant(1000);
-        unsigned int nlati = 0;
-        for(unsigned int idfaccia = 0;idfaccia<solido.NumCells0Ds;idfaccia++){
-            vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
-            // cout << idfaccia << ": ";
-            // for(auto& el:vettore){
-            //     cout << el << " ";
-            // }
-            // cout << endl;
-            if(solido1.Cells2DsNeighborhood[idfaccia].size()!=0){
-                for(unsigned int adj = 0;adj<vettore.size();adj++){
-                    if(idfaccia<vettore[adj]){
-                        lati(0,nlati) = idfaccia;
-                        lati(1,nlati) = vettore[adj];
-                        nlati ++;
-                        // cout << nlati -1 << endl;
-                    }
-                }
-            }
-        }
-        solido.Cells0DsCoordinates = MatrixXd::Zero(3,solido.NumCells0Ds);
-        solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
-        solido.Cells0DsCoordinates = punti;
-        solido.Cells1DsExtrema = lati;
+			solido.NumCells0Ds = solido1.NumCells2Ds;
+			solido.NumCells1Ds = solido1.NumCells1Ds;
+			solido.NumCells2Ds = solido1.NumCells0Ds;
+			solido.Cells0DsId = vector<unsigned int>(solido.NumCells0Ds,0);
+			solido.Cells1DsId = vector<unsigned int>(solido.NumCells1Ds,0);
+			solido.Cells2DsId = vector<unsigned int>(solido.NumCells2Ds,0);
+			for(unsigned int i=0;i<solido.NumCells0Ds;i++)
+				solido.Cells0DsId[i] = i;
+			for(unsigned int i=0;i<solido.NumCells1Ds;i++)
+				solido.Cells1DsId[i] = i;
+			for(unsigned int i=0;i<solido.NumCells2Ds;i++)
+				solido.Cells2DsId[i] = i;
+			MatrixXd punti = MatrixXd::Zero(3,solido.NumCells0Ds);
+			MatrixXi lati = MatrixXi::Zero(2,solido.NumCells1Ds);
+			solido.Cells2DsVertices = MatrixXi::Zero(3, solido.NumCells2Ds);
+			solido.Cells2DsEdges = MatrixXi::Zero(3, solido.NumCells2Ds);
+			solido.Cells2DsNumEdges = VectorXi::Zero(solido.NumCells2Ds);
+			// for (int i = 0; i < 10; ++i) {
+			//     cout << "Faccia " << i << ": ";
+			//     for (int j = 0; j < 3; ++j)
+			//         cout << solido1.Cells2DsEdges(j, i) << " ";
+			//     cout << endl;
+			// }
+			for(unsigned int j=0; j<solido1.NumCells2Ds;j++){
+				int Pid = solido1.Cells2DsVertices(0,j);
+				int Qid = solido1.Cells2DsVertices(1,j);
+				int Sid = solido1.Cells2DsVertices(2,j);
+				cout << Pid << " " << Qid << " " << Sid << endl;
+				double Px = solido1.Cells0DsCoordinates(0,Pid);
+				double Py = solido1.Cells0DsCoordinates(1,Pid);
+				double Pz = solido1.Cells0DsCoordinates(2,Pid);
+				double Qx = solido1.Cells0DsCoordinates(0,Qid);
+				double Qy = solido1.Cells0DsCoordinates(1,Qid);
+				double Qz = solido1.Cells0DsCoordinates(2,Qid);
+				double Sx = solido1.Cells0DsCoordinates(0,Sid);
+				double Sy = solido1.Cells0DsCoordinates(1,Sid);
+				double Sz = solido1.Cells0DsCoordinates(2,Sid);
+				punti(0,j) = (Px+Qx+Sx)/3;
+				punti(1,j)= (Py+Qy+Sy)/3;
+				punti(2,j)= (Pz+Qz+Sz)/3;
+				double x = punti(0,j);
+				double y = punti(1,j);
+				double z = punti(2,j);
+				double norm = sqrt(x*x+y*y+z*z);
+				punti(0,j) /= norm;
+				punti(1,j) /= norm;
+				punti(2,j) /= norm;
+				cout << punti(0,j) << " " << punti(1,j) << " " << punti(2,j) << endl;
+			} 
+			//accedo a Cells2dNeighborhood e collego ciascun vertice di solido ai vertici corrispondenti alle facce solido.adjacency a quello (inizio ad avere il duplicato dei lati)
+			// solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+			// solido.Cells1DsExtrema.setConstant(1000);
+			unsigned int nlati = 0;
+			for(unsigned int idfaccia = 0;idfaccia<solido.NumCells0Ds;idfaccia++){
+				vector<unsigned int> vettore = solido1.Cells2DsNeighborhood[idfaccia];
+				// cout << idfaccia << ": ";
+				// for(auto& el:vettore){
+				//     cout << el << " ";
+				// }
+				// cout << endl;
+				if(solido1.Cells2DsNeighborhood[idfaccia].size()!=0){
+					for(unsigned int adj = 0;adj<vettore.size();adj++){
+						if(idfaccia<vettore[adj]){
+							lati(0,nlati) = idfaccia;
+							lati(1,nlati) = vettore[adj];
+							nlati ++;
+							// cout << nlati -1 << endl;
+						}
+					}
+				}
+			}
+			solido.Cells0DsCoordinates = MatrixXd::Zero(3,solido.NumCells0Ds);
+			solido.Cells1DsExtrema = MatrixXi::Zero(2,solido.NumCells1Ds);
+			solido.Cells0DsCoordinates = punti;
+			solido.Cells1DsExtrema = lati;
 
-        solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
-        solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
-        for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
-            for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
-                solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
-            }
-        }
-        for(unsigned int i=0;i<solido.NumCells2Ds;i++){
-            unsigned int nlati=0;
-            for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
-                for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
-                    for(unsigned int s=0;s<solido.NumCells1Ds;s++){
-                        if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
-                            solido.Cells2DsEdges(nlati,i)=s;
-                            nlati++;
-                        }
-                    }
-                }
-            }
-        }
-        // cout << solido.Cells2DsEdges << endl;
-		solido.Cells3DsVertices.resize(solido.NumCells0Ds);
-        for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
-            solido.Cells3DsVertices[i]=i;
-        solido.Cells3DsEdges.resize(solido.NumCells1Ds);
-        for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
-            solido.Cells3DsEdges[i]=i;
-        solido.Cells3DsFaces.resize(solido.NumCells2Ds);
-        for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
-            solido.Cells3DsFaces[i]=i;
+			solido.Cells2DsVertices = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
+			solido.Cells2DsEdges = MatrixXi::Zero(solido.p, solido.NumCells2Ds);
+			for(unsigned int i = 0;i<solido1.NumCells0Ds;i++){
+				for(unsigned int j = 0;j<solido1.VerticeFaces[i].size();j++){
+					solido.Cells2DsVertices(j,i)=solido1.VerticeFaces[i][j];
+				}
+			}
+			for(unsigned int i=0;i<solido.NumCells2Ds;i++){
+				unsigned int nlati=0;
+				for(unsigned int j=0;j<solido.p;j++){ //prendo gli id di un punto della faccia i
+					for(unsigned int k=0;k<solido.p;k++){ //adesso scorro su tutti i segmenti
+						for(unsigned int s=0;s<solido.NumCells1Ds;s++){
+							if((solido.Cells2DsVertices(j,i)==solido.Cells1DsExtrema(0,s) && solido.Cells2DsVertices(k,i)==solido.Cells1DsExtrema(1,s))){
+								solido.Cells2DsEdges(nlati,i)=s;
+								nlati++;
+							}
+						}
+					}
+				}
+			}
+			// cout << solido.Cells2DsEdges << endl;
+			solido.Cells3DsVertices.resize(solido.NumCells0Ds);
+			for(unsigned int i = 0; i<solido.NumCells0Ds;i++)
+				solido.Cells3DsVertices[i]=i;
+			solido.Cells3DsEdges.resize(solido.NumCells1Ds);
+			for(unsigned int i = 0; i<solido.NumCells1Ds;i++)
+				solido.Cells3DsEdges[i]=i;
+			solido.Cells3DsFaces.resize(solido.NumCells2Ds);
+			for(unsigned int i = 0; i<solido.NumCells2Ds;i++)
+				solido.Cells3DsFaces[i]=i;
         return 0;
     }
-    
+	 
     int CreateMesh(PlatonicSolids& solido){
         // unsigned int npunti = solido.NumCells0Ds + solido.NumCells1Ds * (solido.b-1) + solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
         // unsigned int nlati = solido.NumCells1Ds * solido.b + 3 * solido.NumCells2Ds * (solido.b-1)*(solido.b-2)/2;
@@ -1633,6 +1619,6 @@ namespace PlatonicLibrary{
         }
       return 0;
 	}
-}	
+}
 	
 

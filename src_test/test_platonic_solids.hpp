@@ -337,17 +337,17 @@ void TestFileCell1DsOutput(PlatonicSolids& solido) {
     CreateSolid(solido);
     FileCell1Ds(solido);
 
-    std::ifstream file("Cells1Ds.txt");
+    ifstream file("Cells1Ds.txt");
     ASSERT_TRUE(file.is_open()) << "Cannot open Cells1Ds.txt";
 
-    std::string line;
-    std::getline(file, line);
+    string line;
+    getline(file, line);
     EXPECT_TRUE(line.find("ID") != std::string::npos && line.find("Initial") != std::string::npos);
 
     int count = 0;
     while (std::getline(file, line)) {
         ++count;
-        std::istringstream ss(line);
+        istringstream ss(line);
         int id, initV, finalV;
         EXPECT_TRUE(ss >> id >> initV >> finalV) << "Malformed data at line " << count+1 << ": " << line;
         EXPECT_EQ(id, count - 1);
@@ -359,11 +359,11 @@ void TestFileCell2DsOutput(PlatonicSolids& solido) {
     CreateSolid(solido);
     FileCell2Ds(solido);
 
-    std::ifstream file("Cells2Ds.txt");
+    ifstream file("Cells2Ds.txt");
     ASSERT_TRUE(file.is_open()) << "Cannot open Cells2Ds.txt";
 
-    std::string line;
-    std::getline(file, line);
+    string line;
+    getline(file, line);
     EXPECT_TRUE(line.find("ID") != std::string::npos && line.find("NumVertices") != std::string::npos);
 
     int count = 0;
@@ -390,12 +390,12 @@ void TestFileCell3DsOutput(PlatonicSolids& solido) {
     CreateSolid(solido);
     FileCell3Ds(solido);
 
-    std::ifstream file("Cells3Ds.txt");
+    ifstream file("Cells3Ds.txt");
     ASSERT_TRUE(file.is_open()) << "Cannot open Cells3Ds.txt";
 
-    std::string line;
+    string line;
 
-    std::getline(file, line);
+    getline(file, line);
     EXPECT_EQ(line, "FinalVertices:");
 
     for (size_t i = 0; i < solido.Cells3DsVertices.size(); ++i) {
@@ -406,23 +406,23 @@ void TestFileCell3DsOutput(PlatonicSolids& solido) {
         EXPECT_EQ(id, solido.Cells3DsVertices[i]);
     }
 
-    std::getline(file, line);
+    getline(file, line);
     EXPECT_EQ(line, "Edges:");
 
     for (size_t i = 0; i < solido.Cells3DsEdges.size(); ++i) {
         ASSERT_TRUE(std::getline(file, line));
-        std::istringstream ss(line);
+        istringstream ss(line);
         unsigned int id;
         EXPECT_TRUE(ss >> id) << "Bad edge id line " << i+1;
         EXPECT_EQ(id, solido.Cells3DsEdges[i]);
     }
 
-    std::getline(file, line);
+    getline(file, line);
     EXPECT_EQ(line, "Faces:");
 
     for (size_t i = 0; i < solido.Cells3DsFaces.size(); ++i) {
         ASSERT_TRUE(std::getline(file, line));
-        std::istringstream ss(line);
+        istringstream ss(line);
         unsigned int id;
         EXPECT_TRUE(ss >> id) << "Bad face id line " << i+1;
         EXPECT_EQ(id, solido.Cells3DsFaces[i]);
@@ -489,154 +489,70 @@ TEST(FileCellTest, Icosahedron) {
   TestFileCell3DsOutput(solido);
 }
 
-void Cube(PlatonicSolids& cube) {
-    
-    cube.NumCells0Ds = 8;   
-    cube.NumCells1Ds = 12;  
-    cube.NumCells2Ds = 6;  
-    cube.Cells0DsCoordinates = MatrixXd(3, 8);
-    
-    cube.Cells0DsCoordinates <<
-        1, 1, -1, -1, 1, 1, -1, -1,
-        1, -1, -1, 1, 1, -1, -1, 1,
-        1, 1, 1, 1, -1, -1, -1, -1;
+TEST(DualPolyhedronTest, OctahedronToCube) {
+    PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 4;
+    CreateSolid(solido);
 
-    cube.Cells2DsVertices = MatrixXi(3,6);
-    
-    cube.Cells2DsVertices <<
-        0, 1, 2, 3, 4, 5,
-        1, 2, 3, 0, 5, 6,
-        2, 3, 0, 1, 6, 7;
+    PlatonicSolids solido1;
+    solido1.p = solido.q;
+    solido1.q = solido.p;
 
-   
-    cube.Cells2DsNeighborhood = {
-        {1, 4}, {0, 2}, {1, 3}, {2, 5}, {0, 5}, {3, 4}
-    };
-
-    cube.p = 3; 
-}
-
-void Dodecahedron (PlatonicSolids& dodecahedron ) {
-    
-    dodecahedron .NumCells0Ds = 20;
-    dodecahedron .NumCells1Ds = 30;
-    dodecahedron .NumCells2Ds = 12;
-    dodecahedron .Cells0DsCoordinates = MatrixXd::Random(3, 20); 
-
-    dodecahedron .Cells2DsVertices = MatrixXi(3,12);
-    
-    for(int i=0; i<12; ++i) {
-        dodecahedron.Cells2DsVertices(0,i) = i % 20;
-        dodecahedron.Cells2DsVertices(1,i) = (i+1) % 20;
-        dodecahedron.Cells2DsVertices(2,i) = (i+2) % 20;
-    }
-   
-    dodecahedron .Cells2DsNeighborhood = std::vector<std::vector<unsigned int>>(12);
-    for(int i=0; i<12; ++i) {
-        dodecahedron.Cells2DsNeighborhood[i] = {static_cast<unsigned int>(i+1) % 12,static_cast<unsigned int>(i+11) % 12};
-    }
-    dodecahedron.p = 3;
-}
-
-TEST(DualPolyhedronTest, Cube) {
-    PlatonicSolids cube, dual_cube ;
-    Cube(cube);
-    dual_cube .p = cube.p; 
-
-    int result = DualPolyhedron(dual_cube , cube);
+    int result = DualPolyhedron(solido1, solido);
     ASSERT_EQ(result, 0);
 
-    EXPECT_EQ(dual_cube .NumCells0Ds, cube.NumCells2Ds);
-    EXPECT_EQ(dual_cube .NumCells1Ds, cube.NumCells1Ds);
-    EXPECT_EQ(dual_cube .NumCells2Ds, cube.NumCells0Ds);
+    EXPECT_EQ(solido1.NumCells0Ds, 8);
+    EXPECT_EQ(solido1.NumCells1Ds, 12);
+    EXPECT_EQ(solido1.NumCells2Ds, 6);
 
-   
-    for(unsigned int i=0; i<dual_cube .NumCells0Ds; i++) {
-        double x = dual_cube .Cells0DsCoordinates(0,i);
-        double y = dual_cube .Cells0DsCoordinates(1,i);
-        double z = dual_cube .Cells0DsCoordinates(2,i);
-        double norm = sqrt(x*x + y*y + z*z);
+    for (int i = 0; i < solido1.Cells0DsCoordinates.cols(); ++i) {
+        double x = solido1.Cells0DsCoordinates(0, i);
+        double y = solido1.Cells0DsCoordinates(1, i);
+        double z = solido1.Cells0DsCoordinates(2, i);
+        double norm = sqrt(x * x + y * y + z * z);
         EXPECT_NEAR(norm, 1.0, 1e-6);
     }
 }
 
-TEST(DualPolyhedronTest, Dodecahedron) {
-    PlatonicSolids dodecahedron , dual_dodecahedron ;
-    Dodecahedron (dodecahedron );
-    dual_dodecahedron .p = dodecahedron .p;
+TEST(DualPolyhedronTest, IcosahedronToDodecahedron) {
+    PlatonicSolids solido;
+    solido.p = 3;
+    solido.q = 5;
+    CreateSolid(solido);
 
-    int result = DualPolyhedron(dual_dodecahedron , dodecahedron );
+    PlatonicSolids solido1;
+    solido1.p = solido.q;
+    solido1.q = solido.p;
+
+    int result = DualPolyhedron(solido1, solido);
     ASSERT_EQ(result, 0);
 
-    EXPECT_EQ(dual_dodecahedron .NumCells0Ds, dodecahedron .NumCells2Ds);
-    EXPECT_EQ(dual_dodecahedron .NumCells1Ds, dodecahedron .NumCells1Ds);
-    EXPECT_EQ(dual_dodecahedron .NumCells2Ds, dodecahedron .NumCells0Ds);
+    EXPECT_EQ(solido1.NumCells0Ds, 20);
+    EXPECT_EQ(solido1.NumCells1Ds, 30);
+    EXPECT_EQ(solido1.NumCells2Ds, 12);
 
-    for(unsigned int i=0; i<dual_dodecahedron .NumCells0Ds; i++) {
-        double x = dual_dodecahedron .Cells0DsCoordinates(0,i);
-        double y = dual_dodecahedron .Cells0DsCoordinates(1,i);
-        double z = dual_dodecahedron .Cells0DsCoordinates(2,i);
-        double norm = sqrt(x*x + y*y + z*z);
+    for (int i = 0; i < solido1.Cells0DsCoordinates.cols(); ++i) {
+        double x = solido1.Cells0DsCoordinates(0, i);
+        double y = solido1.Cells0DsCoordinates(1, i);
+        double z = solido1.Cells0DsCoordinates(2, i);
+        double norm = sqrt(x * x + y * y + z * z);
         EXPECT_NEAR(norm, 1.0, 1e-6);
     }
 }
-/*
-void CheckCreateMeshTriangulation(PlatonicSolids& solido) {
+
+TEST(CreateMeshTest,  GeneralTest) {
+    PlatonicSolids solido;
     int result = CreateMesh(solido);
-    ASSERT_EQ(result, 0) << "CreateMesh failed";
-
-    ASSERT_GE(solido.Cells0DsCoordinates.size(), 3) << "Insufficient number of vertices";
-
-    ASSERT_GE(solido.Cells1DsVertices.size(), 3) << "Insufficient number of edges";
-
-    ASSERT_GE(solido.Cells2DsVertices.size(), 1) << "Insufficient number of faces";
-
-    for (size_t i = 0; i < solido.Cells2DsVertices.size(); ++i) {
-        int numVerticesInFace = solido.Cells2DsNumEdges[i];
-        ASSERT_EQ(numVerticesInFace, 3) << "Face" << i << " is not a triangle (has " << numVerticesInFace << " vertices)";
-    }
+    ASSERT_EQ(result, 0);
 }
 
-TEST(CreateMeshTest, Tetrahedron) {
+
+TEST(VerticeAdjacencyTest,  GeneralTest) {
     PlatonicSolids solido;
-    solido.p = 3; solido.q = 3; solido.b = 1;
-    CreateSolid(solido);
-
-    CheckCreateMeshTriangulation(solido);
+    int result = VerticeAdjacency(solido);
+    ASSERT_EQ(result, 0);
 }
-
-TEST(CreateMeshTest, Cube) {
-    PlatonicSolids solido;
-    solido.p = 4; solido.q = 3; solido.b = 1;
-    CreateSolid(solido);
-
-    CheckCreateMeshTriangulation(solido);
-}
-
-TEST(CreateMeshTest, Octahedron) {
-    PlatonicSolids solido;
-    solido.p = 3; solido.q = 4; solido.b = 1;
-    CreateSolid(solido);
-
-    CheckCreateMeshTriangulation(solido);
-}
-
-TEST(CreateMeshTest, Dodecahedron) {
-    PlatonicSolids solido;
-    solido.p = 5; solido.q = 3; solido.b = 1;
-    CreateSolid(solido);
-
-    CheckCreateMeshTriangulation(solido);
-}
-
-TEST(CreateMeshTest, Icosahedron) {
-    PlatonicSolids solido;
-    solido.p = 3; solido.q = 5; solido.b = 1;
-    CreateSolid(solido);
-
-    CheckCreateMeshTriangulation(solido);
-}
-*/
 
 void CheckShortestPath(PlatonicSolids& solido,
                        unsigned int start,
