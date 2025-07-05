@@ -1,0 +1,54 @@
+@startuml
+
+struct PlatonicSolids{
+-int p
+-int q
+-int b
+-int id_vertice1
+-int id_vertice2
+
+-vector<int> Cells0DsId
+-vector<int> Cells1DsId
+-vector<int> Cells2DsId 
+-vector<int> Cells3DsId
+
+-MatrixXd Cells0DsCoordinates
+-MatrixXi Cells1DsExtrema
+	
+-MatrixXi Cell1DVertices
+-MatrixXi Cells2DsVertices 
+-VectorXi Cells3DsVertices
+-vector<vector<int>> Cells1DsVertices
+
+-vector<vector<int>> Cells2DsVertices 
+
+-MatrixXi Cells2DsEdges 
+-VectorXi Cells2DsNumEdges 
+-VectorXi Cells3DsEdges 
+
+-vector<vector<int>> Cells2DsNeighborhood
+ 
+-VectorXi Cells3DsFaces 
+-vector<vector<int>> VerticeFaces   
+      
+-vector<vector<int>> adjacency 
+-map<int,list<int>> ShortPathVertices 
+-map<int, list<int>> ShortPathEdges
+
++ImportValue 
++CreateSolid
++FileCell0Ds
++FileCell1Ds
++FileCell2Ds
++FileCell3Ds
++DualPolyhedron
++CreateMesh
++ ShortestPath
++VerticeAdjacency
+}
+
+note left of PlatonicSolids::Cells2DsNeighborhood
+salva le facce adiacenti
+end note 
+
+@enduml
