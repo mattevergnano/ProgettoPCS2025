@@ -15,5 +15,6 @@ namespace PlatonicLibrary{
     int DualPolyhedron(PlatonicSolids& solido,PlatonicSolids& solido1);
     int CreateMesh(PlatonicSolids& solido);
 	int ShortestPath(PlatonicSolids& solido);
+    int VerticeAdjacency(PlatonicSolids& solido);
 }
 

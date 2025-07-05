@@ -27,6 +27,7 @@ int main(int argc,char  *argv[]){
         CreateSolid(solido1);
         CreateMesh(solido1);
         DualPolyhedron(solido,solido1);
+        VerticeAdjacency(solido);
     }}
     // FileCell0Ds(solido);
 	// FileCell1Ds(solido);
